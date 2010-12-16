@@ -1,5 +1,0 @@
-include/HeyPublisher/HeyPublisherSubmission.class.php
-include/HeyPublisher/HeyPublisher.class.php
-include/HeyPublisherXML/HeyPublisherXML.class.php
-admin/heypub-submissions.php
-heypublisher-sub-mgr.php
