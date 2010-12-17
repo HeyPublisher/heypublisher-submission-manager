@@ -101,7 +101,7 @@ function heypub_show_menu_options() {
   }
 ?>  
   <p>Ensure that the following code is contained somewhere in the page.</p>
-  <blockquote><b><?php echo HEYPUB_SUBMISSION_PAGE_REPLACER; ?></b></blockquote>
+  <blockquote class='heypub'><b><?php echo HEYPUB_SUBMISSION_PAGE_REPLACER; ?></b></blockquote>
   <p>This code will be replaced by the actual submission form when users go to the page.</p>
     <label class='heypub' for='hp_submission_page'>Submission Form Page</label>
     <select name="heypub_opt[sub_page_id]" id="hp_submission_page" class='heypub'> 
@@ -211,7 +211,7 @@ function heypub_show_menu_options() {
 <!-- Payment Options -->
         
       <h3>Payment Options</h3>
-      <p>Does your publication pay writers for publishing their works?</p>
+      <p>Does your publication pay writers for publishing their work?</p>
       <label class='heypub' for='hp_paying_market'>Paying Market?</label>
       <select name="heypub_opt[paying_market]" id="hp_paying_market" onchange="heypub_select_toggle('hp_paying_market','hyepub_paying_market_range_display');">>
       <option value='0' <?php if($opts['paying_market'] == '0') echo "selected=selected"; ?>>No</option>
