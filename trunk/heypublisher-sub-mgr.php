@@ -82,6 +82,7 @@ define('HEYPUB_PLUGIN_FULLPATH', WP_PLUGIN_DIR.DIRECTORY_SEPARATOR.HEY_DIR.DIREC
 
 // How to connect to the service
 define('HEYPUB_FEEDBACK_EMAIL_VALUE','wordpress@loudlever.com?subject=HeyPublisher%20Wordpress%20Plugin');
+define('HEYPUB_FEEDBACK_GETSATISFACTION','http://getsatisfaction.com/hey');
 define('HEYPUB_SVC_URL_STYLE_GUIDE','http://www.loudlever.com/docs/plugins/wordpress/style_guide');     # designates the URL of the style guide
 define('HEYPUB_SVC_URL_BASE', HEYPUB_DOMAIN . '/api/v1');                 # designates the base URL and version of API
 # Stylesheet for plugin resides on HP server now
