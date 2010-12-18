@@ -225,15 +225,25 @@ function heypub_show_menu_options() {
       </div>
 
 <!-- MISC -->
-<h3>Miscellaneous</h3>
-<p>Turn off HTML clean-up in submissions?  Select YES if you are getting strange characters in the body of the submission.<br/>  In most cases, however, you will want to leave this set to No.</p>
-<label class='heypub' for='hp_no_tidy'>Turn Off HTML Clean-Up?</label>
-<select name="heypub_opt[turn_off_tidy]" id="hp_turn_off_tidy">
-<option value='0' <?php if($opts['turn_off_tidy'] == '0') echo "selected=selected"; ?>>No</option>
-<option value='1' <?php if($opts['turn_off_tidy'] == '1') echo "selected=selected"; ?>>Yes</option>
-</select>
+  <h3>Miscellaneous</h3>
+  <p>Turn off HTML clean-up in submissions?  Select YES if you are getting strange characters in the body of the submission.<br/>  In most cases, however, you will want to leave this set to No.</p>
+  <label class='heypub' for='hp_no_tidy'>Turn Off HTML Clean-Up?</label>
+  <select name="heypub_opt[turn_off_tidy]" id="hp_turn_off_tidy">
+  <option value='0' <?php if($opts['turn_off_tidy'] == '0') echo "selected=selected"; ?>>No</option>
+  <option value='1' <?php if($opts['turn_off_tidy'] == '1') echo "selected=selected"; ?>>Yes</option>
+  </select>
 
-
+<?php
+/*
+  // Future : Download of original document is coming ....
+  <p>Display link to download original document?  Select yes if you want your editors to have the ability to download the original Word document.  This link will be displayed in the side bar when viewing the submission.</p>
+  <label class='heypub' for='hp_doc_download'>Display Download Link?</label>
+  <select name="heypub_opt[display_download_link]" id="hp_doc_download">
+  <option value='0' <?php if($opts['display_download_link'] == '0') echo "selected=selected"; ?>>No</option>
+  <option value='1' <?php if($opts['display_download_link'] == '1') echo "selected=selected"; ?>>Yes</option>
+  </select>
+*/
+?>
 <br/>
 <hr>
 <?php

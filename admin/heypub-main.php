@@ -24,7 +24,7 @@ function heypub_display_page_logo() {
   global $hp_xml, $hp_base;
 ?>
     <div id='heypub_logo'><a href='http://heypublisher.com' target='_blank' title='Visit HeyPublisher.com'><img src='<?php echo HEY_BASE_URL.'/images/logo.jpg'; ?>' border='0'></a><br/>
-    <a id='getsatisfaction_button' href='<?php echo HEYPUB_FEEDBACK_GETSATISFACTION; ?>' target='_blank' title="Need Support?  We're here to help!">Questions?  Contact Us!</a>
+    <a class='heypub_smart_button' href='<?php echo HEYPUB_FEEDBACK_GETSATISFACTION; ?>' target='_blank' title="Need Support?  We're here to help!">Questions?  Contact Us!</a>
 <?php
       $seo = $hp_xml->get_config_option('seo_url');
       if ($seo) {

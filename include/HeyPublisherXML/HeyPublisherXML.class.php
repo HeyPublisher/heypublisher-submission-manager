@@ -115,7 +115,8 @@ class HeyPublisherXML {
       'guide_first_validated_at' => null,
       'guide_last_validated_at' => null,
       'turn_off_tidy' => false,
-      'link_sub_to_edit' => true
+      'link_sub_to_edit' => true,           # don't think we're using this one??
+      'display_download_link' => false      # this is a local-only config
     );
     return $hash;
   }
