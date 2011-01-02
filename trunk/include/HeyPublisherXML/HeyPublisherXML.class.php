@@ -94,12 +94,15 @@ class HeyPublisherXML {
       'categories' => array(),
       'name'  => null,
       'url'   => null,
+      'circulation' => null,
+      'established' => null,
       'editor_name' => null,
       'editor_email' => null,
       'accepting_subs' => false,
       'reading_period' => null,
       'simu_subs' => false,
       'multi_subs' => false,
+      'reprint_subs' => false,
       'paying_market' => false,
       'paying_market_range' => null,
       'address' => null,
@@ -107,6 +110,9 @@ class HeyPublisherXML {
       'state' => null,
       'zipcode' => null,
       'country' => null,
+      'twitter' => null,
+      'facebook' => null,
+      'rss' => null,
       'sub_page_id' => null,
       'sub_guide_id' => null,
       'seo_url' => null,
@@ -114,6 +120,13 @@ class HeyPublisherXML {
       'homepage_last_validated_at' => null,
       'guide_first_validated_at' => null,
       'guide_last_validated_at' => null,
+      // need to match default config in DB
+      'notify_submitted' => true,
+      'notify_read' => false,
+      'notify_rejected' => true,
+      'notify_published' => false,
+      'notify_accepted' => true,
+      'notify_under_consideration' => true,
       'turn_off_tidy' => false,
       'link_sub_to_edit' => true,           # don't think we're using this one??
       'display_download_link' => false      # this is a local-only config
@@ -311,6 +324,7 @@ EOF;
     $reading = $this->update_publisher_reading_period($post);
     $simulsubs = $this->boolean($post[simu_subs]);
     $multisubs = $this->boolean($post[multi_subs]);
+    $reprints = $this->boolean($post[reprint_subs]);
     $accepting_subs  = $this->boolean($post[accepting_subs]);
     $paying = $this->update_publisher_paying_market($post);
     $post = <<<EOF
@@ -319,18 +333,33 @@ EOF;
     <publishertype_id>$post[pub_type]</publishertype_id>
     <name>$post[name]</name>
     <url>$post[url]</url>
+    <established>$post[established]</established>
+    <circulation>$post[circulation]</circulation>
     <sub_guideline>$post[guide]</sub_guideline>
     <editor>$post[editor_name]</editor>
     <editor_email>$post[editor_email]</editor_email>
     <accepts_simultaneous_submissions>$simulsubs</accepts_simultaneous_submissions>
     <accepts_multiple_submissions>$multisubs</accepts_multiple_submissions>
+    <accepts_reprints>$reprints</accepts_reprints>
     <now_accepting_submissions>$accepting_subs</now_accepting_submissions>
     <address>$post[address]</address>
     <city>$post[city]</city>
     <state>$post[state]</state>
     <zipcode>$post[zipcode]</zipcode>
     <country>$post[country]</country>
+    <twitter>$post[twitter]</twitter>
+    <facebook>$post[facebook]</facebook>
+    <submission_url>$post[submission_url]</submission_url>
+    <submission_product>HeyPublisher</submission_product>
+    <platform>wordpress</platform>
     <turn_off_tidy>$post[turn_off_tidy]</turn_off_tidy>
+    <notify_submitted>$post[notify_submitted]</notify_submitted>
+    <notify_read>$post[notify_read]</notify_read>
+    <notify_rejected>$post[notify_rejected]</notify_rejected>
+    <notify_published>$post[notify_published]</notify_published>
+    <notify_accepted>$post[notify_accepted]</notify_accepted>
+    <notify_under_consideration>$post[notify_under_consideration]</notify_under_consideration>
+    
     $categories
     $reading
     $paying

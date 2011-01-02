@@ -55,13 +55,14 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   1.1.0 => 29
   1.2.0 => 35
   1.2.4 => 38
+  1.3.0 => 40
 ---------------------------------------------------------------------------------
 */  
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "38");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "40");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_BUILD_DATE", "2010-11-01");  
 // Version Number (can be text)
 define("HEYPUB_PLUGIN_VERSION", "1.2.5");
@@ -307,30 +308,44 @@ function heypub_init(){
     $hp_xml->set_config_option('url',get_bloginfo('url'));
     $hp_xml->set_config_option('editor_name','Editor');
     $hp_xml->set_config_option('editor_email',get_bloginfo('admin_email'));
+    $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
+    
     $hp_xml->set_config_option('accepting_subs','0');
     $hp_xml->set_config_option('reading_period','0');
     $hp_xml->set_config_option('simu_subs','0');
     $hp_xml->set_config_option('multi_subs','0');
+    $hp_xml->set_config_option('reprint_subs','0');
     $hp_xml->set_config_option('paying_market','0');
     $hp_xml->set_config_option('address',false);
     $hp_xml->set_config_option('city',false);
     $hp_xml->set_config_option('state',false);
     $hp_xml->set_config_option('zipcode',false);
     $hp_xml->set_config_option('country',false);
-
     $hp_xml->set_config_option('sub_page_id',false);
     $hp_xml->set_config_option('sub_guide_id',false);
+    // added with 1.3.0
+    $hp_xml->set_config_option('notify_submitted',true);
+    $hp_xml->set_config_option('notify_read',false);
+    $hp_xml->set_config_option('notify_rejected',true);
+    $hp_xml->set_config_option('notify_published',false);
+    $hp_xml->set_config_option('notify_accepted',true);
+    $hp_xml->set_config_option('notify_under_consideration',true);
   } 
   
   // now check for a normal upgrade path
   $opts = $hp_xml->install;
   if ($opts['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
     // this is the 'normal' upgrade path.
-    if ($opts['version_current'] <= 50) {  // upgrade to 1.3.0 options
-      
+    if ($opts['version_current'] <= 40) {  // upgrade to 1.3.0 options
+      $hp_xml->set_config_option('notify_submitted',true);
+      $hp_xml->set_config_option('notify_read',false);
+      $hp_xml->set_config_option('notify_rejected',true);
+      $hp_xml->set_config_option('notify_published',false);
+      $hp_xml->set_config_option('notify_accepted',true);
+      $hp_xml->set_config_option('notify_under_consideration',true);
     }
     // For future reference, just keep adding new hash keys that are version specific by following same logic
-    // if ($opts['version_current'] < 50) {  // upgrade to 1.2.6 options
+    // if ($opts['version_current'] < 50) {  // upgrade to 1.4.0 options
     //    ... do something here  
     // }
     
@@ -348,6 +363,7 @@ function heypub_uninit() {
   $opts = $hp_xml->config;
   $install = $hp_xml->install;
   if ($install != FALSE && isset($install['user_oid']) ) {
+    // disable the publisher in the db
     $opts[accepting_subs] = false;
     $opts[genres_list] = false;
     $opts['guide'] = get_permalink($opts['sub_guide_id']);
