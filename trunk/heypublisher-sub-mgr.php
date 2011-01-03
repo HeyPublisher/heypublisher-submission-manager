@@ -3,7 +3,7 @@
 Plugin Name: HeyPublisher Submission Manager
 Plugin URI: http://loudlever.com
 Description: This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them.  You can define reading periods, acceptable genres, and other filters to ensure you only receive the submissions that meet your publication's needs.
-Version: 1.2.4
+Version: 1.3.0
 Author: Loudlever, Inc.
 Author URI: http://www.loudlever.com
 
