@@ -237,7 +237,7 @@ function heypub_show_menu_options() {
 <!-- Notification Options -->
 
       <h3>Notification Options</h3>
-      <p>Indicate if you want the plugin to send an email to the writer when their submission reaches each of the submission states listed below.  You can control the content of the emails sent to the writer on the Response Templates screen.</p>
+      <p>Indicate if you want the plugin to send an email to the writer when their submission reaches each of the submission states listed below.  You can control the content of the emails sent to the writer via the <a href='admin.php?page=heypub_response_templates' target=_top>Response Templates</a> screen.</p>
 <?php
 // We'll introduce this later - for now it's hard-coded to yes
 // 

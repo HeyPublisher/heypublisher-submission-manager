@@ -65,7 +65,7 @@ define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/')
 define("HEYPUB_PLUGIN_BUILD_NUMBER", "40");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_BUILD_DATE", "2010-11-01");  
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_VERSION", "1.2.5");
+define("HEYPUB_PLUGIN_VERSION", "1.3.0");
 
 # Base domain 
 // define('HEYPUB_DOMAIN','http://heypublisher.com');    
@@ -153,12 +153,24 @@ register_deactivation_hook( __FILE__, 'heypub_uninit');
 add_action('admin_menu', 'RegisterHeyPublisherAdminMenu');
 // Hook into the 'dashboard' to display some stats
 add_action('wp_dashboard_setup', 'RegisterHeyPublisherDashboardWidget' );
-// capture when a submission is published
+
+// IMPORTANT: If you have custom posts and want to have HeyPublisher send a notice
+// to the writer when the submission is either published, or rejected after acceptance,
+// you will need to modify the 3 add_action() statements below.
+// Simply change '_post' to '_your_custom_post type'
+// For example, if your custom post type is called 'story', 
+// Change 
+//          add_action('publish_post','heypub_publish_post');
+// to read:
+//          add_action('publish_story','heypub_publish_post');
+
+// Marks the submission as 'published' in HeyPublisher and removes it from your Submission Summary screen:
 add_action('publish_post','heypub_publish_post');
-// capture when a submission is deleted from the posts
-add_action('delete_post','heypub_reject_post');
-// capture when a submission is 'trashed'
+// Marks a previously accepted submission as 'rejected' in HeyPublisher and removes it from your Submission Summary screen:
+// this one executes when the submission is moved to 'trash'
 add_action('trash_post','heypub_reject_post');
+// this one executes when you skip the trash an simply 'delete' the submission
+add_action('delete_post','heypub_reject_post');
 
 // Ensure we go through the upgrade path even if the user simply installs 
 // a new version of the plugin over top of the old plugin.
@@ -325,9 +337,9 @@ function heypub_init(){
     $hp_xml->set_config_option('sub_guide_id',false);
     // added with 1.3.0
     $hp_xml->set_config_option('notify_submitted',true);
-    $hp_xml->set_config_option('notify_read',false);
+    $hp_xml->set_config_option('notify_read',true);
     $hp_xml->set_config_option('notify_rejected',true);
-    $hp_xml->set_config_option('notify_published',false);
+    $hp_xml->set_config_option('notify_published',true);
     $hp_xml->set_config_option('notify_accepted',true);
     $hp_xml->set_config_option('notify_under_consideration',true);
   } 
@@ -338,9 +350,9 @@ function heypub_init(){
     // this is the 'normal' upgrade path.
     if ($opts['version_current'] <= 40) {  // upgrade to 1.3.0 options
       $hp_xml->set_config_option('notify_submitted',true);
-      $hp_xml->set_config_option('notify_read',false);
+      $hp_xml->set_config_option('notify_read',true);
       $hp_xml->set_config_option('notify_rejected',true);
-      $hp_xml->set_config_option('notify_published',false);
+      $hp_xml->set_config_option('notify_published',true);
       $hp_xml->set_config_option('notify_accepted',true);
       $hp_xml->set_config_option('notify_under_consideration',true);
     }

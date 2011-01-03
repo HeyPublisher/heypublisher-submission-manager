@@ -64,26 +64,29 @@ EOF;
   // - the contextual publisher object
   // - the submission object
   public function other_publisher_link($obj,$sub) {
-    $string_format = '<ul>%s</ul>';
     // loop through values in the object
+    $string = false;
     $all = '';
-    foreach ($obj as $key=>$val) {
-      $str = '';
-      if ($val->url != '') {
-        $str .= sprintf("<b><a target=_blank href='%s'>%s</a></b>",$val->url,$val->name);
-      } else {
-        $str .= sprintf("<b>%s</b>",$val->name);
+    // printf("<pre>OBJ = %s</pre>",print_r($obj,1));
+    if ($obj) {
+      foreach ($obj as $key=>$val) {
+        $str = '';
+        if ($val->url != '') {
+          $str .= sprintf("<b><a target=_blank href='%s'>%s</a></b>",$val->url,$val->name);
+        } else {
+          $str .= sprintf("<b>%s</b>",$val->name);
+        }
+        if ($val->date != '') {
+          $str .= sprintf("&nbsp;<small>[%s]</small>",$val->date);
+        }
+        if ($val->editor != '' && $val->email != '') {
+          $str .= sprintf("<span>edited by <a href='mailto:%s?subject=Question about \"%s\" by %s %s'>%s</a></a></span>",
+              $val->email,$sub->title,$sub->author->first_name, $sub->author->last_name,$val->editor);
+        }
+        $all .= sprintf('<li>%s</li>',$str);
       }
-      if ($val->date != '') {
-        $str .= sprintf("&nbsp;<small>[%s]</small>",$val->date);
-      }
-      if ($val->editor != '' && $val->email != '') {
-        $str .= sprintf("<span>edited by <a href='mailto:%s?subject=Question about \"%s\" by %s %s'>%s</a></a></span>",
-            $val->email,$sub->title,$sub->author->first_name, $sub->author->last_name,$val->editor);
-      }
-      $all .= sprintf('<li>%s</li>',$str);
+      $string = sprintf('<ul>%s</ul>',$all);
     }
-    $string = sprintf('<ul>%s</ul>',$all);
     return $string;
   }
   
