@@ -3,8 +3,8 @@ Contributors: Loudlever.
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
 Tags: anonymous, post, submit, submission, unregistered users, custom post interface, plugin, slushpile, HeyPublisher, Loudlever
 Requires at least: 2.8.6
-Tested up to: 3.0.1
-Stable Tag: 1.2.4
+Tested up to: 3.0.4
+Stable Tag: 1.3.0
 
 This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them.
 
@@ -56,7 +56,7 @@ We are Loudlever.  Creativity.  Accelerated.
 
 * Extract the files to a subdirectory called `heypublisher-submission-manager`.
 
-* Active the plugin via the usual Wordpress plugin menu.  
+* Active the plugin via the Wordpress plugin menu.  
 
 Once activated you will need to 'validate' the plugin with the HeyPublisher webservice.  To do this, click on the HeyPublisher link in the newly created side-nav box and follow the on-screen instructions.
 
@@ -85,6 +85,8 @@ After the plugin has been validated, you can configure it to meet your submissio
 * **Submission Guidelines:** select the page that contains your submission guidelines (if applicable). (Screenshot 4)
 
 * **Submission Criteria:** select which genres of work you will accept - and how those should map to your internal categories when you "accept" a work for publication.  Additionally, you can select whether or not to accept simultaneous submissions and multiple submissions. (Screenshot 5)
+
+* **Notification Options :** indicate the submission states where you want to send notifications to the writer.  This works in conjunction with the Response Templates feature, where you can customize the emails sent to writers.
 
 * **Payment Options :** indicate whether or not your publication pays writers for their work.
 
@@ -135,6 +137,20 @@ Yes, as of version 1.2.0 you can define custom response templates that contain w
 
 == Changelog ==
 
+= 1.3.0 =
+
+* Introduced the ability for editors to turn off the email notifications sent to writers when a submission changes state.
+
+* Added 'Year Established', 'Monthly Circulation', 'Facebook' and 'Twitter' configuration options.  When populated, these values will be displayed with your publication listing at HeyPublisher.com
+
+* Fixed an edge-case where publishers could continue to see withdrawn submissions.
+
+* Better layout of the Publication Information configuration section, to separate contact info from publication info.
+
+* Fixed issue where previously accepted submissions that were moved to the trash were not marked as 'rejected'.
+
+* Fixed issue where accepted submissions that were scheduled for publication at a future date were not transitioning to 'published' on that date. 
+
 = 1.2.4 =
 
 * Fixed tagging issue that caused submissions page to throw fatal error regarding missing class file.
@@ -172,6 +188,12 @@ Yes, as of version 1.2.0 you can define custom response templates that contain w
 * Initial release of HeyPublisher Submission Manager Plugin
 
 == Upgrade Notice ==
+
+= 1.3.0 =
+
+* Released : 2011-01-03
+
+* Fixes issues with state transitions when submissions are moved to trash, or scheduled for future publication.  See Changelog for details.
 
 = 1.2.4 =
 

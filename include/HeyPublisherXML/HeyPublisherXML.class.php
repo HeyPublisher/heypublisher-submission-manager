@@ -122,9 +122,9 @@ class HeyPublisherXML {
       'guide_last_validated_at' => null,
       // need to match default config in DB
       'notify_submitted' => true,
-      'notify_read' => false,
+      'notify_read' => true,
       'notify_rejected' => true,
-      'notify_published' => false,
+      'notify_published' => true,
       'notify_accepted' => true,
       'notify_under_consideration' => true,
       'turn_off_tidy' => false,
@@ -353,7 +353,7 @@ EOF;
     <submission_product>HeyPublisher</submission_product>
     <platform>wordpress</platform>
     <turn_off_tidy>$post[turn_off_tidy]</turn_off_tidy>
-    <notify_submitted>$post[notify_submitted]</notify_submitted>
+    <notify_submitted>1</notify_submitted>
     <notify_read>$post[notify_read]</notify_read>
     <notify_rejected>$post[notify_rejected]</notify_rejected>
     <notify_published>$post[notify_published]</notify_published>
