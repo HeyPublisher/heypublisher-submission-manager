@@ -68,9 +68,9 @@ define("HEYPUB_PLUGIN_BUILD_DATE", "2010-11-01");
 define("HEYPUB_PLUGIN_VERSION", "1.3.0");
 
 # Base domain 
-// define('HEYPUB_DOMAIN','http://heypublisher.com');    
+define('HEYPUB_DOMAIN','http://heypublisher.com');    
 # Base domain for testing
-define('HEYPUB_DOMAIN','http://localhost:3000');
+// define('HEYPUB_DOMAIN','http://localhost:3000');
 
 define('HEYPUB_PLUGIN_ERROR_CONTACT','Please contact <a href="mailto:wordpress@loudlever.com?subject=plugin%20error">wordpress@loudlever.com</a> to report this error');
 
@@ -316,17 +316,14 @@ function heypub_init(){
     // this will be needed later
     $hp_xml->set_install_option('version_current_date',null);
     
-    $hp_xml->set_config_option('name',get_bloginfo('name'));
-    $hp_xml->set_config_option('url',get_bloginfo('url'));
+    // $hp_xml->set_config_option('name',get_bloginfo('name'));
+    // $hp_xml->set_config_option('url',get_bloginfo('url'));
     $hp_xml->set_config_option('editor_name','Editor');
-    $hp_xml->set_config_option('editor_email',get_bloginfo('admin_email'));
-    $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
-    
+    // $hp_xml->set_config_option('editor_email',get_bloginfo('admin_email'));
     $hp_xml->set_config_option('accepting_subs','0');
     $hp_xml->set_config_option('reading_period','0');
     $hp_xml->set_config_option('simu_subs','0');
     $hp_xml->set_config_option('multi_subs','0');
-    $hp_xml->set_config_option('reprint_subs','0');
     $hp_xml->set_config_option('paying_market','0');
     $hp_xml->set_config_option('address',false);
     $hp_xml->set_config_option('city',false);
@@ -336,6 +333,8 @@ function heypub_init(){
     $hp_xml->set_config_option('sub_page_id',false);
     $hp_xml->set_config_option('sub_guide_id',false);
     // added with 1.3.0
+    $hp_xml->set_config_option('reprint_subs','0');
+    // $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
     $hp_xml->set_config_option('notify_submitted',true);
     $hp_xml->set_config_option('notify_read',true);
     $hp_xml->set_config_option('notify_rejected',true);
@@ -355,6 +354,8 @@ function heypub_init(){
       $hp_xml->set_config_option('notify_published',true);
       $hp_xml->set_config_option('notify_accepted',true);
       $hp_xml->set_config_option('notify_under_consideration',true);
+      $hp_xml->set_config_option('reprint_subs','0');
+      // $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
     }
     // For future reference, just keep adding new hash keys that are version specific by following same logic
     // if ($opts['version_current'] < 50) {  // upgrade to 1.4.0 options
