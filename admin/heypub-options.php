@@ -19,7 +19,7 @@ function heypub_show_menu_options() {
   if (!$hp_xml->is_validated) {
 ?>
     <h3>HeyPublisher Account Info</h3>
-    <p>If your publication is <a href="http://heypublisher.com/publishers/search?category_id=0&keywords=<?php printf('%s',urlencode($opts['name'])); ?>" target=_new>listed in HeyPublisher's database</a>, please enter your publication's name and URL below <i>exactly</i> as it appears on HeyPublisher.</p>
+    <p>If your publication is <a href="<?php echo HEYPUB_DOMAIN; ?>/publishers/search/all/none/<?php printf('%s',urlencode($opts['name'])); ?>" target=_new>listed in HeyPublisher's database</a>, please enter your publication's name and URL below <i>exactly</i> as it appears on HeyPublisher.</p>
     <p>If your publication is not already in our database, tell us the name and URL of your publication (the defaults listed below are based upon your Wordpress settings).</p>
     <p><p><b>IMPORTANT:</b> Please provide an email address and desired password below.  We will use this information to create an 'administrator' account in our system, allowing you to manage your publication's listing from the <a href='http://heypublisher.com/'  target='_new'>HeyPublisher.com website</a>, as well as from this plugin.</p>
     
@@ -465,8 +465,8 @@ function heypub_update_options() {
 function heypub_create_submission_page() {
   global $current_user;
 
-  $title = hp_SUBMISSION_PAGE_TITLE;
-  $content = hp_SUBMISSION_PAGE_REPLACER;
+  $title = HEYPUB_SUBMISSION_PAGE_TITLE;
+  $content = HEYPUB_SUBMISSION_PAGE_REPLACER;
 
   // Create the page
   $post = array (
