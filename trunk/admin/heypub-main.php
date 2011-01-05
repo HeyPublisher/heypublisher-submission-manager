@@ -26,12 +26,16 @@ function heypub_display_page_logo() {
     <div id='heypub_logo'><a href='http://heypublisher.com' target='_blank' title='Visit HeyPublisher.com'><img src='<?php echo HEY_BASE_URL.'/images/logo.jpg'; ?>' border='0'></a><br/>
     <a class='heypub_smart_button' href='<?php echo HEYPUB_FEEDBACK_GETSATISFACTION; ?>' target='_blank' title="Need Support?  We're here to help!">Questions?  Contact Us!</a>
 <?php
-      $seo = $hp_xml->get_config_option('seo_url');
-      if ($seo) {
+    $seo = $hp_xml->get_config_option('seo_url');
+    if ($seo) {
 ?>      
       <b><a target=_blank href="<?php echo $seo; ?>">See Your Site in Our Database</a></b>
 <?php 
-    }
+    } else {
+?>      
+      <i>Help Support HeyPublisher</i>
+<?php 
+    } 
     ?>
     <div id="heypub_donate">
       <?php echo $hp_base->make_donation_link(); ?>

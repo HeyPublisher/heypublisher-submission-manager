@@ -2,15 +2,14 @@
 /*
 Plugin Name: HeyPublisher Submission Manager
 Plugin URI: http://loudlever.com
-Description: This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them.  You can define reading periods, acceptable genres, and other filters to ensure you only receive the submissions that meet your publication's needs.
+Description: This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them.  You can define acceptable categories and other filters to ensure you only receive the submissions that meet your publication's needs.
 Version: 1.3.1
 Author: Loudlever, Inc.
 Author URI: http://www.loudlever.com
 
-
   $Id: heypublisher-sub-mgr.php 145 2010-12-16 22:20:13Z rluck $
 
-  Copyright 2010 Loudlever, Inc. (wordpress@loudlever.com)
+  Copyright 2010-2011 Loudlever, Inc. (wordpress@loudlever.com)
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation
@@ -62,15 +61,15 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "40");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "42");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_BUILD_DATE", "2010-11-01");  
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_VERSION", "1.3.0");
+define("HEYPUB_PLUGIN_VERSION", "1.3.1");
 
 # Base domain 
-define('HEYPUB_DOMAIN','http://heypublisher.com');    
+// define('HEYPUB_DOMAIN','http://heypublisher.com');    
 # Base domain for testing
-// define('HEYPUB_DOMAIN','http://localhost:3000');
+define('HEYPUB_DOMAIN','http://localhost:3000');
 
 define('HEYPUB_PLUGIN_ERROR_CONTACT','Please contact <a href="mailto:wordpress@loudlever.com?subject=plugin%20error">wordpress@loudlever.com</a> to report this error');
 
@@ -313,13 +312,18 @@ function heypub_init(){
   } elseif (get_option(HEYPUB_PLUGIN_OPT_INSTALL) == false) {
     // this user has not installed the plugin yet - this is a fresh install
     $hp_xml->initialize_plugin();
-    // this will be needed later
+    if (function_exists('get_bloginfo')) {
+      $hp_xml->set_config_option('name',get_bloginfo('name'));
+      $hp_xml->set_config_option('url',get_bloginfo('url'));
+      $hp_xml->set_config_option('editor_email',get_bloginfo('admin_email'));
+      if (function_exists('get_feed_permastruct')) {
+        $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
+      }
+    }
+
     $hp_xml->set_install_option('version_current_date',null);
     
-    // $hp_xml->set_config_option('name',get_bloginfo('name'));
-    // $hp_xml->set_config_option('url',get_bloginfo('url'));
     $hp_xml->set_config_option('editor_name','Editor');
-    // $hp_xml->set_config_option('editor_email',get_bloginfo('admin_email'));
     $hp_xml->set_config_option('accepting_subs','0');
     $hp_xml->set_config_option('reading_period','0');
     $hp_xml->set_config_option('simu_subs','0');
@@ -334,7 +338,6 @@ function heypub_init(){
     $hp_xml->set_config_option('sub_guide_id',false);
     // added with 1.3.0
     $hp_xml->set_config_option('reprint_subs','0');
-    // $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
     $hp_xml->set_config_option('notify_submitted',true);
     $hp_xml->set_config_option('notify_read',true);
     $hp_xml->set_config_option('notify_rejected',true);
@@ -347,7 +350,7 @@ function heypub_init(){
   $opts = $hp_xml->install;
   if ($opts['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
     // this is the 'normal' upgrade path.
-    if ($opts['version_current'] <= 40) {  // upgrade to 1.3.0 options
+    if ($opts['version_current'] < 40) {  // upgrade to 1.3.0 options
       $hp_xml->set_config_option('notify_submitted',true);
       $hp_xml->set_config_option('notify_read',true);
       $hp_xml->set_config_option('notify_rejected',true);
@@ -355,8 +358,20 @@ function heypub_init(){
       $hp_xml->set_config_option('notify_accepted',true);
       $hp_xml->set_config_option('notify_under_consideration',true);
       $hp_xml->set_config_option('reprint_subs','0');
-      // $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
+      if (function_exists('get_bloginfo')) {
+        // for feed info, also need to test for 'get_feed_permastruct()')
+        if (function_exists('get_feed_permastruct')) {
+          $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
+        }
+      }
     }
+    // not all of our 1.3.1 version users have the bloginfo for rss set, upgrade them
+    if ($opts['version_current'] < 42) {  // upgrade to 1.3.2 options
+      if (function_exists('get_bloginfo') && function_exists('get_feed_permastruct')) {
+          $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
+      }
+    }
+    
     // For future reference, just keep adding new hash keys that are version specific by following same logic
     // if ($opts['version_current'] < 50) {  // upgrade to 1.4.0 options
     //    ... do something here  
