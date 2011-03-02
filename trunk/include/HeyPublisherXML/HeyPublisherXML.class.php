@@ -327,28 +327,41 @@ EOF;
     $reprints = $this->boolean($post[reprint_subs]);
     $accepting_subs  = $this->boolean($post[accepting_subs]);
     $paying = $this->update_publisher_paying_market($post);
+    $name = htmlentities($post[name]);
+    $established = htmlentities($post[established]);
+    $editor = htmlentities($post[editor_name]);
+    $editor_email = htmlentities($post[editor_email]);
+    $address = htmlentities($post[address]);
+    $city = htmlentities($post[city]);
+    $state = htmlentities($post[state]);
+    $zipcode = htmlentities($post[zipcode]);
+    $country = htmlentities($post[country]);
+    $twitter = htmlentities($post[twitter]);
+    $facebook = htmlentities($post[facebook]);
+    $url = htmlentities($post[url]);
+
     $post = <<<EOF
 <publisher>
     <oid>$this->pub_oid</oid>
     <publishertype_id>$post[pub_type]</publishertype_id>
-    <name>$post[name]</name>
-    <url>$post[url]</url>
-    <established>$post[established]</established>
+    <name>$name</name>
+    <url>$url</url>
+    <established>$established</established>
     <circulation>$post[circulation]</circulation>
     <sub_guideline>$post[guide]</sub_guideline>
-    <editor>$post[editor_name]</editor>
-    <editor_email>$post[editor_email]</editor_email>
+    <editor>$editor</editor>
+    <editor_email>$editor_email</editor_email>
     <accepts_simultaneous_submissions>$simulsubs</accepts_simultaneous_submissions>
     <accepts_multiple_submissions>$multisubs</accepts_multiple_submissions>
     <accepts_reprints>$reprints</accepts_reprints>
     <now_accepting_submissions>$accepting_subs</now_accepting_submissions>
-    <address>$post[address]</address>
-    <city>$post[city]</city>
-    <state>$post[state]</state>
-    <zipcode>$post[zipcode]</zipcode>
-    <country>$post[country]</country>
-    <twitter>$post[twitter]</twitter>
-    <facebook>$post[facebook]</facebook>
+    <address>$address</address>
+    <city>$city</city>
+    <state>$state</state>
+    <zipcode>$zipcode</zipcode>
+    <country>$country</country>
+    <twitter>$twitter</twitter>
+    <facebook>$facebook</facebook>
     <submission_url>$post[submission_url]</submission_url>
     <submission_product>HeyPublisher</submission_product>
     <platform>wordpress</platform>
