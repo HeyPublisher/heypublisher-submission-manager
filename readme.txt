@@ -193,6 +193,12 @@ Yes, as of version 1.2.0 you can define custom response templates that contain w
 
 == Upgrade Notice ==
 
+= 1.3.2 =
+
+* Released : ??
+
+* Fixes error when publisher name has special characters in it.
+
 = 1.3.1 =
 
 * Released : 2011-01-04
