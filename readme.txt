@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: anonymous, post, submit, submission, unregistered users, custom post interface, plugin, slushpile, HeyPublisher, Loudlever
 Requires at least: 2.8.6
 Tested up to: 3.0.4
-Stable Tag: 1.3.1
+Stable Tag: 1.4.0
 
 This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them.
 
@@ -96,7 +96,7 @@ Once you have made the appropriate configurations, click the "Save" button.
 
 == Frequently Asked Questions ==
 
-If you have any questions not addressed here, [please email us](mailto:wordpress@loudlever.com?subject=Question+about+plugin).
+If you have any questions not addressed here, [please email us](mailto:support@heypublisher.com?subject=Question+about+plugin).
 
 * **What happens when I accept a submission?**  
 When you accept a submission, a copy of that submission is inserted as a Post into your Wordpress system.  The post is marked as 'pending' so you can easily find the accepted submission and make any necessary edits to it prior to publication.
@@ -114,7 +114,7 @@ If you do not allow simultaneous submissions, this puts a 'lock' on the work pre
 Yes - absolutely.  HeyPublisher indexes and archives all publisher submission guidelines, making them immediately searchable by writers around the world.  It's important as a publisher to be very clear with writers beforehand about what you are looking for in terms of genre, length, quality and content.
 
 * **Can we style the submission form to better align with our look and feel?**   
-Yes you can.  Your theme's stylesheet is used by the plugin when rendering the submission form.  If you want to change the look of an element on the submission form, simply declare a style for that element in your theme's stylesheet and it will take effect immediately.  Read the [online style guide](http://www.loudlever.com/docs/plugins/wordpress/style_guide) for more detailed information.
+Yes you can.  Your theme's stylesheet is used by the plugin when rendering the submission form.  If you want to change the look of an element on the submission form, simply declare a style for that element in your theme's stylesheet and it will take effect immediately.  Read the [online style guide](http://blog.heypublisher.com/faq/heypublisher-wordpress-plugin-style-guide/) for more detailed information.
 
 * **Can we change the content of the emails sent to writers regarding their submissions?**   
 Yes, as of version 1.2.0 you can define custom response templates that contain whatever message you want to send to your writers.  These emails are automatically whenever you reject, accept, or save a submission for later review.  An email is also sent the first time an editor reads a new submission.  Click on 'Response Templates' in the side-bar and follow the on-screen instructions.
@@ -136,6 +136,17 @@ Yes, as of version 1.2.0 you can define custom response templates that contain w
 13. Dashboard Summary.  A summary of total submissions received and how many are pending review has been added to the Dashboard, providing you with a quick snapshot.
 
 == Changelog ==
+
+= 1.4.0 =
+
+* Changed contact email address to go to support@heypublisher.com.
+
+* Added support for sub-categories.
+
+* Cleaned up the plugin submission pages to better handle extra long titles and when writers do not provide a return email address.
+
+* Added Twitter as a social media login type we support.  We've removed support for Windows Live ID
+
 
 = 1.3.1 =
 
