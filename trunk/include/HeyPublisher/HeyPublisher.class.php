@@ -4,7 +4,8 @@
 *
 */
 class HeyPublisher {
-
+  var $my_categories = array();
+  
   public function __construct() {
 
   }   
@@ -150,6 +151,15 @@ EOF;
 EOF;
     return $str;
   }
+
+  public function make_license_link() {
+    global $hp_xml;
+    $url = sprintf('%s/%s',HEYPUB_LICENSE_URL,$hp_xml->get_install_option('publisher_oid'));
+    $format = "<a href='%s' target='_blank' title='See the Additional Features Available when you License this Plugin' class='heypub_smart_button green'>License Plugin</a>";
+    $str = sprintf($format,$url);
+    return $str;
+  }
+
     
   public function make_donation_link($text_only=false) {
     $format = "<a href='".HEYPUB_DONATE_URL."' target='_blank' title='Thank You for Donating to HeyPublisher'>%s</a>";
@@ -178,5 +188,22 @@ EOF;
 &nbsp;<small>$alt</small>
 EOF;
     return $str;
+  }
+  
+  public function truncate($string, $limit=15) {
+    $break=" "; 
+    $pad="...";
+    // return with no change if string is shorter than $limit  
+    if(strlen($string) <= $limit) return $string; 
+    $string = substr($string, 0, $limit); 
+    if(false !== ($breakpoint = strrpos($string, $break))) { 
+      $string = substr($string, 0, $breakpoint); 
+    } 
+    return $string . $pad; 
+  }
+  
+  public function blank($str='Not Provided') {
+   $ret = sprintf('<span class="heypub_empty">%s</span>',$str);
+   return $ret;  
   }
 }

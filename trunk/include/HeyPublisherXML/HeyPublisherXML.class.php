@@ -651,7 +651,9 @@ EOF;
           $this->print_webservice_errors();
         }
       }
-      ksort($return);
+      if (FALSE != $return) {
+        ksort($return);
+      }
       // printf("<pre>Hash = %s</pre>",print_r($return,1));
       return $return;
   }

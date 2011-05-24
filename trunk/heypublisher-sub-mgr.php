@@ -3,7 +3,7 @@
 Plugin Name: HeyPublisher Submission Manager
 Plugin URI: http://loudlever.com
 Description: This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them.  You can define acceptable categories and other filters to ensure you only receive the submissions that meet your publication's needs.
-Version: 1.3.1
+Version: 1.4.0
 Author: Loudlever, Inc.
 Author URI: http://www.loudlever.com
 
@@ -64,16 +64,17 @@ define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/')
 define("HEYPUB_PLUGIN_BUILD_NUMBER", "42");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_BUILD_DATE", "2010-11-01");  
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_VERSION", "1.3.1");
+define("HEYPUB_PLUGIN_VERSION", "1.4.0");
 
 # Base domain 
 // define('HEYPUB_DOMAIN','http://heypublisher.com');    
 # Base domain for testing
-define('HEYPUB_DOMAIN','http://localhost:3000');
+define('HEYPUB_DOMAIN','http://heypub.test');
 
-define('HEYPUB_PLUGIN_ERROR_CONTACT','Please contact <a href="mailto:wordpress@loudlever.com?subject=plugin%20error">wordpress@loudlever.com</a> to report this error');
+define('HEYPUB_PLUGIN_ERROR_CONTACT','Please contact <a href="mailto:support@heypublisher.com?subject=plugin%20error">support@heypublisher.com</a> to report this error');
 
 define('HEYPUB_DONATE_URL','https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6');
+define('HEYPUB_LICENSE_URL',sprintf('%s/license',HEYPUB_DOMAIN));
 
 // which method handles the not-authenticated condition?
 define('HEYPUB_PLUGIN_NOT_AUTHENTICATED_ACTION','heypub_show_menu_options');
@@ -81,9 +82,9 @@ define('HEYPUB_PLUGIN_NOT_AUTHENTICATED_ACTION','heypub_show_menu_options');
 define('HEYPUB_PLUGIN_FULLPATH', WP_PLUGIN_DIR.DIRECTORY_SEPARATOR.HEY_DIR.DIRECTORY_SEPARATOR);
 
 // How to connect to the service
-define('HEYPUB_FEEDBACK_EMAIL_VALUE','wordpress@loudlever.com?subject=HeyPublisher%20Wordpress%20Plugin');
+define('HEYPUB_FEEDBACK_EMAIL_VALUE','support@heypublisher.com?subject=HeyPublisher%20Wordpress%20Plugin');
 define('HEYPUB_FEEDBACK_GETSATISFACTION','http://getsatisfaction.com/hey');
-define('HEYPUB_SVC_URL_STYLE_GUIDE','http://www.loudlever.com/docs/plugins/wordpress/style_guide');     # designates the URL of the style guide
+define('HEYPUB_SVC_URL_STYLE_GUIDE','http://blog.heypublisher.com/docs/plugins/wordpress/style_guide/');     # designates the URL of the style guide
 define('HEYPUB_SVC_URL_BASE', HEYPUB_DOMAIN . '/api/v1');                 # designates the base URL and version of API
 # Stylesheet for plugin resides on HP server now
 define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugin.css?R11.1');
@@ -143,6 +144,8 @@ require_once(HEYPUB_PLUGIN_FULLPATH.'admin'.DIRECTORY_SEPARATOR.'heypub-uninstal
 
 // required for managing submissions
 require_once(HEYPUB_PLUGIN_FULLPATH.'admin'.DIRECTORY_SEPARATOR.'heypub-submissions.php');
+// marketplace coming soon!
+// require_once(HEYPUB_PLUGIN_FULLPATH.'admin'.DIRECTORY_SEPARATOR.'heypub-marketplace.php');
 
 
 // Initiate the callbacks
@@ -198,6 +201,11 @@ function RegisterHeyPublisherAdminMenu(){
       $admin_sub = add_submenu_page(HEY_DIR , 'HeyPublisher Submissions', 'Submissions'.$countHTML, 'edit_others_posts', 'heypub_show_menu_submissions', 'heypub_show_menu_submissions');
       add_action("admin_print_styles-$admin_sub", 'HeyPublisherAdminHeader' );
       add_action("admin_print_scripts-$admin_sub", 'HeyPublisherAdminInit');
+
+      // $mkt_sub = add_submenu_page(HEY_DIR , 'HeyPublisher Marketplace', 'Marketplace'.$countHTML, 'edit_others_posts', 'heypub_show_menu_marketplace', 'heypub_show_menu_marketplace');
+      // add_action("admin_print_styles-$mkt_sub", 'HeyPublisherAdminHeader' );
+      // add_action("admin_print_scripts-$mkt_sub", 'HeyPublisherAdminInit');
+
   }
     // Configure Options
     $admin_opts = add_submenu_page( HEY_DIR , 'Configure HeyPublisher', 'Plugin Options', 'manage_options', 'heypub_show_menu_options', 'heypub_show_menu_options');

@@ -320,19 +320,26 @@ function heypub_show_menu_options() {
    <?php
 }
 
+// 
 function heypub_get_category_mapping($id,$show) {
-  global $hp_xml;
+  global $hp_xml, $hp_base;
   // $id is the remote category id from HP
   // All categories for this install:
-  $categories =  get_categories(array('orderby' => 'name','order' => 'ASC')); 
+  // $categories =  $hp_base->get_categories(); 
   $map = $hp_xml->get_category_mapping();
-  
-  $select = '<select id="chk_%s" name="heypub_opt[category_map][%s]" %s><option value=""> -- Select --</option>\n%s</select>';
-  $options = array();
-  foreach ($categories as $cat=>$hash) {
-      $options[] = sprintf('<option value="%s" %s>%s</option>', $hash->cat_ID, ($map[$id] == $hash->cat_ID) ? 'selected=selected' : null, $hash->cat_name);
-   }
-  $ret = sprintf($select,$id,$id,($show) ? null : 'style="display:none;"',join("\n",$options));
+  $list = wp_dropdown_categories(
+    array(
+      'selected' => ($map[$id]) ? $map[$id] : 0, 
+      'id' => "chk_$id", 
+      'hide_empty' => 0, 
+      'name' => "heypub_opt[category_map][$id]", 
+      'orderby' => 'name', 
+      'hierarchical' => true, 
+      'echo' => 0,
+      'show_option_none' => __('--- Select ---')
+      )
+    );
+  $ret = sprintf('<div id="chk_%s" %s>%s</div>', $id, ($show) ? null : 'style="display:none;"', $list);  
   return $ret;
 }
 

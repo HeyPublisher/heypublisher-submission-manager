@@ -53,7 +53,7 @@ function heypub_get_display_category($id,$default) {
 
 
 function heypub_list_submissions() {  
-  global $hp_xml;
+  global $hp_xml, $hp_base;
   // This is a SimpleXML object being returned, with key the sub-id
   $subs = $hp_xml->get_recent_submissions();
   $form_post_url = sprintf('%s/%s',get_bloginfo('wpurl'),'wp-admin/admin.php?page=heypub_show_menu_submissions');
@@ -72,13 +72,13 @@ function heypub_list_submissions() {
 <table class="widefat post fixed" cellspacing="0" id='heypub_submissions'>
 <thead>
 	<tr>
-  	<th id='heypub_sub_cb' class='checkbox'><input type="checkbox" onclick="heypub_auto_check(this,'posts-filter');"/></th>
-  	<th>Title</th>
-  	<th>Genre</th>
-  	<th>Author</th>
-  	<th>Email</th>
-  	<th>Submission Date</th>
-  	<th>Status</th>
+  	<th style='width:2%;' id='heypub_sub_cb' class='checkbox'><input type="checkbox" onclick="heypub_auto_check(this,'posts-filter');"/></th>
+  	<th style='width:25%;'>Title</th>
+  	<th style='width:10%;'>Genre</th>
+  	<th style='width:20%;'>Author</th>
+  	<th style='width:15%;'>Email</th>
+  	<th style='width:10%;'>Submission Date</th>
+  	<th style='width:15%;'>Status</th>
 	</tr>
 </thead>
 
@@ -94,6 +94,8 @@ if(!empty($subs)) {
     // overide to highlight submissions where author has provided a rewrite
     if ($hash->status == 'writer_revision_provided') {
       $class .= ' revised';
+    } elseif  ($hash->status == 'publisher_revision_requested') {
+      $class .= ' requested';
     }
     
     $url = sprintf('%s/wp-admin/admin.php?page=heypub_show_menu_submissions&show=%s',get_bloginfo('wpurl'),"$x");
@@ -106,7 +108,7 @@ if(!empty($subs)) {
 
     <tr id='post-<?php echo "$x"; ?>' class='<?php echo $class; ?>' valign="top">
       <th scope="row"><input type="checkbox" name="post[]" id='heypub_sub_id' value="<?php echo "$x"; ?>" /></th>
-      <td class="heypub_list_title"><a href="<?php echo $url; ?>" title="Review Submission"><?php echo "$hash->title"; ?></a></td>
+      <td class="heypub_list_title"><a href="<?php echo $url; ?>" title="Review '<?php echo $hash->title; ?>'"><?php echo $hp_base->truncate($hash->title,30); ?></a></td>
       <td><?php printf("%s", heypub_get_display_category($hash->category->id,$hash->category->name)); ?></td>
       
 <?php if ($hash->author->bio != '') { ?>
@@ -126,7 +128,15 @@ if(!empty($subs)) {
         printf("<td>%s %s</td>", $hash->author->first_name, $hash->author->last_name);
       }
 ?>        
-      <td><?php printf('<a title="Email the Author"  href="mailto:%s?subject=Your%%20submission%%20to%%20%s">%s</a>',$hash->author->email,get_bloginfo('name'),$hash->author->email); ?></td>
+      <td>
+<?php 
+  if (FALSE == $hash->author->email) {
+    echo $hp_base->blank();
+  } else {
+    printf('<a title="Email the Author"  href="mailto:%s?subject=Your%%20submission%%20to%%20%s">%s</a>',$hash->author->email,get_bloginfo('name'),$hp_base->truncate($hash->author->email));
+  }
+?>
+      </td>
       <td><?php printf("%s", $hash->submission_date); ?></td>
       <td><?php printf("%s", $hp_xml->normalize_submission_status($hash->status)); ?></td>
     </tr>
@@ -212,7 +222,15 @@ function heypub_show_submission($id) {
       }
 ?>    </i></p>
         <h3><?php printf('%s', $sub->category); ?> by <?php printf("%s %s", $sub->author->first_name, $sub->author->last_name); ?> 
-        (<?php printf('<a href="mailto:%s?subject=Your%%20submission%%20to%%20%s">%s</a>',$sub->author->email,get_bloginfo('name'),$sub->author->email); ?>)</h3>
+        (
+<?php 
+    if (FALSE == $sub->author->email) {
+      print "<i><small>No Email Provided</small></i>";
+    } else { 
+      printf('<a href="mailto:%s?subject=Your%%20submission%%20to%%20%s">%s</a>',$sub->author->email,get_bloginfo('name'),$sub->author->email);
+    } 
+?>
+          )</h3>
         <div id='heypub_submission_body'>
 <?php 
         if (in_array($sub->status,$hp_sub->disallowed_states)) {
