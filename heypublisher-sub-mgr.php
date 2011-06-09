@@ -61,7 +61,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "42");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "45");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_BUILD_DATE", "2010-11-01");  
 // Version Number (can be text)
 define("HEYPUB_PLUGIN_VERSION", "1.4.0");
@@ -317,8 +317,9 @@ function heypub_init(){
     delete_option('_heypub_opt_submission_guide_id');
     delete_option('_heypub_opt_sub_guide_url');
     $hp_xml->set_is_validated();
-  } elseif (get_option(HEYPUB_PLUGIN_OPT_INSTALL) == false) {
-    // this user has not installed the plugin yet - this is a fresh install
+  } 
+  elseif (get_option(HEYPUB_PLUGIN_OPT_INSTALL) == false) {
+    // NEW Install Path
     $hp_xml->initialize_plugin();
     if (function_exists('get_bloginfo')) {
       $hp_xml->set_config_option('name',get_bloginfo('name'));
@@ -328,30 +329,8 @@ function heypub_init(){
         $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
       }
     }
-
     $hp_xml->set_install_option('version_current_date',null);
-    
     $hp_xml->set_config_option('editor_name','Editor');
-    $hp_xml->set_config_option('accepting_subs','0');
-    $hp_xml->set_config_option('reading_period','0');
-    $hp_xml->set_config_option('simu_subs','0');
-    $hp_xml->set_config_option('multi_subs','0');
-    $hp_xml->set_config_option('paying_market','0');
-    $hp_xml->set_config_option('address',false);
-    $hp_xml->set_config_option('city',false);
-    $hp_xml->set_config_option('state',false);
-    $hp_xml->set_config_option('zipcode',false);
-    $hp_xml->set_config_option('country',false);
-    $hp_xml->set_config_option('sub_page_id',false);
-    $hp_xml->set_config_option('sub_guide_id',false);
-    // added with 1.3.0
-    $hp_xml->set_config_option('reprint_subs','0');
-    $hp_xml->set_config_option('notify_submitted',true);
-    $hp_xml->set_config_option('notify_read',true);
-    $hp_xml->set_config_option('notify_rejected',true);
-    $hp_xml->set_config_option('notify_published',true);
-    $hp_xml->set_config_option('notify_accepted',true);
-    $hp_xml->set_config_option('notify_under_consideration',true);
   } 
   
   // now check for a normal upgrade path
@@ -359,12 +338,12 @@ function heypub_init(){
   if ($opts['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
     // this is the 'normal' upgrade path.
     if ($opts['version_current'] < 40) {  // upgrade to 1.3.0 options
-      $hp_xml->set_config_option('notify_submitted',true);
-      $hp_xml->set_config_option('notify_read',true);
-      $hp_xml->set_config_option('notify_rejected',true);
-      $hp_xml->set_config_option('notify_published',true);
-      $hp_xml->set_config_option('notify_accepted',true);
-      $hp_xml->set_config_option('notify_under_consideration',true);
+      $hp_xml->set_config_option('notify_submitted','1');
+      $hp_xml->set_config_option('notify_read','1');
+      $hp_xml->set_config_option('notify_rejected','1');
+      $hp_xml->set_config_option('notify_published','1');
+      $hp_xml->set_config_option('notify_accepted','1');
+      $hp_xml->set_config_option('notify_under_consideration','1');
       $hp_xml->set_config_option('reprint_subs','0');
       if (function_exists('get_bloginfo')) {
         // for feed info, also need to test for 'get_feed_permastruct()')

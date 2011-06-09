@@ -98,11 +98,11 @@ class HeyPublisherXML {
       'established' => null,
       'editor_name' => null,
       'editor_email' => null,
-      'accepting_subs' => false,
+      'accepting_subs' => true,
       'reading_period' => null,
-      'simu_subs' => false,
-      'multi_subs' => false,
-      'reprint_subs' => false,
+      'simu_subs' => true,
+      'multi_subs' => true,
+      'reprint_subs' => true,
       'paying_market' => false,
       'paying_market_range' => null,
       'address' => null,
@@ -212,7 +212,9 @@ class HeyPublisherXML {
       'publishername' => $this->get_config_option('name'),
       'url'           => $this->get_config_option('url'),
       'email'         => $user['username'],
-      'password'      => $user['password']);
+      'password'      => $user['password'],
+      'version'       => $this->get_install_option('version_current')
+      );
 
     $xml_parts = '';
     foreach($xml_ops as $key=>$val) {

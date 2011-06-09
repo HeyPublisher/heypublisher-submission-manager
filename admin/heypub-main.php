@@ -38,7 +38,7 @@ function heypub_display_page_logo() {
     } 
     ?>
     <div id="heypub_donate">
-      <?php echo $hp_base->make_license_link(); ?>
+      <?php echo $hp_base->make_donation_link(); ?>
     </div>
   </div>
 <?php  

@@ -177,8 +177,8 @@ EOF;
   }
   
   public function get_yes_no_checkbox($label,$key,$val,$alt=false) {
-    $no = ($val == '0') ? 'selected=selected' : null;
-    $yes = ($val == '1') ? 'selected=selected' : null;
+    $no = ($val == '0' || $val == FALSE) ? 'selected=selected' : null;
+    $yes = ($val == '1' || $val == TRUE) ? 'selected=selected' : null;
     $str = <<<EOF
 <label class='heypub' for='hp_$key'>$label</label>
 <select name="heypub_opt[$key]" id="hp_$key">
@@ -205,5 +205,14 @@ EOF;
   public function blank($str='Not Provided') {
    $ret = sprintf('<span class="heypub_empty">%s</span>',$str);
    return $ret;  
+  }
+  
+  public function tabbed_nav($key,$label) {
+    $class = '';
+    if ($key == 'p') { // Initializer
+      $class = 'heypub-tab-pressed';
+    }
+    $ret = sprintf("<a href='#' class='heypub-tab %s' id='heypub_%s_tab' onclick='heypub_toggle_tabs(\"%s\");return false;'>%s</a>", $class,$key,$key,$label);
+    return $ret;
   }
 }
