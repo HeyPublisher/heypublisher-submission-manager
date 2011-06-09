@@ -9,7 +9,7 @@ function heypub_show_menu_options() {
 ?> 
   <div class="wrap">
     <?php heypub_display_page_title('HeyPublisher Options'); ?>    
-    <div id="hey-content">
+    <div id="heypub_content">
     <form method="post" action="admin.php?page=heypub_show_menu_options">
 <?php
   if(function_exists('wp_nonce_field')){ wp_nonce_field('heypub-save-options'); }
@@ -47,9 +47,25 @@ function heypub_show_menu_options() {
     }
     $cols = 2;
 ?>
+  <!-- Navigation Block -->
+  <div class="heypub-nav-tabs roundy">
+    <div class="tabs-container">
+<?php 
+    echo $hp_base->tabbed_nav('p','Publication Info');
+    echo $hp_base->tabbed_nav('c','Contact Info');
+    echo $hp_base->tabbed_nav('s','Submission Options');
+    echo $hp_base->tabbed_nav('n','Notification Options');
+    echo $hp_base->tabbed_nav('m','Miscellaneous');
+?>
+  	</div>
+  </div>
+  
+  
+<!-- Publication Block -->
+<div id='heypub_p_info'>
     <h3>Publication Information</h3>
     <input type="hidden" name="heypub_opt[isvalidated]" value="1" />
-    <p>How do you want your publication information presented at HeyPublisher.com?</p>
+    <p>Tell us more about your publication.</p>
     <label class='heypub' for='hp_type'>Publication Type</label>
     <select name="heypub_opt[pub_type]" id="hp_type">
 <?php
@@ -71,8 +87,21 @@ function heypub_show_menu_options() {
     <label class='heypub' for='hp_circulation'>Monthly Circulation (Visitors)</label>
     <input type="text" name="heypub_opt[circulation]" id="hp_circulation" class='heypub' value="<?php echo $opts['circulation']; ?>" /> (000's)
 
-  <h3>Publication Contact Information</h3>
+  <h3>Social Media Information</h3>
+    <p>Tell us how to find your Facebook Fan Page and follow your tweets on Twitter.</p>
+    <br/>
+      <label class='heypub' for='hp_facebook'>Facebook Fan Page URL</label>
+      <input type="text" name="heypub_opt[facebook]" id="hp_facebook" class='heypub' value="<?php echo $opts['facebook']; ?>" />
+    <br/>
+      <label class='heypub' for='hp_twitter'>Twitter ID</label>
+      @<input type="text" name="heypub_opt[twitter]" id="hp_twitter" class='heypub_twitter' value="<?php echo $opts['twitter']; ?>" />
 
+
+</div>
+
+<div id='heypub_c_info' style='display:none;'>
+  <h3>Publication Contact Information</h3>
+    <p>If a writer needs to contact you about a submission, where should we send the email?</p>
     <label class='heypub' for='hp_editor_name'>Publication Editor</label>
     <input type="text" name="heypub_opt[editor_name]" id="hp_editor_name" class='heypub' value="<?php echo  $opts['editor_name']; ?>" />
   <br/>
@@ -92,16 +121,21 @@ function heypub_show_menu_options() {
     <input type="text" name="heypub_opt[zipcode]" id="hp_zipcode" class='heypub' value="<?php echo $opts['zipcode']; ?>" />
   <br/>
     <label class='heypub' for='hp_country'>Country</label>
-    <input type="text" name="heypub_opt[country]" id="hp_country" class='heypub' value="<?php echo $opts['country']; ?>" />
-    
-<h3>Social Media Information</h3>
-  <br/>
-    <label class='heypub' for='hp_facebook'>Facebook Fan Page URL</label>
-    <input type="text" name="heypub_opt[facebook]" id="hp_facebook" class='heypub' value="<?php echo $opts['facebook']; ?>" />
-  <br/>
-    <label class='heypub' for='hp_twitter'>Twitter ID</label>
-    @<input type="text" name="heypub_opt[twitter]" id="hp_twitter" class='heypub_twitter' value="<?php echo $opts['twitter']; ?>" />
+<?php
+  require_once(HEYPUB_PLUGIN_FULLPATH.'include'.DIRECTORY_SEPARATOR.'country_list.php');
+    echo '<select name="heypub_opt[country]" id="hp_country" class="heypub">';
+    foreach ($countries as $key=>$val) {
+      $sel = '';
+      if ($key == $opts['country'] || $val == $opts['country']) { // we have some old stle country entries.
+        $sel = "selected='selected'";
+      }
+      echo "<option value='$key' $sel>$val</option>";
+    }
+    echo '</select>';
+?>
+</div>    
 
+<div id='heypub_s_info' style='display:none;'>
 
   <h3>Submission Form</h3>
 <?php
@@ -113,11 +147,11 @@ function heypub_show_menu_options() {
 <?php
   } else {
 ?>
-    <p>This is the page that contains your submission form.</p>
+    <p>The submission form is where writers will submit their work.</p>
 <?php    
   }
 ?>  
-  <p>Ensure that the following code is contained somewhere in the page.</p>
+  <p>Ensure that the following code is contained somewhere in this page.</p>
   <blockquote class='heypub'><b><?php echo HEYPUB_SUBMISSION_PAGE_REPLACER; ?></b></blockquote>
   <p>This code will be replaced by the actual submission form when users go to the page.</p>
     <label class='heypub' for='hp_submission_page'>Submission Form Page</label>
@@ -148,8 +182,7 @@ function heypub_show_menu_options() {
       
       <a name='simu_subs'> </a>
       <h3>Submission Criteria</h3>
-      <p>What are the submissiion criteria for your publication?</p>
-      <p>What are the genres of work you accept from writers? Do you accept simultaneous submissions?  Do you accept multiple submissions?</p>
+      <p>What are the types of work you accept from writers? Do you accept simultaneous submissions?  Do you accept multiple submissions?</p>
 <!-- Genres -->
       <label class='heypub' for='hp_accepting_subs'>Currently Accepting Submissions?</label>
       <select name="heypub_opt[accepting_subs]" id="hp_accepting_subs" onchange="heypub_select_toggle('hp_accepting_subs','heypub_show_genres_list');">
@@ -159,7 +192,7 @@ function heypub_show_menu_options() {
       
       <div id='heypub_show_genres_list' <?php if(!$opts['accepting_subs']) { echo "style='display:none;' "; }?>>
       <!-- Content Specific for the Genres -->
-      <h2>Select all genres your publication accepts.</h2>
+      <h2>Select all categories of work your publication accepts.</h2>
       <table id='heypub_category_list' cellspacing='0' border='0' cellpadding='0'>
       <tr>
 <?php
@@ -233,8 +266,10 @@ function heypub_show_menu_options() {
       <option value='0' <?php if($opts['reprint_subs'] == '0') echo "selected=selected"; ?>>No</option>
       <option value='1' <?php if($opts['reprint_subs'] == '1') echo "selected=selected"; ?>>Yes</option>
       </select>
+</div>    
 
 <!-- Notification Options -->
+<div id='heypub_n_info' style='display:none;'>
 
       <h3>Notification Options</h3>
       <p>Indicate if you want the plugin to send an email to the writer when their submission reaches each of the submission states listed below.  You can control the content of the emails sent to the writer via the <a href='admin.php?page=heypub_response_templates' target=_top>Response Templates</a> screen.</p>
@@ -250,14 +285,16 @@ function heypub_show_menu_options() {
     <br clear='both'>
       <?php echo $hp_base->get_yes_no_checkbox('Under Review?','notify_under_consideration',$opts['notify_under_consideration'],'Sent when the submission is saved for Later Review.'); ?>
     <br clear='both'>
-      <?php echo $hp_base->get_yes_no_checkbox('Accepted?','notify_accepted',$opts['notify_accepted'],'Sent if the submission is Accepted for publication.'); ?>
+      <?php echo $hp_base->get_yes_no_checkbox('Accepted?','notify_accepted',$opts['notify_accepted'],'Sent if the submission is Accepted for publication.');?>
     <br clear='both'>
-      <?php echo $hp_base->get_yes_no_checkbox('Rejected?','notify_rejected',$opts['notify_rejected'],'Sent if the submission is Rejected by an Editor.'); ?>
+      <?php echo $hp_base->get_yes_no_checkbox('Rejected?','notify_rejected',$opts['notify_rejected'],'Sent if the submission is Rejected by an Editor.');?>
     <br clear='both'>
-      <?php echo $hp_base->get_yes_no_checkbox('Published?','notify_published',$opts['notify_published'],'Sent if a submission is Published.  Sent on the actual publication date if you schedule works for publication on a future date.'); ?>
+      <?php echo $hp_base->get_yes_no_checkbox('Published?','notify_published',$opts['notify_published'],'Sent when a submission is Published.  Sent on the actual publication date if scheduled.');?>
 
+</div>    
 
 <!-- Payment Options -->
+<div id='heypub_m_info' style='display:none;'>
         
       <h3>Payment Options</h3>
       <p>Does your publication pay writers for publishing their work?</p>
@@ -281,7 +318,7 @@ function heypub_show_menu_options() {
   <option value='0' <?php if($opts['turn_off_tidy'] == '0') echo "selected=selected"; ?>>No</option>
   <option value='1' <?php if($opts['turn_off_tidy'] == '1') echo "selected=selected"; ?>>Yes</option>
   </select>
-
+</div>
 <?php
 /*
   // Future : Download of original document is coming ....
@@ -454,7 +491,7 @@ function heypub_update_options() {
      $page_id = heypub_create_submission_page();
      // Ensure this id is saved to db
      $hp_xml->set_config_option('sub_page_id',$page_id);
-     $message = sprintf("A Submission Form page has been created. <a href='%s'>View page &raquo;</a><br/>",get_permalink($page_id));
+     $message = sprintf("A Submission Form page has been created for you. <a href='%s' target='_blank'>View page &raquo;</a><br/>",get_permalink($page_id));
   }
     // all actions lead here
     
