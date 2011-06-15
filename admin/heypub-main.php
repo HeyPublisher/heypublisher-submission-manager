@@ -58,21 +58,24 @@ function heypub_menu_main()  {
 
 ?>
   <div class="wrap">
-    <?php heypub_display_page_title('HeyPublisher Overview'); ?>
-    <div id="hey-content">
-      <h3>Welcome</h3>
+    <h2>HeyPublisher Overview</h2>
+    <div id='heypub_header'>
+      <?php heypub_display_page_logo(); ?>
+      <div id="heypub_content">
+        <h3>Welcome</h3>
 
       <p>HeyPublisher allows you to accept unsolicited submissions from writers who are not registered users of your blog, magazine, or online Wordpress-powered site.</p>
       <p>HeyPublisher is the premier online site for writers to discover new writing markets.  By using this plugin you join a large and well-respected group of online publishers.  Best of all, you help ensure copyright protection for both the author and your site, as HeyPublisher provides independent 3rd party auditing of all submission transactions.</p>
       <p>As the publisher of <b><i><?php bloginfo('name'); ?></i></b> you control:
-      <ul class='heypub-list'>
-        <li>the genres of work you will accept</li>
-        <li>whether or not to accept simultaneous submissions</li>
-        <li>whether or not to accept previously published works</li>
-        <li><i>... and much, much more ... </i></li>
-      </ul>
+        <ul class='heypub-list'>
+          <li>the genres of work you will accept</li>
+          <li>whether or not to accept simultaneous submissions</li>
+          <li>whether or not to accept previously published works</li>
+          <li><i>... and much, much more ... </i></li>
+        </ul>
       </p>
-
+      <div style="clear:both;"></div>
+    </div>
   	  <h3>Plugin Statistics</h3>
   <table class="widefat post fixed">
   <thead>

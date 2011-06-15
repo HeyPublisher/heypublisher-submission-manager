@@ -215,4 +215,9 @@ EOF;
     $ret = sprintf("<a href='#' class='heypub-tab %s' id='heypub_%s_tab' onclick='heypub_toggle_tabs(\"%s\");return false;'>%s</a>", $class,$key,$key,$label);
     return $ret;
   }
+  public function blockquote($title,$content){
+    $ret = sprintf("<blockquote class='heypub_summary'><b>%s</b> %s</blockquote>",$title,$content);
+    return $ret;
+  }
+  
 }

@@ -17,7 +17,8 @@ class HeyPublisherSubmission extends HeyPublisher {
   	parent::__destruct();
 
   }
-
+  
+  // Deprecating with v 1.4.0
   public function revision_request_link($id) {
     $form = $this->revision_request_form($id);
     $str = <<<EOF
@@ -32,7 +33,7 @@ class HeyPublisherSubmission extends HeyPublisher {
 EOF;
     return $str;
   }
-
+  // Deprecating with v 1.4.0
   public function revision_request_form($id) {
     $url = $this->get_form_post_url_for_page('heypub_show_menu_submissions');
     $nounce = wp_nonce_field($this->nounce);
@@ -52,6 +53,24 @@ EOF;
     return $str;
   }
 
+  /**
+  * @since v 1.4.0
+  */
+  public function editor_note_text_area() {
+    $base = HEY_BASE_URL;
+    $str = <<<EOF
+<div id='editor_notes_off'><a href='#' onclick="
+  $('editor_notes_off').hide();
+  $('editor_notes_on').show();
+  return false;">+ Include a Note to Writer</a>
+</div>
+<div id='editor_notes_on' style='display:none;'>
+  <a id='heypub_ed_note_close' href='#' onclick="$('editor_notes_on').hide();$('editor_notes_off').show();return false;">- remove note</a>
+  <textarea id='heypub_ed_note' name='notes'> </textarea>
+</div>
+EOF;
+    return $str;
+  }
 
   public function editor_vote_box() {
     return false;

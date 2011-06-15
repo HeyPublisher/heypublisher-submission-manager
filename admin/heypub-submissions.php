@@ -10,21 +10,32 @@ function heypub_show_menu_submissions() {
   
 }
 
-function heypub_submission_actions($nounce,$inc_cancel=false) {
+function heypub_submission_actions($nounce,$inc_cancel=false,$inc_revision=false) {
   global $hp_base;
 ?>  
   <div class="alignleft actions">
   <select name="action">
     <option value="-1" selected="selected">-- Select Action --</option>
     <option value="accept">Accept Submission</option>
+<?php
+  if ($inc_cancel) {
+?>
+    <option value="request_revision">Request Author Revision</option>
+<?php
+  }
+?>
     <option value="review">Save for Later Review</option>
     <option value="reject">Reject Submission</option>
+    
+<?php   //  !!!    request_revision ?>
+
+
   </select>
   <input type="submit" value="Apply" name="doaction" id="doaction" />
   <?php wp_nonce_field($nounce); ?>
 <?php
   if ($inc_cancel) {
-    printf('<br/><small>%s</small>',$hp_base->submission_summary_link());
+    printf('<div id="return_to_summary">%s</div>',$hp_base->submission_summary_link('Return to Submissions List'));
   }
 ?>
   </div>
@@ -61,13 +72,17 @@ function heypub_list_submissions() {
   
 ?>
    <div class="wrap">
-   <?php heypub_display_page_title('Submissions'); ?>
-   <div id="hey-content">
+   <h2>Submissions</h2>
+   <div id='heypub_header'>
+     <?php heypub_display_page_logo(); ?>
+     <div id="heypub_content">
+   
     <p>Below are the most recent submissions sent to <b><i><?php bloginfo('name'); ?></i></b> by HeyPublisher writers.</p>
     <p>To read the submission, click on the title.  This will open the submission in a new window.</p>
     <p>To view the author's bio, click on the author's name.  The bio will display immediately below.  Click again on the author's name to hide their bio.</p>
     <p>If you are unable to see the author's bio it means the author did not provide one when submitting their work.</p>
-    
+      </div>
+    </div>
 <form id="posts-filter" action="<?php echo $form_post_url; ?>" method="post">
 <table class="widefat post fixed" cellspacing="0" id='heypub_submissions'>
 <thead>
@@ -209,20 +224,12 @@ function heypub_show_submission($id) {
     // printf("<pre>Sub = \n%s</pre>",print_r($sub,1));
 ?>    
   <div class="wrap">
-  <?php heypub_display_page_title(sprintf('Preview: "%s"', $sub->title),true); ?>
+  <h2>Preview: <?php echo $sub->title; ?></h2>
   <table id='heypub_summary_review'>
     <tr><td id='heypub_submission'>
       <div id="hey-content">
-      <p><b>Summary:</b><i>
-<?php
-      if ($sub->description != '') {
-        echo $sub->description;
-      } else {
-        echo "None Provided";
-      }
-?>    </i></p>
         <h3><?php printf('%s', $sub->category); ?> by <?php printf("%s %s", $sub->author->first_name, $sub->author->last_name); ?> 
-        (
+          <small>(
 <?php 
     if (FALSE == $sub->author->email) {
       print "<i><small>No Email Provided</small></i>";
@@ -230,7 +237,12 @@ function heypub_show_submission($id) {
       printf('<a href="mailto:%s?subject=Your%%20submission%%20to%%20%s">%s</a>',$sub->author->email,get_bloginfo('name'),$sub->author->email);
     } 
 ?>
-          )</h3>
+          )</small></h3>
+<?php
+      if ($sub->description != '') {
+        echo $hp_base->blockquote('Summary:',$sub->description);
+      } 
+?>    
         <div id='heypub_submission_body'>
 <?php 
         if (in_array($sub->status,$hp_sub->disallowed_states)) {
@@ -241,14 +253,18 @@ function heypub_show_submission($id) {
         }
 ?>
         </div>
-        <h3>Author Bio</h3>
-        <div class='heypub_author_bio_show'>
-          <?php if ($sub->author->bio != '') { printf('%s',$sub->author->bio); } else { print "None provided"; } ?>
-        </div>
+<?php
+        if ($sub->author->bio != '') {
+          $bio = $sub->author->bio;
+        } else {
+          $bio = 'None provided';
+        }
+        echo $hp_base->blockquote('Author Bio:',$sub->author->bio);
+?>        
       </div>
     </td>
     <td valign='top' id='heypub_submission_nav'>
-    <?php heypub_display_page_title(false); ?>
+      <?php heypub_display_page_logo(); ?>
 
 <?php 
 /*
@@ -268,8 +284,10 @@ function heypub_show_submission($id) {
       </p>
 <?php  if (!in_array($sub->status,$hp_sub->disallowed_states)) { ?>
       <form id="posts-filter" action="<?php echo $form_post_url; ?>" method="post">
+        <!-- Editor's Note -->
+        <?php echo $hp_sub->editor_note_text_area($id); ?>
         <input type='hidden' name="post[]" value="<?php echo "$id"; ?>" />
-        <?php heypub_submission_actions('heypub-bulk-submit',1); ?>
+        <?php heypub_submission_actions('heypub-bulk-submit',1,1); ?>
       </form>
       <br/>
       <br/>
@@ -297,9 +315,6 @@ function heypub_show_submission($id) {
     }
 ?>
 
-<!-- Revision Request -->
-<br/>
-<?php echo $hp_sub->revision_request_link($id); ?>
 <!-- Editor Voting -->
     <br/>
 <?php echo $hp_sub->editor_vote_box(); ?>  

@@ -7,8 +7,10 @@ function heypub_show_menu_options() {
   heypub_update_options();
   
 ?> 
-  <div class="wrap">
-    <?php heypub_display_page_title('HeyPublisher Options'); ?>    
+<div class="wrap">
+  <h2>HeyPublisher Options</h2>
+  <div id='heypub_header'>
+    <?php heypub_display_page_logo(); ?>
     <div id="heypub_content">
     <form method="post" action="admin.php?page=heypub_show_menu_options">
 <?php
@@ -51,10 +53,10 @@ function heypub_show_menu_options() {
   <div class="heypub-nav-tabs roundy">
     <div class="tabs-container">
 <?php 
-    echo $hp_base->tabbed_nav('p','Publication Info');
-    echo $hp_base->tabbed_nav('c','Contact Info');
-    echo $hp_base->tabbed_nav('s','Submission Options');
-    echo $hp_base->tabbed_nav('n','Notification Options');
+    echo $hp_base->tabbed_nav('p','Publication');
+    echo $hp_base->tabbed_nav('c','Contact');
+    echo $hp_base->tabbed_nav('s','Submission');
+    echo $hp_base->tabbed_nav('n','Notification');
     echo $hp_base->tabbed_nav('m','Miscellaneous');
 ?>
   	</div>
@@ -318,6 +320,7 @@ function heypub_show_menu_options() {
   <option value='0' <?php if($opts['turn_off_tidy'] == '0') echo "selected=selected"; ?>>No</option>
   <option value='1' <?php if($opts['turn_off_tidy'] == '1') echo "selected=selected"; ?>>Yes</option>
   </select>
+</div>
 </div>
 <?php
 /*
