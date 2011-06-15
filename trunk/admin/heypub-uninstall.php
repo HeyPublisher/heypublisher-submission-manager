@@ -34,7 +34,7 @@ function heypub_menu_uninstall() {
 
   <div class="wrap">
     <?php heypub_display_page_title('Uninstall HeyPublisher'); ?>    
-    <div id="hey-content">
+    <div id="heypub_content">
 <?php   
     if($_REQUEST['action'] == "delete_options") {
       // only deleting the options and possibly deactivating the plugin
