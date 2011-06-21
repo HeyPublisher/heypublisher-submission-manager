@@ -65,7 +65,7 @@ EOF;
   return false;">+ Include a Note to Writer</a>
 </div>
 <div id='editor_notes_on' style='display:none;'>
-  <a id='heypub_ed_note_close' href='#' onclick="$('editor_notes_on').hide();$('editor_notes_off').show();return false;">- remove note</a>
+  <a id='heypub_ed_note_close' href='#' onclick="$('editor_notes_on').hide();$('heypub_ed_note').value = '';$('editor_notes_off').show();return false;">- remove note</a>
   <textarea id='heypub_ed_note' name='notes'> </textarea>
 </div>
 EOF;

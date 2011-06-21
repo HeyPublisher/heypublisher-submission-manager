@@ -286,7 +286,7 @@ class HeyPublisherXML {
   function update_publisher_paying_market($post) {
     $bool = $this->boolean($post[paying_market]);
     if ($post[paying_market]) {
-      $val = $post[paying_market_range];
+      $val = htmlentities(stripslashes($post[paying_market_range]));
       $ret = "<paying_market><paying_market_amount>$val</paying_market_amount></paying_market>";
     } else {
       $ret = "<paying_market>$bool</paying_market>";
@@ -329,18 +329,18 @@ EOF;
     $reprints = $this->boolean($post[reprint_subs]);
     $accepting_subs  = $this->boolean($post[accepting_subs]);
     $paying = $this->update_publisher_paying_market($post);
-    $name = htmlentities($post[name]);
-    $established = htmlentities($post[established]);
-    $editor = htmlentities($post[editor_name]);
-    $editor_email = htmlentities($post[editor_email]);
-    $address = htmlentities($post[address]);
-    $city = htmlentities($post[city]);
-    $state = htmlentities($post[state]);
-    $zipcode = htmlentities($post[zipcode]);
-    $country = htmlentities($post[country]);
-    $twitter = htmlentities($post[twitter]);
-    $facebook = htmlentities($post[facebook]);
-    $url = htmlentities($post[url]);
+    $name = htmlentities(stripslashes($post[name]));
+    $established = htmlentities(stripslashes($post[established]));
+    $editor = htmlentities(stripslashes($post[editor_name]));
+    $editor_email = htmlentities(stripslashes($post[editor_email]));
+    $address = htmlentities(stripslashes($post[address]));
+    $city = htmlentities(stripslashes($post[city]));
+    $state = htmlentities(stripslashes($post[state]));
+    $zipcode = htmlentities(stripslashes($post[zipcode]));
+    $country = htmlentities(stripslashes($post[country]));
+    $twitter = htmlentities(stripslashes($post[twitter]));
+    $facebook = htmlentities(stripslashes($post[facebook]));
+    $url = htmlentities(stripslashes($post[url]));
 
     $post = <<<EOF
 <publisher>
@@ -528,12 +528,18 @@ EOF;
   }
 
 
-  function print_webservice_errors() {
+  function print_webservice_errors($show_contact=true) {
 ?>
     <div id='heypub_error'>
       <h2>Error Encountered</h2>
       <p><?php echo $this->error; ?></p>
+<?php      
+    if ($show_contact) {
+?>      
       <p><b><?php echo HEYPUB_PLUGIN_ERROR_CONTACT; ?></b></p>
+<?php
+    }
+?>    
     </div>
 <?php
   }
@@ -669,7 +675,7 @@ EOF;
         return $return;
       }
       if ($message) {
-        $notify = sprintf('<notify_author><message><![CDATA[%s]]></message></notify_author>', $message);
+        $notify = sprintf('<notify_author><message><![CDATA[%s]]></message></notify_author>', htmlentities(stripslashes($message)));
       } else {
         $notify = '<notify_author>false</notify_author>';
       }

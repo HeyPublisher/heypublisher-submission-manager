@@ -31,7 +31,8 @@ function heypub_submission_actions($nounce,$inc_cancel=false,$inc_revision=false
 
 
   </select>
-  <input type="submit" value="Apply" name="doaction" id="doaction" />
+  <br/>
+  <input type="submit" value="Update Submission" name="doaction" id="doaction" />
   <?php wp_nonce_field($nounce); ?>
 <?php
   if ($inc_cancel) {
@@ -183,7 +184,7 @@ if(count($subs) > 0) {
   heypub_submission_actions('heypub-bulk-submit');
 } 
 ?>
-  <br/>
+  <div style='clear:both;'></div>
   <h3>Bulk Actions Explained</h3>
   <div id='heypub_instructions'>
     <h4>You can perform the following bulk actions on the listed submissions:</h4>
@@ -381,9 +382,10 @@ function heypub_reject_submission($req) {
   global $hp_xml;
   check_admin_referer('heypub-bulk-submit');  
   $post = $req[post]; 
+  $notes = $req[notes];
   $cnt = 0;
   foreach ($post as $key) {
-    if ($hp_xml->submission_action($key,'rejected')) {
+    if ($hp_xml->submission_action($key,'rejected',$notes)) {
       $cnt++;
       // need to see if this post has been previously 'accepted'
       if ($post_id = heypub_get_post_id_by_submission_id($key)) {
@@ -401,9 +403,10 @@ function heypub_consider_submission($req) {
   global $hp_xml;
   check_admin_referer('heypub-bulk-submit');  
   $post = $req[post]; 
+  $notes = $req[notes];
   $cnt = 0;
   foreach ($post as $key) {
-    if ($hp_xml->submission_action($key,'under_consideration')) {
+    if ($hp_xml->submission_action($key,'under_consideration',$notes)) {
       $cnt++;
     }
   }
@@ -509,9 +512,10 @@ function heypub_accept_submission($req) {
   global $hp_xml;
   check_admin_referer('heypub-bulk-submit');  
   $post = $req[post]; 
+  $notes = $req[notes];
   $cnt = 0;
   foreach ($post as $id) {
-    if ($hp_xml->submission_action($id,'accepted')) {
+    if ($hp_xml->submission_action($id,'accepted',$notes)) {
       $cnt++;
       $sub = $hp_xml->get_submission_by_id($id);
       if ($sub->author) {
@@ -527,7 +531,6 @@ function heypub_accept_submission($req) {
 }
 
 // Handle operations for this form
-//
 function heypub_submission_handler() {
   global $hp_xml, $hp_sub;
   $ds = DIRECTORY_SEPARATOR;
@@ -557,8 +560,13 @@ function heypub_submission_handler() {
   elseif (isset($_REQUEST[action]) && ($_REQUEST[action] == 'request_revision')) {
     $message = heypub_request_revision($_REQUEST);
   }
-  
-
+  elseif (isset($_REQUEST[action])) {
+    $hp_xml->error = "Oops - looks like you didn't select an action from the dropdown.";
+    if ($_REQUEST[notes] != '') {
+      $hp_xml->error .= '<br/>Your note to the author was not sent.';
+    }
+    $hp_xml->print_webservice_errors(false);
+  }
 
   if(!empty($message)) { ?>
     <div id="message" class="updated fade"><p><?php echo $message; ?></p></div>
