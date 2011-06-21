@@ -78,25 +78,25 @@ function heypub_show_menu_options() {
     </select>
   <br/>
     <label class='heypub' for='hp_name'>Publication Name</label>
-    <input type="text" name="heypub_opt[name]" id="hp_name" class='heypub' value="<?php echo $opts['name']; ?>" />
+    <input type="text" name="heypub_opt[name]" id="hp_name" class='heypub' value="<?php echo stripslashes($opts['name']); ?>" />
   <br/>
     <label class='heypub' for='hp_url'>Publication URL</label>
-    <input type="text" name="heypub_opt[url]" id="hp_url" class='heypub' value="<?php echo $opts['url']; ?>" />
+    <input type="text" name="heypub_opt[url]" id="hp_url" class='heypub' value="<?php echo stripslashes($opts['url']); ?>" />
   <br/>
     <label class='heypub' for='hp_established'>Year Established</label>
-    <input type="text" name="heypub_opt[established]" id="hp_established" class='heypub' value="<?php echo $opts['established']; ?>" />
+    <input type="text" name="heypub_opt[established]" id="hp_established" class='heypub' value="<?php echo stripslashes($opts['established']); ?>" />
   <br/>
     <label class='heypub' for='hp_circulation'>Monthly Circulation (Visitors)</label>
-    <input type="text" name="heypub_opt[circulation]" id="hp_circulation" class='heypub' value="<?php echo $opts['circulation']; ?>" /> (000's)
+    <input type="text" name="heypub_opt[circulation]" id="hp_circulation" class='heypub' value="<?php echo stripslashes($opts['circulation']); ?>" /> (000's)
 
   <h3>Social Media Information</h3>
     <p>Tell us how to find your Facebook Fan Page and follow your tweets on Twitter.</p>
     <br/>
       <label class='heypub' for='hp_facebook'>Facebook Fan Page URL</label>
-      <input type="text" name="heypub_opt[facebook]" id="hp_facebook" class='heypub' value="<?php echo $opts['facebook']; ?>" />
+      <input type="text" name="heypub_opt[facebook]" id="hp_facebook" class='heypub' value="<?php echo stripslashes($opts['facebook']); ?>" />
     <br/>
       <label class='heypub' for='hp_twitter'>Twitter ID</label>
-      @<input type="text" name="heypub_opt[twitter]" id="hp_twitter" class='heypub_twitter' value="<?php echo $opts['twitter']; ?>" />
+      @<input type="text" name="heypub_opt[twitter]" id="hp_twitter" class='heypub_twitter' value="<?php echo stripslashes($opts['twitter']); ?>" />
 
 
 </div>
@@ -105,22 +105,22 @@ function heypub_show_menu_options() {
   <h3>Publication Contact Information</h3>
     <p>If a writer needs to contact you about a submission, where should we send the email?</p>
     <label class='heypub' for='hp_editor_name'>Publication Editor</label>
-    <input type="text" name="heypub_opt[editor_name]" id="hp_editor_name" class='heypub' value="<?php echo  $opts['editor_name']; ?>" />
+    <input type="text" name="heypub_opt[editor_name]" id="hp_editor_name" class='heypub' value="<?php echo  stripslashes($opts['editor_name']); ?>" />
   <br/>
     <label class='heypub' for='hp_editor_email'>Editor's Email Address</label>
-    <input type="text" name="heypub_opt[editor_email]" id="hp_editor_email" class='heypub' value="<?php echo $opts['editor_email']; ?>" />
+    <input type="text" name="heypub_opt[editor_email]" id="hp_editor_email" class='heypub' value="<?php echo stripslashes($opts['editor_email']); ?>" />
   <p>Providing a physical address can help "local" writers find you more easily.</p>
     <label class='heypub' for='hp_address'>Street Address</label>
-    <input type="text" name="heypub_opt[address]" id="hp_address" class='heypub' value="<?php echo $opts['address']; ?>" />
+    <input type="text" name="heypub_opt[address]" id="hp_address" class='heypub' value="<?php echo stripslashes($opts['address']); ?>" />
   <br/>
     <label class='heypub' for='hp_city'>City</label>
-    <input type="text" name="heypub_opt[city]" id="hp_city" class='heypub' value="<?php echo $opts['city']; ?>" />
+    <input type="text" name="heypub_opt[city]" id="hp_city" class='heypub' value="<?php echo stripslashes($opts['city']); ?>" />
   <br/>
     <label class='heypub' for='hp_state'>State/Region</label>
-    <input type="text" name="heypub_opt[state]" id="hp_state" class='heypub' value="<?php echo $opts['state']; ?>" />
+    <input type="text" name="heypub_opt[state]" id="hp_state" class='heypub' value="<?php echo stripslashes($opts['state']); ?>" />
   <br/>
     <label class='heypub' for='hp_zipcode'>Zip Code</label>
-    <input type="text" name="heypub_opt[zipcode]" id="hp_zipcode" class='heypub' value="<?php echo $opts['zipcode']; ?>" />
+    <input type="text" name="heypub_opt[zipcode]" id="hp_zipcode" class='heypub' value="<?php echo stripslashes($opts['zipcode']); ?>" />
   <br/>
     <label class='heypub' for='hp_country'>Country</label>
 <?php
@@ -308,7 +308,7 @@ function heypub_show_menu_options() {
       <div id='hyepub_paying_market_range_display' <?php if(!$opts['paying_market']) { echo "style='display:none;' "; }?>>
       <!-- Content Specific for the Paying Markets -->
       <label class='heypub' for='hp_paying_market_range'>Payment Amount?</label>
-      <input type="text" name="heypub_opt[paying_market_range]" id="hp_paying_market_range" class='heypub' value="<?php echo $opts['paying_market_range']; ?>" />
+      <input type="text" name="heypub_opt[paying_market_range]" id="hp_paying_market_range" class='heypub' value="<?php echo stripslashes($opts['paying_market_range']); ?>" />
       <br/><small class='heypub-input-helper'>(ie: "Various", or "$100 for short fiction less than 5,000 words")</small>
       </div>
 
