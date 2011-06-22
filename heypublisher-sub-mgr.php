@@ -231,7 +231,9 @@ function HeyPublisherAdminHeader() {
 <?php  
 }
 function HeyPublisherAdminInit() {
-  wp_enqueue_script('heypublisher', WP_PLUGIN_URL . '/heypublisher-submission-manager/include/js/heypublisher.js',array('prototype')); 
+	$parts = array(WP_PLUGIN_URL,HEY_DIR,'include','js','heypublisher.js');
+	$url = implode(DIRECTORY_SEPARATOR,$parts);
+  wp_enqueue_script('heypublisher', $url, array('prototype')); 
 }
 
 /*
