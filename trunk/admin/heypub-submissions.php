@@ -88,7 +88,7 @@ function heypub_list_submissions() {
 <table class="widefat post fixed" cellspacing="0" id='heypub_submissions'>
 <thead>
 	<tr>
-  	<th style='width:2%;' id='heypub_sub_cb' class='checkbox'><input type="checkbox" onclick="heypub_auto_check(this,'posts-filter');"/></th>
+  	<th style='width:4%;' id='heypub_sub_cb' class='checkbox'><input type="checkbox" onclick="heypub_auto_check(this,'posts-filter');"/></th>
   	<th style='width:25%;'>Title</th>
   	<th style='width:10%;'>Genre</th>
   	<th style='width:20%;'>Author</th>
@@ -276,9 +276,9 @@ function heypub_show_submission($id) {
 ?>
 
       <h3>Submission Status:</h3>
-      <p><?php echo ucwords(str_replace('_',' ', $sub->status)); ?> : <small><?php echo $sub->status_date; ?></small></p>
       <p>
         <small>
+					<b><?php echo ucwords(str_replace('_',' ', $sub->status)); ?> : <?php echo $sub->status_date; ?></b><br/>
           Submitted on: <?php echo $sub->submission_date; ?><br/>
           <span class='days_pending_<?php echo $days_pending; ?>'>Days pending:  <?php echo $sub->days_pending; ?></span>
         </small>

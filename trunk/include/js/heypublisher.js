@@ -58,13 +58,13 @@ function heypub_toggle_tabs(on) {
   var div = "heypub_"+on+"_info";
   var tab = "heypub_"+on+"_tab";
   var keys = new Array('p','c','s','n','m');
-  for each (var item in keys) {
-    if (on != item) {
-      if ($("heypub_"+item+"_info")) {
-        $("heypub_"+item+"_info").hide();
+	for (var i = 0; i < keys.length; i++) {
+    if (on != keys[i]) {
+      if ($("heypub_"+keys[i]+"_info")) {
+        $("heypub_"+keys[i]+"_info").hide();
       }
-      if ($("heypub_"+item+"_tab")) {
-        $("heypub_"+item+"_tab").removeClassName('heypub-tab-pressed');
+      if ($("heypub_"+keys[i]+"_tab")) {
+        $("heypub_"+keys[i]+"_tab").removeClassName('heypub-tab-pressed');
       }    
     } 
   }

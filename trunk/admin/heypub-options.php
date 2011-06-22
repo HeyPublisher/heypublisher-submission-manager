@@ -196,14 +196,18 @@ function heypub_show_menu_options() {
       <!-- Content Specific for the Genres -->
       <h2>Select all categories of work your publication accepts.</h2>
       <table id='heypub_category_list' cellspacing='0' border='0' cellpadding='0'>
-      <tr>
+				<thead>
+      		<tr>
 <?php
       for ($x=0;$x<$cols;$x++) {
-        print "<th>Genre</th<th>Your Category</th>";
+        print "<th>Genre</th><th>Your Category</th>";
       }
 ?>      
-      </tr>
-      <tr>
+      	</tr>
+			</thead>
+			<tfoot/>
+			<tbody>
+      	<tr>
 <?php
       $cnt = 0;
       $count = 1;
@@ -225,25 +229,13 @@ function heypub_show_menu_options() {
         }
       }
 ?>
-      </tr></table>
-      </div>    	
+      	</tr>
+			</tbody>
+		</table>
+     </div>    	
 
-      <br clear='both'>
+     <br clear='both'>
 
-<!-- Reading Periods - Not yet Used
-      <label class='heypub' for='hp_reading_period'>Have a Reading Period?</label>
-      <select name="heypub_opt[reading_period]" id="hp_reading_period" onchange="heypub_select_toggle('hp_reading_period','hp_reading_period_list');">
-      <option value='0' <?php if($opts['reading_period'] == '0') echo "selected=selected"; ?>>No</option>
-      <option value='1' <?php if($opts['reading_period'] == '1') echo "selected=selected"; ?>>Yes</option>
-      </select>
-      <div id='hp_reading_period_list' <?php if(!$opts['reading_period']) { echo "style='display:none;' "; }?>>
-      <!-- Content Specific for the Reading periods -->
-      <p>This is content for the reading periods list- lots of stuff here</p>
-      </div>    	
-      
-      <br clear='both'>
--->
-      
 <!-- Simu Subs -->
       <label class='heypub' for='hp_simu_subs'>Accept Simultaneous Submissions?</label>
       <select name="heypub_opt[simu_subs]" id="hp_simu_subs">
@@ -274,7 +266,9 @@ function heypub_show_menu_options() {
 <div id='heypub_n_info' style='display:none;'>
 
       <h3>Notification Options</h3>
-      <p>Indicate if you want the plugin to send an email to the writer when their submission reaches each of the submission states listed below.  You can control the content of the emails sent to the writer via the <a href='admin.php?page=heypub_response_templates' target=_top>Response Templates</a> screen.</p>
+      <p>By default, this plugin will send an email to the author when their submission transitions through each of the <a href='http://blog.heypublisher.com/docs/plugins/wordpress/submission-states/' target='_blank'>states in the submission cycle</a>.</p>
+<p>If you want to supress sending any of these notifications, indicate so below by setting the value to 'No'.</p>
+<p>Additionally, you can customize the emails sent to the author via the <a href='admin.php?page=heypub_response_templates' target=_top>Response Templates</a> screen.</p>
 <?php
 // We'll introduce this later - for now it's hard-coded to yes
 // 
@@ -339,25 +333,14 @@ function heypub_show_menu_options() {
   }  // end of else case
 ?>  
     <br/>
-    
-    <table border="0"><tr>
-
-    <td>
-    <input type="hidden" name="save_settings" value="0" />
-    <input type="submit" name="save_button" id="save_button" value="Save &raquo;" />
+    <div class="alignleft actions">
+    	<input type="hidden" name="save_settings" value="0" />
+    	<input type="submit" name="save_button" id="save_button" value="Save &raquo;" />
+		</div>
 	</form>
-    </td>
-
-    <td>
-    <form method="post" action="admin.php?page=heypub_show_menu_options">
-    <input type="submit" name="refresh" value="Refresh" />
-    </form>
-    </td>
-
-    </tr></table>
-    </div>
-   </div> 
-   <?php
+ </div>
+</div> 
+<?php
 }
 
 // 
