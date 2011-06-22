@@ -530,7 +530,7 @@ EOF;
 
   function print_webservice_errors($show_contact=true) {
 ?>
-    <div id='heypub_error'>
+    <div id='heypub_error' class='flash error'>
       <h2>Error Encountered</h2>
       <p><?php echo $this->error; ?></p>
 <?php      

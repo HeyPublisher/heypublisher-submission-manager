@@ -214,7 +214,7 @@ function RegisterHeyPublisherAdminMenu(){
 
     if ($hp_xml->is_validated) {
       // Response Templates
-      $admin_temps = add_submenu_page( HEY_DIR , 'HeyPublisher Response Templates', 'Response Templates', 'manage_options', 'heypub_response_templates', 'heypub_response_templates');
+      $admin_temps = add_submenu_page( HEY_DIR , 'HeyPublisher Email Templates', 'Email Templates', 'manage_options', 'heypub_response_templates', 'heypub_response_templates');
       add_action("admin_print_styles-$admin_temps", 'HeyPublisherAdminHeader' );
       add_action("admin_print_scripts-$admin_temps", 'HeyPublisherAdminInit');
     }
