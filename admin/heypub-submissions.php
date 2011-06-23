@@ -244,8 +244,8 @@ function heypub_show_submission($id) {
       if ($sub->description != '') {
 				$block .= sprintf('<b>Summary:</b> %s<br/>',$sub->description);
       } 
-      if ($sub->word_count != '') {
-				$block .= sprintf('<b>Word Count:</b> %s words<br/>',$sub->word_count);
+      if (FALSE != $sub->word_count) {
+				$block .= sprintf('<b>Word Count:</b> %s words<br/>',number_format($sub->word_count));
       } 
 			if ($block != '') {
         echo $hp_base->blockquote($block);
@@ -262,7 +262,7 @@ function heypub_show_submission($id) {
 ?>
         </div>
 <?php
-        if ($sub->author->bio != '') {
+        if (FALSE != $sub->author->bio) {
           $bio = $sub->author->bio;
         } else {
           $bio = 'None provided';

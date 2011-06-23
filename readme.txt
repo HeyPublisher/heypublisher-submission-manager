@@ -40,7 +40,7 @@ Spam submissions are a virtual impossibility.  Since all writers must have valid
 
 == About Us ==
 
-Developed by the fine folks at [Loudlever, Inc.](http://www.loudlever.com), HeyPublisher is the premier online tool for writers to discover publishers and new writing markets.  
+Developed by the fine folks at [Loudlever, Inc.](http://loudlever.com), HeyPublisher is the premier online tool for writers to discover publishers and new writing markets.  
 
 At Loudlever, Inc. we believe writers and publishers should be well-matched — compatible in a long-term relationship.  This is why we're applying the same computer algorithms used by online dating sites to our tools to ensure writers and publishers are perfectly paired.
 
@@ -114,7 +114,7 @@ If you do not allow simultaneous submissions, this puts a 'lock' on the work pre
 Yes - absolutely.  HeyPublisher indexes and archives all publisher submission guidelines, making them immediately searchable by writers around the world.  It's important as a publisher to be very clear with writers beforehand about what you are looking for in terms of genre, length, quality and content.
 
 * **Can we style the submission form to better align with our look and feel?**   
-Yes you can.  Your theme's stylesheet is used by the plugin when rendering the submission form.  If you want to change the look of an element on the submission form, simply declare a style for that element in your theme's stylesheet and it will take effect immediately.  Read the [online style guide](http://blog.heypublisher.com/faq/heypublisher-WordPress-plugin-style-guide/) for more detailed information.
+Yes you can.  Your theme's stylesheet is used by the plugin when rendering the submission form.  If you want to change the look of an element on the submission form, simply declare a style for that element in your theme's stylesheet and it will take effect immediately.  Read the [online style guide](http://blog.heypublisher.com/docs/plugins/wordpress/style_guide/) for more detailed information.
 
 * **Can we change the content of the emails sent to writers regarding their submissions?**   
 Yes, as of version 1.2.0 you can define custom response templates that contain whatever message you want to send to your writers.  These emails are automatically whenever you reject, accept, or save a submission for later review.  An email is also sent the first time an editor reads a new submission.  Click on 'Response Templates' in the side-bar and follow the on-screen instructions.
@@ -142,9 +142,9 @@ Yes, as of version 1.2.0 you can define custom response templates that contain w
 
 * Completely rewrote the HTML cleanup code. All fonts and embedded styles are now removed from submitted works.  If you find that you're having problems with multibyte characters, turn off HTML cleanup in the Plugin Options -> Miscellaneous screen.
 
-* Completely rewrote configuration screen to be tabbed and better group/organize the configurations.
+* Completely rewrote configuration screen to be tabbed and to better group/organize the configurations.
 
-* Changed contact email address to go to support@heypublisher.com.
+* Changed contact email address to support@heypublisher.com.
 
 * Added support for sub-categories.
 
