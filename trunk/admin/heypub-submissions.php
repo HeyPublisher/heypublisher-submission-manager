@@ -13,7 +13,7 @@ function heypub_show_menu_submissions() {
 function heypub_submission_actions($nounce,$inc_cancel=false,$inc_revision=false) {
   global $hp_base;
 ?>  
-  <div class="alignleft actions">
+  <div class="actions">
   <select name="action">
     <option value="-1" selected="selected">-- Select Action --</option>
     <option value="accept">Accept Submission</option>
@@ -240,9 +240,16 @@ function heypub_show_submission($id) {
 ?>
           )</small></h3>
 <?php
+			$block = '';
       if ($sub->description != '') {
-        echo $hp_base->blockquote('Summary:',$sub->description);
+				$block .= sprintf('<b>Summary:</b> %s<br/>',$sub->description);
       } 
+      if ($sub->word_count != '') {
+				$block .= sprintf('<b>Word Count:</b> %s words<br/>',$sub->word_count);
+      } 
+			if ($block != '') {
+        echo $hp_base->blockquote($block);
+			}
 ?>    
         <div id='heypub_submission_body'>
 <?php 
@@ -260,7 +267,7 @@ function heypub_show_submission($id) {
         } else {
           $bio = 'None provided';
         }
-        echo $hp_base->blockquote('Author Bio:',$sub->author->bio);
+        echo $hp_base->blockquote(sprintf('<b>Author Bio:</b> %s',$sub->author->bio));
 ?>        
       </div>
     </td>
@@ -285,18 +292,13 @@ function heypub_show_submission($id) {
       </p>
 <?php  if (!in_array($sub->status,$hp_sub->disallowed_states)) { ?>
       <form id="posts-filter" action="<?php echo $form_post_url; ?>" method="post">
-        <!-- Editor's Note -->
         <?php echo $hp_sub->editor_note_text_area($id); ?>
         <input type='hidden' name="post[]" value="<?php echo "$id"; ?>" />
         <?php heypub_submission_actions('heypub-bulk-submit',1,1); ?>
       </form>
-      <br/>
-      <br/>
-      
 <?php
     if ($sub->manageable_count > 1) {
 ?>
-  <br/>
   <h4>Currently with <?php echo ($sub->manageable_count - 1); ?> other <?php echo (($sub->manageable_count - 1) == 1) ? 'publisher' : 'publishers'; ?>:</h4>
 <?php
   echo $hp_base->other_publisher_link($sub->manageable->publisher, $sub);
@@ -309,7 +311,6 @@ function heypub_show_submission($id) {
 <?php
     if ($sub->published_count > 0) {
 ?>
-    <br/>
     <h4>This work has been previously published by <?php echo ($sub->published_count); ?> other <?php echo (($sub->published_count) == 1) ? 'publisher' : 'publishers'; ?>:</h4>
 <?php
     echo $hp_base->other_publisher_link($sub->published->publisher,$sub);
