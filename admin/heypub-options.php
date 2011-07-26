@@ -78,7 +78,7 @@ function heypub_show_menu_options() {
     </select>
   <br/>
     <label class='heypub' for='hp_name'>Publication Name</label>
-    <input type="text" name="heypub_opt[name]" id="hp_name" class='heypub' value="<?php echo stripslashes($opts['name']); ?>" />
+    <input type="text" name="heypub_opt[name]" id="hp_name" class='heypub' value="<?php echo $opts['name']; ?>" />
   <br/>
     <label class='heypub' for='hp_url'>Publication URL</label>
     <input type="text" name="heypub_opt[url]" id="hp_url" class='heypub' value="<?php echo stripslashes($opts['url']); ?>" />
