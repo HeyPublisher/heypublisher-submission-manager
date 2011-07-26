@@ -30,8 +30,8 @@ class HeyPublisherXML {
   */
   public function __construct() {
     $this->curl = curl_init();
-    $this->config = get_option(HEYPUB_PLUGIN_OPT_CONFIG);
-    $this->install = get_option(HEYPUB_PLUGIN_OPT_INSTALL);
+    $this->config = $this->clean_local_vars(get_option(HEYPUB_PLUGIN_OPT_CONFIG));
+    $this->install = $this->clean_local_vars(get_option(HEYPUB_PLUGIN_OPT_INSTALL));
     $this->set_is_validated();
     // printf("<pre>install obj = %s\nconfig obje = %s</pre>",print_r($this->install,1),print_r($this->config,1));
   }   
@@ -44,6 +44,18 @@ class HeyPublisherXML {
     if ($this->config) {
       update_option(HEYPUB_PLUGIN_OPT_CONFIG,$this->config);
     }
+  }
+  
+  protected function clean_local_vars($array) {
+    $tmp = array();
+    foreach ($array as $key=>$val) {
+      if (is_scalar($val)) {
+        $tmp[$key] = htmlentities(stripslashes($val));
+      } else {
+        $tmp[$key] = $val;
+      }
+    }
+    return $tmp;
   }
   
   public function get_category_mapping() {
@@ -138,14 +150,14 @@ class HeyPublisherXML {
   }
 
   public function set_config_option($key,$val){
-    $this->config[$key] = $val;
+    $this->config[$key] = htmlentities(stripslashes($val));
   }
 
   public function set_config_option_bulk($hash){
     $allowed = array_keys($this->config_options_definition());
     foreach ($hash as $key=>$val) {
       if (in_array($key,$allowed)) {
-        $this->config[$key] = $val;
+        $this->config[$key] = htmlentities(stripslashes($val));
       }
     }
   }
@@ -209,10 +221,11 @@ class HeyPublisherXML {
     // authentication is based upon username, password, and token
     $xml_ops = array(
       'token'         => HEYPUB_SVC_TOKEN_VALUE,
-      'publishername' => $this->get_config_option('name'),
-      'url'           => $this->get_config_option('url'),
-      'email'         => $user['username'],
-      'password'      => $user['password'],
+      # no htmlentities here, otherwise " becomes %quote; and cronks the seo name
+      'publishername' => stripslashes($this->get_config_option('name')),     
+      'url'           => htmlentities(stripslashes($this->get_config_option('url'))),
+      'email'         => htmlentities(stripslashes($user['username'])),
+      'password'      => htmlentities(stripslashes($user['password'])),
       'version'       => $this->get_install_option('version_current')
       );
 
@@ -329,7 +342,8 @@ EOF;
     $reprints = $this->boolean($post[reprint_subs]);
     $accepting_subs  = $this->boolean($post[accepting_subs]);
     $paying = $this->update_publisher_paying_market($post);
-    $name = htmlentities(stripslashes($post[name]));
+    # no htmlentities here, otherwise " becomes %quote; and cronks the seo name
+    $name = stripslashes($post[name]);
     $established = htmlentities(stripslashes($post[established]));
     $editor = htmlentities(stripslashes($post[editor_name]));
     $editor_email = htmlentities(stripslashes($post[editor_email]));

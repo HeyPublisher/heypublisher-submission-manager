@@ -3,7 +3,7 @@
 Plugin Name: HeyPublisher Submission Manager
 Plugin URI: http://loudlever.com
 Description: This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them.  You can define acceptable categories and other filters to ensure you only receive the submissions that meet your publication's needs.
-Version: 1.4.1
+Version: 1.4.2
 Author: Loudlever, Inc.
 Author URI: http://www.loudlever.com
 
@@ -56,19 +56,21 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   1.2.4 => 38
   1.3.0 => 40
   1.4.1 => 45
+  1.4.2 => 48
 ---------------------------------------------------------------------------------
 */  
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "45");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "48");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_BUILD_DATE", "2010-06-23");  
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_VERSION", "1.4.1");
+define("HEYPUB_PLUGIN_VERSION", "1.4.2");
 
 # Base domain 
-define('HEYPUB_DOMAIN','http://heypublisher.com');    
+// define('HEYPUB_DOMAIN','http://heypublisher.com');    
+define('HEYPUB_DOMAIN','http://heypub.test');    
 
 define('HEYPUB_PLUGIN_ERROR_CONTACT','Please contact <a href="mailto:support@heypublisher.com?subject=plugin%20error">support@heypublisher.com</a> to report this error');
 
@@ -361,7 +363,7 @@ function heypub_init(){
     }
     
     // For future reference, just keep adding new hash keys that are version specific by following same logic
-    // if ($opts['version_current'] < 50) {  // upgrade to 1.4.1 options
+    // if ($opts['version_current'] < 50) {  // upgrade to 1.4.x options
     //    ... do something here  
     // }
     
