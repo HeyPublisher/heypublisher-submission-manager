@@ -90,10 +90,11 @@ function heypub_list_submissions() {
 	<tr>
   	<th style='width:4%;' id='heypub_sub_cb' class='checkbox'><input type="checkbox" onclick="heypub_auto_check(this,'posts-filter');"/></th>
   	<th style='width:25%;'>Title</th>
-  	<th style='width:10%;'>Genre</th>
-  	<th style='width:20%;'>Author</th>
+  	<th style='width:8%;'>Genre</th>
+  	<th style='width:18%;'>Author</th>
   	<th style='width:15%;'>Email</th>
-  	<th style='width:10%;'>Submission Date</th>
+  	<th style='width:9%;'>Submitted</th>
+  	<th style='width:5%;'>Words</th>
   	<th style='width:15%;'>Status</th>
 	</tr>
 </thead>
@@ -153,14 +154,16 @@ if(!empty($subs)) {
   }
 ?>
       </td>
-      <td><?php printf("%s", $hash->submission_date); ?></td>
-      <td><?php printf("%s", $hp_xml->normalize_submission_status($hash->status)); ?></td>
+      <td nowrap><?php printf("%s", $hash->submission_date); ?></td>
+      <td><?php if (FALSE != $hash->word_count) { echo $hash->word_count;} else {echo '?';} ?></td>
+      
+      <td nowrap><?php printf("%s", $hp_xml->normalize_submission_status($hash->status)); ?></td>
     </tr>
 <?php if ($hash->author->bio != '') { ?>
     <tr id='post_bio_<?php echo "$x"; ?>' style='display:none;'>
       <td colspan='2'>&nbsp;</td>
       <td colspan='3'><div class='heypub_author_bio_preview'><?php printf("%s", $hash->author->bio); ?></div></td>
-      <td colspan='2'>&nbsp;</td>
+      <td colspan='3'>&nbsp;</td>
     </tr>
 <?php } 
   } 
