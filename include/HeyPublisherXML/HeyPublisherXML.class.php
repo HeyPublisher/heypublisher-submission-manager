@@ -150,14 +150,14 @@ class HeyPublisherXML {
   }
 
   public function set_config_option($key,$val){
-    $this->config[$key] = htmlentities(stripslashes($val));
+    $this->config[$key] = $val;
   }
 
   public function set_config_option_bulk($hash){
     $allowed = array_keys($this->config_options_definition());
     foreach ($hash as $key=>$val) {
       if (in_array($key,$allowed)) {
-        $this->config[$key] = htmlentities(stripslashes($val));
+        $this->config[$key] = $val;
       }
     }
   }
@@ -727,5 +727,13 @@ EOF;
       }
       return $return;
   }
+  
+  // Get a publisher name into the format expected by HeyPub search
+  public function searchable($string) {
+    $string = preg_replace('/[^0-9a-zA-Z\s]+/','',html_entity_decode($string,ENT_QUOTES));
+    $string = preg_replace('/ /','+',$string);
+    return $string;
+  }
+  
 }
 ?>
