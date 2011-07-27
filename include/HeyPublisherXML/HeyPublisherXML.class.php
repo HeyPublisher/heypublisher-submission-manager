@@ -30,8 +30,8 @@ class HeyPublisherXML {
   */
   public function __construct() {
     $this->curl = curl_init();
-    $this->config = $this->clean_local_vars(get_option(HEYPUB_PLUGIN_OPT_CONFIG));
-    $this->install = $this->clean_local_vars(get_option(HEYPUB_PLUGIN_OPT_INSTALL));
+    $this->config = get_option(HEYPUB_PLUGIN_OPT_CONFIG);
+    $this->install = get_option(HEYPUB_PLUGIN_OPT_INSTALL);
     $this->set_is_validated();
     // printf("<pre>install obj = %s\nconfig obje = %s</pre>",print_r($this->install,1),print_r($this->config,1));
   }   
