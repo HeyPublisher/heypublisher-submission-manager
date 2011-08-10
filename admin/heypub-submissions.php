@@ -72,18 +72,17 @@ function heypub_list_submissions() {
   $cats = $hp_xml->get_my_categories_as_hash();
   
 ?>
-   <div class="wrap">
-   <h2>Submissions</h2>
-   <div id='heypub_header'>
-     <?php heypub_display_page_logo(); ?>
-     <div id="heypub_content">
-   
-    <p>Below are the most recent submissions sent to <b><i><?php bloginfo('name'); ?></i></b> by HeyPublisher writers.</p>
-    <p>To read the submission, click on the title.  This will open the submission in a new window.</p>
-    <p>To view the author's bio, click on the author's name.  The bio will display immediately below.  Click again on the author's name to hide their bio.</p>
-    <p>If you are unable to see the author's bio it means the author did not provide one when submitting their work.</p>
-      </div>
+<div class="wrap">
+  <h2>Submissions</h2>
+  <div id='heypub_header'>
+    <?php heypub_display_page_logo(); ?>
+    <div id="heypub_content">
+      <p>Below are the most recent submissions sent to <b><i><?php bloginfo('name'); ?></i></b> by HeyPublisher writers.</p>
+      <p>To read the submission, click on the title.  This will open the submission in a new window.</p>
+      <p>To view the author's bio, click on the author's name.  The bio will display immediately below.  Click again on the author's name to hide their bio.</p>
+      <p>If you are unable to see the author's bio it means the author did not provide one when submitting their work.</p>
     </div>
+  </div>
 <form id="posts-filter" action="<?php echo $form_post_url; ?>" method="post">
 <table class="widefat post fixed" cellspacing="0" id='heypub_submissions'>
 <thead>
@@ -187,7 +186,7 @@ if(count($subs) > 0) {
   heypub_submission_actions('heypub-bulk-submit');
 } 
 ?>
-  <div style='clear:both;'></div>
+  <div style='clear:both;'> </div>
   <h3>Bulk Actions Explained</h3>
   <div id='heypub_instructions'>
     <h4>You can perform the following bulk actions on the listed submissions:</h4>
@@ -206,9 +205,8 @@ if(count($subs) > 0) {
 
     <br/>
 
-    </form>
-    </div> <!-- content -->
-</div> <!-- wrap -->
+</form>
+</div> <!-- end of 'wrap' -->
 
 <?php
 }
