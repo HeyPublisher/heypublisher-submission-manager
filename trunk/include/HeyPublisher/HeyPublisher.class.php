@@ -5,9 +5,10 @@
 */
 class HeyPublisher {
   var $my_categories = array();
+  var $wp_version = 0;  // Way to store the WP version in the class
   
   public function __construct() {
-
+    $this->get_wp_version();
   }   
 
   public function __destruct() {
@@ -218,6 +219,104 @@ EOF;
   public function blockquote($content){
     $ret = sprintf("<blockquote class='heypub_summary'>%s</blockquote>",$content);
     return $ret;
+  }
+  
+  /**
+  * Called by constructor to set the WP version number in memory
+  */
+  public function get_wp_version() {
+    global $wp_version;
+    $this->wp_version = $wp_version += 0;
+  }
+  
+  /**
+  * Update Meta Info on this Author in the WP database
+  *
+  * @param int $uid Record ID of WP User record
+  * @param string $key The keyname of the meta value to be updated
+  * @param string $val The value to set for the keyname.
+  */ 
+  public function update_author_info($uid,$key,$val) {
+    
+    
+    
+    // update the user's bio, too - if we have it.
+  	$this->update_author_info($user_id,'description',sprintf("%s",$a->bio));
+    //  right now - this is the only unique key we will share with plugins.  OIDs coming soon...
+    // define('HEYPUB_USER_META_KEY_AUTHOR_OID','_heypub_user_meta_key_author_oid');
+    
+  	$this->update_author_info($user_id,HEYPUB_USER_META_KEY_AUTHOR_ID,sprintf("%s",$a->email));
+    // And the user's first/last name if we have it
+  	if ($a->full_name) {
+  	  wp_update_user( array ('ID' => $user_id, 'display_name' => $a->full_name) ) ;
+    	$this->update_author_info($user_id,'first_name',sprintf("%s",$a->first_name));
+    	$this->update_author_info($user_id,'last_name',sprintf("%s",$a->last_name));
+    }
+    
+    
+    
+    
+    
+    // The function changed in WP 3.0!!
+    // Conver to an int
+    if ($val) {
+      if ($this->wp_version >= 3) {
+        update_user_meta($uid,$key,"$val");
+      } else {
+        update_usermeta($uid,$key,"$val");
+      }	
+    }
+  }
+
+  /**
+  * Attempt to find the author in the WP database by one of numerous attributes we have on file.
+  * Edge Case: If the HeyPub user record does not have an email address, we create one for them based upon OID.
+  *
+  * @param object $a The User Object returned by the HeyPublisher webservice.
+  * @return bool|int $uid Return the User ID of the author (if found) or return FALSE.
+  */ 
+  public function get_author_id($a) {
+    global $wpdb;
+    // If we already have this user in the database with meta data that matches our known meta values 
+    // for this submission, then we auto-map that user to this piece.
+    // Otherwise we'll return false which will trigger a prompt for the admin to create a 'user' account.
+    if (function_exists('get_users')) {
+      // First look by OID 
+      $users = get_users(array('meta_key'=> HEYPUB_USER_META_KEY_AUTHOR_OID, 'meta_value' => $a->oid));
+      if (FALSE != $users) { return $users[0][ID]; }
+      // then by HP User ID
+      $users = get_users(array('meta_key'=> HEYPUB_USER_META_KEY_AUTHOR_ID, 'meta_value' => $a->email ));
+      if (FALSE != $users) { return $users[0][ID]; }
+    }
+    // If we're still here, attempt to find by email address
+    $user = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->users WHERE user_email= %s",$a->email));
+    if (FALSE != $user) { return $user; }
+    return FALSE;
+  }
+
+  /**
+  * Create the User Account if we don't already have it
+  * 
+  * @param object $a The User Object returned by the HeyPublisher webservice.
+  */
+  function create_or_update_author($a) {
+    $user_id = false;
+    if ($a) {
+      // fetch the user id
+      $user_id = $this->get_author_id( $a );
+
+      if ( !$user_id ) {
+      	$random_password = wp_generate_password( 12, false );
+      	$user_id = wp_create_user( $user_name, $random_password, $user_name );
+      } 
+
+      return $user_id;
+
+
+      // update the user's meta information
+    	$this->update_author_info($user_id,$a);
+    }
+    return $user_id;
   }
   
 }

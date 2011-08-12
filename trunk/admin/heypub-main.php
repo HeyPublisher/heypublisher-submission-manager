@@ -123,7 +123,7 @@ if ($hp_xml->is_validated) {
   }
   //  now print it out:
 ?>  
-<h3>HeyPublisher Statistics for <i><?php bloginfo('name'); ?></i></h3>
+<h3>HeyPublisher.com Statistics</h3>
 <table class="widefat post fixed">
 <thead>
   <tr>
@@ -141,26 +141,38 @@ if ($hp_xml->is_validated) {
     <td><?php echo $p['writer_favorites']; ?></td>
   </tr>
 </tbody>
-</table>
+</table>  
+<h3>Submission Statistics</h3>
 <table class="widefat post fixed">
 <thead>
   <tr>
     <th>Submissions Received</th>
     <th>Pending Review</th>
-    <th>Submissions Published (%)</th>
-    <th>Submissions Rejected (%)</th>
+    <th>Submissions Published [%]</th>
+    <th>Submissions Rejected [%]</th>
   </tr>
 </thead>
 <tbody>
   <tr>
     <td><?php echo $p['total_subs']; ?></td>
     <td><?php echo $hp_base->submission_summary_link($p['total_open_subs']); ?></td>
-    <td><?php ($p[total_published_subs]) ? printf("%s &nbsp;&nbsp; (%s)", $p[total_published_subs], $p['published_rate']) : 'N/A'; ?>%</td>
-    <td><?php ($p[total_rejected_subs]) ? printf("%s &nbsp;&nbsp; (%s)", $p[total_rejected_subs], $p['rejected_rate']) : 'N/A'; ?>%</td>
+<?php
+    $pf = "<td>%s &nbsp;&nbsp; [ %s %% ]</td>";
+    if ($p[total_published_subs] && $p[total_published_subs] > 0) {
+      printf( $pf, $p[total_published_subs], $p[published_rate]);
+    } else {  
+      printf($pf,0,0); 
+    }
+    if ($p[total_rejected_subs] && $p[total_rejected_subs] > 0) {
+      printf( $pf, $p[total_rejected_subs], $p[rejected_rate]);
+    } else {  
+      printf($pf,0,0); 
+    }
+?>
   </tr>
 </tbody>
 </table>  
-
+<h3>Response Statistics</h3>
 <table class="widefat post fixed">
 <thead>
   <tr>

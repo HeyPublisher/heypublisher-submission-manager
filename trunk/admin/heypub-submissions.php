@@ -160,9 +160,7 @@ if(!empty($subs)) {
     </tr>
 <?php if ($hash->author->bio != '') { ?>
     <tr id='post_bio_<?php echo "$x"; ?>' style='display:none;'>
-      <td colspan='2'>&nbsp;</td>
-      <td colspan='3'><div class='heypub_author_bio_preview'><?php printf("%s", $hash->author->bio); ?></div></td>
-      <td colspan='3'>&nbsp;</td>
+      <td colspan='8'><div class='heypub_author_bio_preview'><b>Author Bio:</b> <?php printf("%s", $hash->author->bio); ?></div></td>
     </tr>
 <?php } 
   } 
@@ -420,7 +418,7 @@ function heypub_consider_submission($req) {
 function heypub_request_revision($req) {
   global $hp_xml;
   check_admin_referer('heypub-bulk-submit');  
-  $post = $req[post]; 
+  $post = $req[post][0]; 
   $notes = $req[notes];
   if ($hp_xml->submission_action($post,'publisher_revision_requested',$notes)) {
     $message = "An email has been sent to the author requesting they submit a new revision of their work.";
@@ -428,32 +426,6 @@ function heypub_request_revision($req) {
     $message = "Unable to send the revision request!";
   } 
   return $message;
-}
-
-
-function heypub_create_or_update_author($a) {
-  $user_id = false;
-  if ($a) {
-    // does this author already exist?  If so, find them.  Username = user->email
-    $user_name = $a->email;
-    // fetch the user id by username and/or email address
-    $user_id = heypub_get_author_id_by_email( $user_name );
-    if ( !$user_id ) {
-    	$random_password = wp_generate_password( 12, false );
-    	$user_id = wp_create_user( $user_name, $random_password, $user_name );
-    } 
-    // update the user's bio, too - if we have it.
-  	heypub_update_author_info($user_id,'description',sprintf("%s",$a->bio));
-    //  right now - this is the only unique key we will share with plugins.  OIDs coming soon...
-  	heypub_update_author_info($user_id,HEYPUB_USER_META_KEY_AUTHOR_ID,sprintf("%s",$a->email));
-    // And the user's first/last name if we have it
-  	if ($a->full_name) {
-  	  wp_update_user( array ('ID' => $user_id, 'display_name' => $a->full_name) ) ;
-    	heypub_update_author_info($user_id,'first_name',sprintf("%s",$a->first_name));
-    	heypub_update_author_info($user_id,'last_name',sprintf("%s",$a->last_name));
-    }
-  }
-  return $user_id;
 }
 
 function heypub_create_or_update_post($user_id,$status,$sub) {
@@ -489,29 +461,9 @@ function heypub_get_post_id_by_title($title,$user_id){
   return $post_id;
 }
 
-function heypub_get_author_id_by_email($email) {
-  global $wpdb;
-  $user_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->users WHERE user_email= %s","$email"));
-  return $user_id;
-}
-
-function heypub_update_author_info($uid,$key,$val) {
-  global $wp_version;
-  // The function changed in WP 3.0!!
-  // Conver to an int
-  $test = $wp_version+=0;
-  if ($val) {
-    if ($test >= 3) {
-      update_user_meta($uid,$key,"$val");
-    } else {
-      update_usermeta($uid,$key,"$val");
-    }	
-  }
-}
-
 // Accept Handler - these posts may or may not be in the db already
 function heypub_accept_submission($req) {
-  global $hp_xml;
+  global $hp_xml, $hp_base;
   check_admin_referer('heypub-bulk-submit');  
   $post = $req[post]; 
   $notes = $req[notes];
@@ -521,7 +473,7 @@ function heypub_accept_submission($req) {
       $cnt++;
       $sub = $hp_xml->get_submission_by_id($id);
       if ($sub->author) {
-        $user_id = heypub_create_or_update_author($sub->author);
+        $user_id = $hp_base->create_or_update_author($sub->author);
         $post_id = heypub_create_or_update_post($user_id,'pending',$sub);
       }
     }
