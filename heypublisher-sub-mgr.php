@@ -120,6 +120,7 @@ define('HEYPUB_SUBMISSION_PAGE_REPLACER','[__HEYPUBLISHER_SUBMISSION_FORM_GOES_H
 // These keys are stored in the usermeta table and are NOT 'deleted' when we uninstall the plugin
 // This way we can always track which users/posts have been affected by HP plugin
 define('HEYPUB_USER_META_KEY_AUTHOR_ID','_heypub_user_meta_key_author_id');
+define('HEYPUB_USER_META_KEY_AUTHOR_OID','_heypub_user_meta_key_author_oid');
 define('HEYPUB_POST_META_KEY_SUB_ID','_heypub_post_meta_key_sub_id');
 
 /**
