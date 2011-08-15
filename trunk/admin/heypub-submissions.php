@@ -139,12 +139,12 @@ if(!empty($subs)) {
         $('post_bio_<?php echo "$x"; ?>').show();
         $('show_bio_<?php echo "$x"; ?>').hide();
         $('hide_bio_<?php echo "$x"; ?>').show();
-        return false;" title="View Author Bio"><?php printf("%s %s <img src='%s/images/add.png' class='heypub_bio_expand'>", $hash->author->first_name, $hash->author->last_name,HEY_BASE_URL); ?></a></span>
+        return false;" title="View Author Bio"><?php printf("%s <img src='%s/images/add.png' class='heypub_bio_expand'>", $hash->author->full_name,HEY_BASE_URL); ?></a></span>
         <span id="hide_bio_<?php echo "$x"; ?>" style="display:none;"><a href="#" onclick="
         $('post_bio_<?php echo "$x"; ?>').hide();
         $('show_bio_<?php echo "$x"; ?>').show();
         $('hide_bio_<?php echo "$x"; ?>').hide();
-        return false;" title="Hide Author Bio"><?php printf("%s %s  <img src='%s/images/minus.png' class='heypub_bio_expand'>", $hash->author->first_name, $hash->author->last_name,HEY_BASE_URL); ?></a></span>
+        return false;" title="Hide Author Bio"><?php printf("%s <img src='%s/images/minus.png' class='heypub_bio_expand'>", $hash->author->full_name,HEY_BASE_URL); ?></a></span>
       </td>  
 <?php } else { 
         printf("<td>%s %s</td>", $hash->author->first_name, $hash->author->last_name);
@@ -472,60 +472,93 @@ function heypub_accept_submission($req) {
   $notes = $req[notes];
 	// do we have this author in the db?
   $user_id = $hp_base->get_author_id($sub->author);
+
+  // LOGIC: if we already have the user, redirect to the accept processor 
+  // If we don;t, allow user to create this user - then ensure our metadata is associated with the newly created account
+  // THNE redirect to the accept processor.
+  // 
+
+  if (FALSE != $user_id) {
+    $url = $hp_base->get_author_edit_url($user_id);
+    $msg = sprintf("<br/><br/>The author <b><a href='$url'>%s</a></b> already exists in your database.  Please ensure their information is correct prior to publication.", $sub->author->full_name);
+    $message = heypub_accept_process_submission($req,$msg);
+    return $message;
+  }
+  // If we're still here, we have to create a new user account.  Display the form...
   $form_post_url = $hp_base->get_form_post_url_for_page('heypub_show_menu_submissions');
 ?>	
 	 <div class="wrap">
-<?php
-// LOGIC: if we already have the user, redirec to the accept processor 
-// If we don;t, allow user to create this user - then ensure our metadata is associated with the newly created account
-// THNE redirect to the accept processor.
-// 
-
-
-	if (FALSE == $user_id) {
-		// load the author record
-		$author = get_userdata( $user_id );
-?>
  		<h2>Create New Author</h2>
 	  <table id='heypub_summary_review'>
 	    <tr><td id='heypub_submission'>
-				<p>The author <b><?php printf('%s %s',$sub->author->first_name, $sub->author->last_name); ?></b> does not currently exists in your database.</p>
-				<p>Please indicate the desired username below, or select an existing user account to use.</p>
+				<p>The author <b><?php printf('%s %s',$sub->author->first_name, $sub->author->last_name); ?></b> does not currently exist in your database.</p>
+				<p>Before you can accept "<?php echo $sub->title; ?>" for publication, you need to create a user account for this author.</p>
+				<p>Please indicate the desired username below.</p>
+				<p><i>* If this username already exists in your database, this submission will be associated with that user.  If this username does not already exist, we will create it here.</i></p>
 			  <form id="posts-filter" action="<?php echo $form_post_url; ?>" method="post">
 					<input type='hidden' name="post[]" value="<?php echo "$id"; ?>" />
 					<input type='hidden' name="notes" value="<?php echo "$notes"; ?>" />
-					<input type='hidden' name="action" value="accept_process" />
+					<input type='hidden' name="action" value="create_user" />
+					<label for='username'>Username:</label>
+					<input type='text' name="username" id='username' value="<?php echo $sub->author->email; ?>" />
 				  <input type="submit" value="Create User" name="doaction" id="doaction" />
-					
  				  <?php wp_nonce_field('heypub-bulk-submit'); ?>
 	      </form>
 			</td></tr>
 		</table>
 	</div>
 <?php 
-	}
 }
 
-// Accept Handler - these posts may or may not be in the db already
-function heypub_accept_process_submission($req) {
+/**
+* Create a User account prior to Accepting Submission
+*
+* @param array $req Form POST object
+*/
+function heypub_create_user($req) {
+  global $hp_xml,$hp_base;
+  if (!$req[username]) {
+   $hp_xml->error = "Oops - looks like you didn't provide a valid username";
+   $hp_xml->print_webservice_errors(false);
+   heypub_accept_submission($req);
+   return FALSE;
+  }
+  $id = $req[post][0]; 
+  $sub = $hp_xml->get_submission_by_id($id);
+  $notes = $req[notes];
+  // do we have this author in the db?
+  $user_id = $hp_base->create_author($req[username],$sub->author);
+  if (FALSE != $user_id) {
+    $url = $hp_base->get_author_edit_url($user_id);
+    $msg = sprintf("<br/><br/>The author <b><a href='$url'>%s</a></b> was created in your database.  Please ensure their information is correct prior to publication.", $sub->author->full_name);
+    $message = heypub_accept_process_submission($req,$msg);
+    return $message;
+  } else {
+    $hp_xml->error = "We ran into problems creating the user account for $req[username].";
+    $hp_xml->print_webservice_errors();
+    return FALSE;
+  }    
+}
+
+// Accept Processing Handler - these posts may or may not be in the db already
+function heypub_accept_process_submission($req,$msg=FALSE) {
   global $hp_xml, $hp_base;
   check_admin_referer('heypub-bulk-submit');  
-  $post = $req[post]; 
+  $id = $req[post][0]; 
   $notes = $req[notes];
-  $cnt = 0;
-  foreach ($post as $id) {
-    if ($hp_xml->submission_action($id,'accepted',$notes)) {
-      $cnt++;
-      $sub = $hp_xml->get_submission_by_id($id);
-      if ($sub->author) {
-        $user_id = $hp_base->create_or_update_author($sub->author);
-        $post_id = heypub_create_or_update_post($user_id,'pending',$sub);
-      }
+  if ($hp_xml->submission_action($id,'accepted',$notes)) {
+    $sub = $hp_xml->get_submission_by_id($id);
+    if ($sub->author) {
+      $post_id = heypub_create_or_update_post($user_id,'pending',$sub);
     }
   }
 
-  $message = sprintf('%s successfully accepted.  %s been moved to your Posts as well.',pluralize_submission_message($cnt),
+  $message = sprintf("%s successfully accepted.<br/><br/>%s been moved to your Posts and put in a 'Pending' status. .",pluralize_submission_message(1),
   ($cnt > 1) ? "These works have" : "This work has" );
+
+  if ($msg) {
+    $message .= $msg;
+  } 
   return $message;
 }
 
@@ -554,11 +587,13 @@ function heypub_submission_handler() {
     $message = heypub_consider_submission($_REQUEST);
   }
   elseif (isset($_REQUEST[action]) && ($_REQUEST[action] == 'accept')) {
-    heypub_accept_submission($_REQUEST);
-		return;
+    $message = heypub_accept_submission($_REQUEST);
+    if (!$message) { return; }
+    // We exit if we don't have a message, that means we had to prompt for user.
   }
-  elseif (isset($_REQUEST[action]) && ($_REQUEST[action] == 'accept_process')) {
-    $message = heypub_accept_process_submission($_REQUEST);
+  elseif (isset($_REQUEST[action]) && ($_REQUEST[action] == 'create_user')) {
+    $message = heypub_create_user($_REQUEST);
+    if (!$message) { return; }
   }
   elseif (isset($_REQUEST[action]) && ($_REQUEST[action] == 'request_revision')) {
     $message = heypub_request_revision($_REQUEST);
