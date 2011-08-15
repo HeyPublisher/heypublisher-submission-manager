@@ -286,7 +286,8 @@ EOF;
       if (FALSE != $users) { return $users[0][ID]; }
       // then by HP User ID
       $users = get_users(array('meta_key'=> HEYPUB_USER_META_KEY_AUTHOR_ID, 'meta_value' => $a->email ));
-      if (FALSE != $users) { return $users[0][ID]; }
+			// printf("<pre>users array = %s</pre>",print_r($users,1));
+      if (FALSE != $users) { return $users[0]->ID; }
     }
     // If we're still here, attempt to find by email address
     $user = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->users WHERE user_email= %s",$a->email));
