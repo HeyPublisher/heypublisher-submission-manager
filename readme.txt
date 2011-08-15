@@ -138,6 +138,12 @@ Yes, as of version 1.2.0 you can define custom response templates that contain w
 
 == Changelog ==
 
+= 1.4.2 =
+
+* You can no longer 'accept for publication' more than one submission at a time.
+
+* When accepting a submission for publication, if the author record does not exist in your WP database you are now prompted to input the desired 'username' for the newly created author record.  If the author record already exists, then this step is skipped.
+
 = 1.4.1 =
 
 * Completely rewrote the HTML cleanup code. All fonts and embedded styles are now removed from submitted works.  If you find that you're having problems with multibyte characters, turn off HTML cleanup in the Plugin Options -> Miscellaneous screen.
