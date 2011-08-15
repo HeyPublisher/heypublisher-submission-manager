@@ -5,7 +5,7 @@
 */
 class HeyPublisher {
   var $my_categories = array();
-  
+  var $error = false;
   public function __construct() {
 
   }   
@@ -344,11 +344,27 @@ EOF;
     } else {
       $uid = $user->ID;
     }
+    
+    // SANITY CHECK.  If we're creating a 'new' user and we already have META data for that user, throw an error
+    // The 'old' method of mapping on email....
+    $this->error = false;
+    $meta1 = $this->get_author_meta($uid,HEYPUB_USER_META_KEY_AUTHOR_ID);
+    $meta2 = $this->get_author_meta($uid,HEYPUB_USER_META_KEY_AUTHOR_OID);
+    if (($meta1) && ($meta1 != sprintf("%s",$a->email))) {
+      $this->error = 'A different HeyPublisher author with this username already exists in database (1)';
+    } elseif (($meta2) && ($meta2 != sprintf("%s",$a->oid))) {
+      $this->error = 'A different HeyPublisher author with this username already exists in database  (2)';
+    }
+    if ($this->error) {
+      return FALSE;
+    }
+    
     if (FALSE != $uid) {
       // If we're NOT FALSE, update the author info.
       $this->update_author_info($uid,$a);
       return $uid;
     } else { 
+      $this->error = 'Unable to create the user record';
       return FALSE;
     }
   }
