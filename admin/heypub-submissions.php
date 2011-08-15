@@ -10,16 +10,22 @@ function heypub_show_menu_submissions() {
   
 }
 
-function heypub_submission_actions($nounce,$inc_cancel=false,$inc_revision=false) {
+/**
+* Display the menu of acceptable state transitions in the menu.
+*
+* @param string $nounce The Nounce for the form
+* @param bool $bool If TRUE will display the 'request author revision' and 'accepted' values.  FALSE by default.
+*/ 
+function heypub_submission_actions($nounce,$bool=false) {
   global $hp_base;
 ?>  
   <div class="actions">
   <select name="action">
     <option value="-1" selected="selected">-- Select Action --</option>
-    <option value="accept">Accept Submission</option>
 <?php
-  if ($inc_cancel) {
+  if ($bool) {
 ?>
+  	<option value="accept">Accept for Publication</option>
     <option value="request_revision">Request Author Revision</option>
 <?php
   }
@@ -35,7 +41,7 @@ function heypub_submission_actions($nounce,$inc_cancel=false,$inc_revision=false
   <input type="submit" value="Update Submission" name="doaction" id="doaction" />
   <?php wp_nonce_field($nounce); ?>
 <?php
-  if ($inc_cancel) {
+  if ($bool) {
     printf('<div id="return_to_summary">%s</div>',$hp_base->submission_summary_link('Return to Submissions List'));
   }
 ?>
@@ -190,19 +196,14 @@ if(count($subs) > 0) {
     <h4>You can perform the following bulk actions on the listed submissions:</h4>
     <table id='heypub_instructions_list'>
     <tr>
-      <td>Accept Submission</td><td>Will copy submission over as a 'Post' in 'Pending' status.  Use this option if you intend to publish the submission.</td>
-    </tr>
-    <tr>
-      <td>Save for Later Review</td><td>Marks the submission as under review in the HeyPublisher system, but does not copy it over into your Wordpress installation.  <b>If you do not accept simultaneous submissions, this also prevents the author from sending the work to another publisher while you are reviewing it.</b></td>
+      <td>Save for Later Review</td><td>Marks the submission as under review in the HeyPublisher system, but does not copy it over into your Wordpress installation.<br/>  <i>If you do not accept simultaneous submissions, this also prevents the author from sending the work to another publisher while you are reviewing it.</i></td>
     </tr>
     <tr>
       <td>Reject Submission</td><td>Will inform the author that you do not intend to publish their work at this time and they are free to submit it to another publisher.</td>
     </tr>
     </table>
   </div>
-
-    <br/>
-
+   <br/>
 </form>
 </div> <!-- end of 'wrap' -->
 
@@ -244,7 +245,8 @@ function heypub_show_submission($id) {
 				$block .= sprintf('<b>Summary:</b> %s<br/>',$sub->description);
       } 
       if (FALSE != $sub->word_count) {
-				$block .= sprintf('<b>Word Count:</b> %s words<br/>',number_format($sub->word_count));
+				// getting weird errors about the type of val for word_count, so explicitly cast here
+				$block .= sprintf('<b>Word Count:</b> %s words<br/>',number_format("$sub->word_count"));
       } 
 			if ($block != '') {
         echo $hp_base->blockquote($block);
@@ -461,8 +463,51 @@ function heypub_get_post_id_by_title($title,$user_id){
   return $post_id;
 }
 
-// Accept Handler - these posts may or may not be in the db already
+// Pre-Accept Handler - Prompt the Admin to create a new user or use an existing user account.
 function heypub_accept_submission($req) {
+  global $hp_xml, $hp_base;
+  check_admin_referer('heypub-bulk-submit');  
+  $id = $req[post][0]; 
+  $sub = $hp_xml->get_submission_by_id($id);
+  $notes = $req[notes];
+	// do we have this author in the db?
+  $user_id = $hp_base->get_author_id($sub->author);
+  $form_post_url = $hp_base->get_form_post_url_for_page('heypub_show_menu_submissions');
+?>	
+	 <div class="wrap">
+<?php
+// LOGIC: if we already have the user, redirec to the accept processor 
+// If we don;t, allow user to create this user - then ensure our metadata is associated with the newly created account
+// THNE redirect to the accept processor.
+// 
+
+
+	if (FALSE == $user_id) {
+		// load the author record
+		$author = get_userdata( $user_id );
+?>
+ 		<h2>Create New Author</h2>
+	  <table id='heypub_summary_review'>
+	    <tr><td id='heypub_submission'>
+				<p>The author <b><?php printf('%s %s',$sub->author->first_name, $sub->author->last_name); ?></b> does not currently exists in your database.</p>
+				<p>Please indicate the desired username below, or select an existing user account to use.</p>
+			  <form id="posts-filter" action="<?php echo $form_post_url; ?>" method="post">
+					<input type='hidden' name="post[]" value="<?php echo "$id"; ?>" />
+					<input type='hidden' name="notes" value="<?php echo "$notes"; ?>" />
+					<input type='hidden' name="action" value="accept_process" />
+				  <input type="submit" value="Create User" name="doaction" id="doaction" />
+					
+ 				  <?php wp_nonce_field('heypub-bulk-submit'); ?>
+	      </form>
+			</td></tr>
+		</table>
+	</div>
+<?php 
+	}
+}
+
+// Accept Handler - these posts may or may not be in the db already
+function heypub_accept_process_submission($req) {
   global $hp_xml, $hp_base;
   check_admin_referer('heypub-bulk-submit');  
   $post = $req[post]; 
@@ -509,7 +554,11 @@ function heypub_submission_handler() {
     $message = heypub_consider_submission($_REQUEST);
   }
   elseif (isset($_REQUEST[action]) && ($_REQUEST[action] == 'accept')) {
-    $message = heypub_accept_submission($_REQUEST);
+    heypub_accept_submission($_REQUEST);
+		return;
+  }
+  elseif (isset($_REQUEST[action]) && ($_REQUEST[action] == 'accept_process')) {
+    $message = heypub_accept_process_submission($_REQUEST);
   }
   elseif (isset($_REQUEST[action]) && ($_REQUEST[action] == 'request_revision')) {
     $message = heypub_request_revision($_REQUEST);
