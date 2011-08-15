@@ -481,7 +481,7 @@ function heypub_accept_submission($req) {
   if (FALSE != $user_id) {
     $url = $hp_base->get_author_edit_url($user_id);
     $msg = sprintf("<br/><br/>The author <b><a href='$url'>%s</a></b> already exists in your database.  Please ensure their information is correct prior to publication.", $sub->author->full_name);
-    $message = heypub_accept_process_submission($req,$msg);
+    $message = heypub_accept_process_submission($req,$user_id,$msg);
     return $message;
   }
   // If we're still here, we have to create a new user account.  Display the form...
@@ -531,26 +531,25 @@ function heypub_create_user($req) {
   if (FALSE != $user_id) {
     $url = $hp_base->get_author_edit_url($user_id);
     $msg = sprintf("<br/><br/>The author <b><a href='$url'>%s</a></b> was created in your database.  Please ensure their information is correct prior to publication.", $sub->author->full_name);
-    $message = heypub_accept_process_submission($req,$msg);
+    $message = heypub_accept_process_submission($req,$user_id,$msg);
     return $message;
   } else {
-    $hp_xml->error = "We ran into problems creating the user account for $req[username].";
-    $hp_xml->print_webservice_errors();
+    $hp_xml->error = "We ran into problems creating the user account for $req[username].<br/>$hp_base->error<br/><br/>Please use a different username.";
+    $hp_xml->print_webservice_errors(false);
+    heypub_accept_submission($req);
     return FALSE;
   }    
 }
 
 // Accept Processing Handler - these posts may or may not be in the db already
-function heypub_accept_process_submission($req,$msg=FALSE) {
+function heypub_accept_process_submission($req,$uid,$msg=FALSE) {
   global $hp_xml, $hp_base;
   check_admin_referer('heypub-bulk-submit');  
   $id = $req[post][0]; 
   $notes = $req[notes];
   if ($hp_xml->submission_action($id,'accepted',$notes)) {
     $sub = $hp_xml->get_submission_by_id($id);
-    if ($sub->author) {
-      $post_id = heypub_create_or_update_post($user_id,'pending',$sub);
-    }
+    $post_id = heypub_create_or_update_post($uid,'pending',$sub);
   }
 
   $message = sprintf("%s successfully accepted.<br/><br/>%s been moved to your Posts and put in a 'Pending' status. .",pluralize_submission_message(1),
