@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: anonymous, post, contributor, submit, submission, unregistered user, custom post interface, plugin, slushpile, HeyPublisher, Loudlever
 Requires at least: 2.8.6
 Tested up to: 3.1.3
-Stable Tag: 1.4.1
+Stable Tag: 1.4.2
 
 This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them.
 
@@ -144,6 +144,8 @@ Yes, as of version 1.2.0 you can define custom response templates that contain w
 
 * When accepting a submission for publication, if the author record does not exist in your WP database you are now prompted to input the desired 'username' for the newly created author record.  If the author record already exists, then this step is skipped.
 
+* Fixed improperly closed DIV tag on the submission summary that was causing the WordPress footer to appear mid-list.
+
 = 1.4.1 =
 
 * Completely rewrote the HTML cleanup code. All fonts and embedded styles are now removed from submitted works.  If you find that you're having problems with multibyte characters, turn off HTML cleanup in the Plugin Options -> Miscellaneous screen.
@@ -214,7 +216,19 @@ Yes, as of version 1.2.0 you can define custom response templates that contain w
 
 == Upgrade Notice ==
 
-= 1.3.2 = 
+= 1.4.2 = 
+
+* Released : 2011-09-27
+
+* Adds user creation feature request.
+
+= 1.4.1 = 
+
+* Released : 2011-06-25
+
+* Fixes minor typos.
+
+= 1.4.0 = 
 
 * Released : 2011-06-24
 
