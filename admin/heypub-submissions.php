@@ -160,7 +160,7 @@ if(!empty($subs)) {
 ?>
       </td>
       <td nowrap><?php printf("%s", $hash->submission_date); ?></td>
-      <td><?php if (FALSE != $hash->word_count) { echo number_format($hash->word_count);} else {echo '?';} ?></td>
+      <td><?php if (FALSE != $hash->word_count) { echo number_format("$hash->word_count");} else {echo '?';} ?></td>
       
       <td nowrap><?php printf("%s", $hp_xml->normalize_submission_status($hash->status)); ?></td>
     </tr>
