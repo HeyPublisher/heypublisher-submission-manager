@@ -40,12 +40,12 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-function kindle_custom_feed() {
-  // require_once(dirname(__FILE__) . '/includes/feed-template.php');
-  load_template(ABSPATH.PLUGINDIR.'/kindle-feed/includes/feed-template.php');
-}
-add_action('do_feed_kindle', 'kindle_custom_feed', 10, 1);
-add_filter('plugin_action_links', 'kindle_settings_link', 10, 2 );
+// Load the KindleFeed class and associated scoped functionality
+load_template(dirname(__FILE__) . '/includes/KindleFeed.class.php');
+$kf = new KindleFeed();
+
+add_action('do_feed_kindle', array(&$kf,'format_feed'), 10, 1);
+add_filter('plugin_action_links', array(&$kf,'plugin_links'), 10, 2 );
 
 function kindle_feed_rewrite($wp_rewrite) {
   $feed_rules = array(
@@ -69,68 +69,23 @@ function kindle_feed_rewrite($wp_rewrite) {
 add_filter('generate_rewrite_rules', 'kindle_feed_rewrite');
 
 add_action('admin_menu', 'kindle_admin_settings');
-
+add_filter('contextual_help', array(&$kf,'configuration_screen_help'), 10, 3);
 
 function kindle_admin_settings() {
+  global $kf;
  	//create Options
 	if (function_exists('add_options_page')) {
-		add_options_page('Kindle Feed Settings','Kindle Feed', 'administrator', 'kindle-feed', 'kindle_settings_page');
+		$kf->help = add_options_page('Kindle Feed Settings','Kindle Feed', 'administrator', $kf->slug, 'kindle_settings_page');
   }
   if (function_exists('add_action')) {
-  	add_action( 'admin_init', 'kindle_register_options' );
-	}
-	if (function_exists('plugin_action_links')) {
+  	add_action( 'admin_init', array(&$kf,'register_options') );
 	}
 }
 
-function kindle_settings_link($links, $file) {
-  static $this_plugin;
-  if (!$this_plugin) $this_plugin = plugin_basename(__FILE__);
- 
-  if ($file == $this_plugin){
-  $settings_link = '<a href="admin.php?page=kindle-feed">'.__("Settings", "kindle-feed").'</a>';
-   array_unshift($links, $settings_link);
-  }
-  return $links;
-}
-
+// This callback does not handle class functions, thus we wrap it....
 function kindle_settings_page() {
-?>  
-<div class="wrap">
-  <h2>Tour Search Settings</h2>
-  <p>Ensure the following code is pasted into each Post and Page where you want the Tour Search Form to display:
-  <blockquote>
-    <?php echo TS_PAGE_REPLACER; ?>
-  </blockquote>
-  </p>
-  <form method="post" action="options.php">
-    <?php settings_fields( '_kindle_feed_settings' ); ?>
-    <table class="form-table">
-      <tr valign="top">
-        <th scope="row">Arrival Date Starts How Many Days From Today?</th>
-        <td>
-          <input type="text" name="days_from_today" value="<?php echo get_option('next_number'); ?>" />
-        </td>
-      </tr>
-      <tr valign="top">
-        <th scope="row">Number of Days Between Arrival and Departure Date?</th>
-        <td>
-          <input type="text" name="days_from_tomorrow" value="<?php echo get_option('next_period'); ?>" />
-        </td>
-      </tr>
-    </table>
-    <p class="submit">
-      <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
-    </p>
-  </form>
-</div>  
-<?php  
-}
-
-function kindle_register_options() {
-  //register our settings
-	register_setting( '_kindle_feed_settings', 'next_number' );
-	register_setting( '_kindle_feed_settings', 'next_period' );
+  global $kf;
+  $kf->configuration_screen();
 }
 
 
