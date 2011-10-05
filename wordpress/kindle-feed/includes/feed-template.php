@@ -29,7 +29,9 @@ echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>'; ?>
 	<language><?php echo get_option('rss_language'); ?></language>
 	<sy:updatePeriod><?php echo apply_filters( 'rss_update_period', 'hourly' ); ?></sy:updatePeriod>
 	<sy:updateFrequency><?php echo apply_filters( 'rss_update_frequency', '1' ); ?></sy:updateFrequency>
+	
 	<?php do_action('rss2_head'); ?>
+	
 	<?php while( have_posts()) : the_post(); ?>
 	<item>
 		<title><?php the_title_rss() ?></title>
