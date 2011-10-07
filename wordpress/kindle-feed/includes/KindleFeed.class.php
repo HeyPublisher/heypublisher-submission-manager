@@ -11,13 +11,12 @@ class KindleFeed {
   var $plugin_file = 'kindle-feed/kindle-feed.php';  # this helps us with the plugin_links
   var $opt_key = '_kindle_feed_settings';
   var $help = false;
-  var $opt_values = array('next_period','pre_number','pre_period'); // form options
+  var $opt_values = array('kindle_feed_next_period','kindle_feed_pre_number','kindle_feed_pre_period'); // form options
   var $feed = false;
   var $feed_key = '_kindle_feed';
 
   public function __construct() {
-    // initialize the dates
-    $this->date_range_for_feed();
+
   }   
 
   public function __destruct() {
@@ -44,7 +43,11 @@ class KindleFeed {
   }
 
   public function query_string_for_posts() {
-    $query = sprintf('year=%s&monthnum=%s&post_status=future',$this->feed[year],$this->feed[month]);
+		$this->date_range_for_feed();
+		// $query = "post_status=published";
+		if ($this->feed[live]) {
+	    $query = sprintf('year=%s&monthnum=%s&post_status=future&posts_per_page=100',$this->feed[year],$this->feed[month]);
+		}
     return $query;
   }
   
@@ -78,6 +81,9 @@ EOF;
   
   
   public function configuration_screen() {
+	  // initialize the dates
+    $this->date_range_for_feed();
+  
     $opts = $this->get_options();
     $periods = array('month');
     $days = range(1,5);
@@ -85,16 +91,17 @@ EOF;
 ?>  
 <div class="wrap">
   <h2>Kindle Feed Settings</h2>
-  <form method="post" action="options.php">
+	<p>Need to know what these fields mean?  Simply click the "Help" link at the top of your screen.</p> 
+	  <form method="post" action="options.php">
     <?php settings_fields( $this->opt_key ); ?>
     <table class="form-table">
       <tr valign="top">
         <th scope="row">Collect Posts for Next:</th>
         <td>
-          <select name="next_period">
+          <select name="kindle_feed_next_period">
         <?php 
           foreach ($periods as $val) {
-            echo $this->build_option_string($val,$opts['next_period']);
+            echo $this->build_option_string($val,$opts['kindle_feed_next_period']);
           }
         ?>
           </select>
@@ -103,22 +110,22 @@ EOF;
       <tr valign="top">
         <th scope="row">Update Kindle Feed:</th>
         <td>
-          <select name='pre_number'>
+          <select name='kindle_feed_pre_number'>
         <?php
           foreach ($days as $int) {
-            echo $this->build_option_string($int,$opts['pre_number']);
+            echo $this->build_option_string($int,$opts['kindle_feed_pre_number']);
           }
         ?>
           </select>
-          <select name='pre_period'>
+          <select name='kindle_feed_pre_period'>
         <?php
         $periods = array('days','weeks');
           foreach ($periods as $val) {
-            echo $this->build_option_string($val,$opts['pre_period']);
+            echo $this->build_option_string($val,$opts['kindle_feed_pre_period']);
           }
         ?>
           </select>
-          prior to publication date.
+          prior to scheduled publication date.
         </td>
       </tr>
       
@@ -126,6 +133,7 @@ EOF;
     <p class="submit">
       <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
     </p>
+
   </form>
 </div>  
 <?php  
@@ -140,6 +148,17 @@ EOF;
     return $opts;
   }
   
+	/**
+	* Ensure our configuration gets cleaned out if this plugin is uninstalled
+	*/
+	public function deactivate_plugin() {
+		delete_option($this->feed_key);
+	  foreach ($this->opt_values as $key) {
+			delete_option($key);
+		}
+	  return;
+	}
+
   private function build_option_string($val,$selected) {
     $string = sprintf("<option value='%s' %s >%s</option>",
       $val,($val == $selected) ? 'selected=selected' : '',ucfirst($val)
@@ -152,26 +171,28 @@ EOF;
   */
   private function date_range_for_feed() {
     $this->feed = get_option($this->feed_key);
-
+		$this->feed[live] = false;
+		$last_build_month = $this->feed[build_period];
+		
     $today = date('Y-m-d',time());
     $opts = $this->get_options();
-    $next_period = (FALSE != $opts[next_period]) ? $opts[next_period] : 'month';
-    $pre_number = (FALSE != $opts[pre_number]) ? $opts[pre_number] : '1';
-    $pre_period = (FALSE != $opts[pre_period]) ? $opts[pre_period] : 'week';
+    $next_period = (FALSE != $opts[kindle_feed_next_period]) ? $opts[kindle_feed_next_period] : 'month';
+    $pre_number = (FALSE != $opts[kindle_feed_pre_number]) ? $opts[kindle_feed_pre_number] : '1';
+    $pre_period = (FALSE != $opts[kindle_feed_pre_period]) ? $opts[kindle_feed_pre_period] : 'week';
 
     $next_month = date('Y-m-d', strtotime("+1 $next_period", strtotime($today)));
-
     $build = date('Y-m-d', strtotime("-$pre_number $pre_period", strtotime($next_month)));
-    // printf("build = %s\nnext_month = %s\ntoday = %s\n",$build,$next_month,$today);
-    // printf("feed = %s\n",print_r($this->feed,1));
-    if ((strtotime($build) <= strtotime($today)) || (FALSE == $this->feed)) {
-      // print "updating options\n";
-      // we update the build options
-      $this->feed[pub] = date('F, Y', strtotime("+1 $next_period", strtotime($today)));
-      $this->feed[month] = date('n', strtotime("+1 $next_period", strtotime($today)));
-      $this->feed[year] = date('Y', strtotime("+1 $next_period", strtotime($today)));
-      $this->feed[build] = date(DATE_ATOM, time());  // This needs to be static - so we'll need to store in db
-      update_option($this->feed_key,$this->feed);
+		$this_build_month = sprintf("%s-01",date('Y-m', strtotime("+1 $next_period", strtotime($today))));
+		// only update if we're within the build period AND we haven't built already
+    if (strtotime($build) <= strtotime($today)) {
+			$this->feed[live] = true;
+	      // we update the build options
+	      $this->feed[pub] = date('F, Y', strtotime("+1 $next_period", strtotime($today)));
+	      $this->feed[month] = date('n', strtotime("+1 $next_period", strtotime($today)));
+	      $this->feed[year] = date('Y', strtotime("+1 $next_period", strtotime($today)));
+	      $this->feed[build] = date(DATE_ATOM, time());  // This needs to be static - so we'll need to store in db
+				$this->feed[build_period] = $this_build_month;
+	      update_option($this->feed_key,$this->feed);
     }
   }
   

@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Kindle Feed Manager
-Plugin URI: http://loudlever.com
-Description: This plugin allows you to create feeds of 'scheduled' Posts to feed to Kindle for publication.
+Plugin URI: http://www.loudlever.com/wordpress-plugins/kindle-feed-manager/
+Description: This plugin allows you to create a feed of 'Scheduled' Posts that can be sent to Amazon for publication on Kindle prior to the content going live on your website.
 Version: 0.1.0
 Author: Loudlever, Inc.
 Author URI: http://www.loudlever.com
@@ -88,7 +88,7 @@ function kindle_settings_page() {
   $kf->configuration_screen();
 }
 
-
+register_deactivation_hook( __FILE__, array(&$kf,'deactivate_plugin'));
 
 
 ?>
