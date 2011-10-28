@@ -45,15 +45,16 @@ class KindleFeed {
   public function query_string_for_posts() {
 		$this->date_range_for_feed();
 		// $query = "post_status=published";
-		if ($this->feed[live]) {
+    // if ($this->feed[live]) {
 	    $query = sprintf('year=%s&monthnum=%s&post_status=future&posts_per_page=100',$this->feed[year],$this->feed[month]);
-		}
+    // }
     return $query;
   }
   
-  public function format_feed() {
+  // The hierarchical manifest format.  This is the primary entry point for the primary manifest
+  public function format_manifest() {
    // load the feed template
-   load_template(dirname(__FILE__) . '/feed-template.php');
+   load_template(dirname(__FILE__) . '/templates/manifest.php');
   }
   
   public function configuration_screen_help($contextual_help, $screen_id, $screen) {

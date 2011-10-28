@@ -44,7 +44,7 @@ if ( !function_exists( 'add_action' ) ) {
 load_template(dirname(__FILE__) . '/includes/KindleFeed.class.php');
 $kf = new KindleFeed();
 
-add_action('do_feed_kindle', array(&$kf,'format_feed'), 10, 1);
+add_action('do_feed_kindle_manifest', array(&$kf,'format_manifest'), 10, 1);
 add_filter('plugin_action_links', array(&$kf,'plugin_links'), 10, 2 );
 
 function kindle_feed_rewrite($wp_rewrite) {
