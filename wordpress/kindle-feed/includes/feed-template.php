@@ -15,29 +15,30 @@ header('Content-Type: ' . feed_content_type('rss-http') . '; charset=' . get_opt
 $more = 1;
 
 echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>'; ?>
+<rss version="2.0">
+<channel>
+<title> Amazon RSS-XHTML - Sample</title>
+<link> http://www.aldenteblog.com/</link>
+   <pubDate>Mon, 25 May 2007 13:00:11</pubDate>
+			<item>
+				<link>Section_News.xml</link>
+			</item>
+			<item>
+				<link>Section_Business.xml</link>
+			</item>
+			<item>
+				<link>Section_Feature.xml</link>
+			</item>
+</channel>
+</rss>
 
-<rss version="2.0"
-	xmlns:content="http://purl.org/rss/1.0/modules/content/"
-	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
-	xmlns:dc="http://purl.org/dc/elements/1.1/"
-	xmlns:atom="http://www.w3.org/2005/Atom"
-	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
-	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
-	<?php do_action('rss2_ns'); ?>
->
 
 <channel>
-	<title><?php echo $kf->feed_title(); ?></title>
-	<atom:link href="<?php self_link(); ?>" rel="self" type="application/rss+xml" />
-	<link><?php bloginfo_rss('url') ?></link>
-	<description><?php bloginfo_rss("description") ?></description>
-	<lastBuildDate><?php echo mysql2date('D, d M Y H:i:s +0000', $kf->feed[build], false); ?></lastBuildDate>
-	<language><?php echo get_option('rss_language'); ?></language>
-	<sy:updatePeriod><?php echo apply_filters( 'rss_update_period', 'monthly' ); ?></sy:updatePeriod>
-	<sy:updateFrequency><?php echo apply_filters( 'rss_update_frequency', '1' ); ?></sy:updateFrequency>
-	
-	<?php do_action('rss2_head'); ?>
-	
+  <title><?php echo $kf->feed_title(); ?></title>
+  <link><?php bloginfo_rss('url') ?></link>
+  <description><?php bloginfo_rss("description") ?></description>
+  <pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', $kf->feed[published], false); ?></pubDate>
+  <lastBuildDate><?php echo mysql2date('D, d M Y H:i:s +0000', $kf->feed[build], false); ?></lastBuildDate>
 	<?php while( have_posts()) : the_post(); ?>
 	<item>
 		<title><?php the_title_rss() ?></title>

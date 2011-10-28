@@ -182,6 +182,13 @@ EOF;
 
     $next_month = date('Y-m-d', strtotime("+1 $next_period", strtotime($today)));
     $build = date('Y-m-d', strtotime("-$pre_number $pre_period", strtotime($next_month)));
+    // printf("build = %s\nnext_month = %s\ntoday = %s\n",$build,$next_month,$today);
+    // printf("feed = %s\n",print_r($this->feed,1));
+    if (date('n') == 12) {
+      $this->feed[published] = date(DATE_ATOM, mktime(0, 0, 0, 0, 0, date('Y')+1)); 
+    } else {
+      $this->feed[published] = date(DATE_ATOM, mktime(0, 0, 0, date('n')+1, 1)); 
+    }
 		$this_build_month = sprintf("%s-01",date('Y-m', strtotime("+1 $next_period", strtotime($today))));
 		// only update if we're within the build period AND we haven't built already
     if (strtotime($build) <= strtotime($today)) {
