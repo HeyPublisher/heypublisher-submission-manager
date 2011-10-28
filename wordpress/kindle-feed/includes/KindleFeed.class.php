@@ -42,19 +42,31 @@ class KindleFeed {
     return $string;
   }
 
-  public function query_string_for_posts() {
+  public function query_string_for_posts($cat=0) {
 		$this->date_range_for_feed();
 		// $query = "post_status=published";
     // if ($this->feed[live]) {
-	    $query = sprintf('year=%s&monthnum=%s&post_status=future&posts_per_page=100',$this->feed[year],$this->feed[month]);
+      $category = '';
+      if ($cat != 0) {
+        // Limit to the requested category
+        $category = sprintf("&cat=%s",$cat);
+      }
+	    $query = sprintf('year=%s&monthnum=%s&post_status=future&posts_per_page=100%s',
+	      $this->feed[year],$this->feed[month],$category);
     // }
     return $query;
   }
   
-  // The hierarchical manifest format.  This is the primary entry point for the primary manifest
+  // The entry point manifest format.  This is the primary entry point for the primary manifest
   public function format_manifest() {
    // load the feed template
    load_template(dirname(__FILE__) . '/templates/manifest.php');
+  }
+
+  // The section manifest format.  This is the primary entry point for the categories manifest
+  public function format_section() {
+   // load the feed template
+   load_template(dirname(__FILE__) . '/templates/section.php');
   }
   
   public function configuration_screen_help($contextual_help, $screen_id, $screen) {
