@@ -42,18 +42,24 @@ class KindleFeed {
     return $string;
   }
 
-  public function query_string_for_posts($cat=0) {
-		$this->date_range_for_feed();
-		// $query = "post_status=published";
-    // if ($this->feed[live]) {
-      $category = '';
-      if ($cat != 0) {
-        // Limit to the requested category
-        $category = sprintf("&cat=%s",$cat);
-      }
-	    $query = sprintf('year=%s&monthnum=%s&post_status=future&posts_per_page=100%s',
-	      $this->feed[year],$this->feed[month],$category);
-    // }
+	/**
+	* Input an array of overrides for the query
+	*/
+  public function query_string_for_posts($custom=array()) {
+		global $wp_query;
+		// overwrite our $wp_query object
+		$params = array();
+		foreach ($wp_query->query_vars as $key=>$val) {
+			$params[$key] = $val;
+			if (FALSE != $custom[$key]) {
+				// overwrite
+				$params[$key] = $custom[$key];
+			}
+		}
+		// Add the future post to the query if we're still pending publication of this issue
+		$params['post_status'] = 'future';
+		printf("<pre>Query Params\n%s</pre>",print_r($params,1));
+		$query = http_build_query($params);
     return $query;
   }
   
@@ -67,6 +73,11 @@ class KindleFeed {
   public function format_section() {
    // load the feed template
    load_template(dirname(__FILE__) . '/templates/section.php');
+  }
+
+  public function format_article() {
+   // load the feed template
+   load_template(dirname(__FILE__) . '/templates/article.php');
   }
   
   public function configuration_screen_help($contextual_help, $screen_id, $screen) {
@@ -215,7 +226,7 @@ EOF;
 	      update_option($this->feed_key,$this->feed);
     }
   }
-  
+
 }
 
 ?>
