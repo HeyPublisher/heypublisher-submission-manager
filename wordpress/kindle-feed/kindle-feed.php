@@ -47,6 +47,7 @@ $kf = new KindleFeed();
 add_action('do_feed_kindle_manifest', array(&$kf,'format_manifest'), 10, 1);
 add_action('do_feed_kindle_section', array(&$kf,'format_section'), 10, 1);
 add_action('do_feed_kindle_article', array(&$kf,'format_article'), 10, 1);
+// enable our link to the settings
 add_filter('plugin_action_links', array(&$kf,'plugin_links'), 10, 2 );
 
 function kindle_feed_rewrite($wp_rewrite) {
@@ -70,12 +71,13 @@ function kindle_feed_rewrite($wp_rewrite) {
 // add_filter('rewrite_rules_array','kindle_feed_rewrite');
 add_filter('generate_rewrite_rules', 'kindle_feed_rewrite');
 
+// Enable the Admin Menu and Contextual Help
 add_action('admin_menu', 'kindle_admin_settings');
 add_filter('contextual_help', array(&$kf,'configuration_screen_help'), 10, 3);
 
 function kindle_admin_settings() {
   global $kf;
- 	//create Options
+ 	//create Options Management Screen
 	if (function_exists('add_options_page')) {
 		$kf->help = add_options_page('Kindle Feed Settings','Kindle Feed', 'administrator', $kf->slug, 'kindle_settings_page');
   }
@@ -91,6 +93,20 @@ function kindle_settings_page() {
 }
 
 register_deactivation_hook( __FILE__, array(&$kf,'deactivate_plugin'));
+
+
+// outputs SQL queries to a log
+add_action('shutdown', 'sql_logger');
+function sql_logger() {
+    global $wpdb;
+    $log_file = fopen(ABSPATH.'/sql_log.txt', 'a');
+    fwrite($log_file, "//////////////////////////////////////////\n\n" . date("F j, Y, g:i:s a")."\n");
+    foreach($wpdb->queries as $q) {
+        fwrite($log_file, $q[0] . " - ($q[1] s)" . "\n\n");
+    }
+    fclose($log_file);
+}
+
 
 
 ?>

@@ -7,9 +7,9 @@
 
 // The class with set options should already be loaded.
 global $kf;
-
-// Range of content should be for entire 'month' or 'week'
+// Fetch the posts that meet our requirements
 query_posts( $kf->query_string_for_posts() );
+
 $categories = array();
 while ( have_posts()) : the_post(); 
   $cats = get_the_category();
