@@ -266,7 +266,46 @@ EOF;
 		// 	      update_option($this->feed_key,$this->feed);
 		//     }
   }
+	// Get the first sentance of excerpt, if there, and strip all HTML from the inbound string
+	public function strip_excerpt($string) {
+		$parts = split('\.',strip_tags($string));
+		return sprintf('%s.',$parts[0]);
+	}
+	// Format the content according to Kindle publishing rules.
+	public function strip_content($data_str) {
+		// define allowable tags
+		$allowable_tags = '<p><strong><em><img><ul><ol><li><table><thead><tbody><tr><th><td>';
+		// define allowable attributes
+		$allowable_atts = array('src');
 
+		// strip collector
+		$strip_arr = array();
+
+		// load XHTML with SimpleXML
+		$data_sxml = simplexml_load_string('<root>'. $data_str .'</root>', 'SimpleXMLElement', LIBXML_NOERROR | LIBXML_NOXMLDECL);
+
+		if ($data_sxml ) {
+		    // loop all elements with an attribute
+		    foreach ($data_sxml->xpath('descendant::*[@*]') as $tag) {
+		        // loop attributes
+		        foreach ($tag->attributes() as $name=>$value) {
+		            // check for allowable attributes
+		            if (!in_array($name, $allowable_atts)) {
+		                // set attribute value to empty string
+		                $tag->attributes()->$name = '';
+		                // collect attribute patterns to be stripped
+		                $strip_arr[$name] = '/ '. $name .'=""/';
+		            }
+		        }
+		    }
+		}
+		// ALL <p> tags must be <p align='left'>
+		// All <strong> must be <b>; all <em> must be <i>
+		// strip unallowed attributes and root tag
+		$data_str = strip_tags(preg_replace($strip_arr,array(''),$data_sxml->asXML()), $allowable_tags);
+		return $data_str;
+
+	}
 }
 
 ?>

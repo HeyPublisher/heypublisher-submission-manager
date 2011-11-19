@@ -96,7 +96,7 @@ register_deactivation_hook( __FILE__, array(&$kf,'deactivate_plugin'));
 
 
 // outputs SQL queries to a log
-add_action('shutdown', 'sql_logger');
+// add_action('shutdown', 'sql_logger');
 function sql_logger() {
     global $wpdb;
     $log_file = fopen(ABSPATH.'/sql_log.txt', 'a');
