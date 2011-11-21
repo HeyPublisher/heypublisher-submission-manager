@@ -18,8 +18,8 @@ while( have_posts()) : the_post();
 <html>
 	<head>
 		<title><?php the_title(); ?></title>
-		<meta name="description" content="<?php echo $kf->strip_excerpt(get_the_excerpt()); ?>"/>
-		<meta name="author" content="By <?php the_author(); ?>"/>
+		<meta name="abstract" content="<?php echo $kf->strip_excerpt(get_the_excerpt()); ?>"/>
+		<meta name="author" content="by <?php the_author(); ?>"/>
 		<meta name="dc.date.issued" content="<?php the_date('Ymd'); ?>"/>
 	</head>
 	<body>
@@ -28,6 +28,9 @@ while( have_posts()) : the_post();
 	$content = apply_filters('the_content', $content);
 	$content = str_replace(']]>', ']]&gt;', $content);
 	print $kf->strip_content($content);
+	// Add the author bio
+	print '<p> </p>';
+	printf('<p>%s</p>', get_the_author_meta('description'));
 ?>
 	</body>
 </html>

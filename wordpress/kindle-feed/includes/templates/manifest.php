@@ -18,6 +18,7 @@ endwhile;
 
 header('Content-Type: ' . feed_content_type('rss-http') . '; charset=' . get_option('blog_charset'), true);
 echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>'; ?>
+
 <rss version="2.0">
 <channel>
   <title><?php echo $kf->feed_title(); ?></title>

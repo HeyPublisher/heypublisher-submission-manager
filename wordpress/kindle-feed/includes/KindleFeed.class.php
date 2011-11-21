@@ -274,9 +274,9 @@ EOF;
 	// Format the content according to Kindle publishing rules.
 	public function strip_content($data_str) {
 		// define allowable tags
-		$allowable_tags = '<p><strong><em><img><ul><ol><li><table><thead><tbody><tr><th><td>';
+		$allowable_tags = '<p><a><strong><em><img><ul><ol><li><table><thead><tbody><tr><th><td>';
 		// define allowable attributes
-		$allowable_atts = array('src');
+		$allowable_atts = array('src','href');
 
 		// strip collector
 		$strip_arr = array();
