@@ -29,7 +29,7 @@ echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>'; ?>
   foreach ($categories as $slug=>$link) { 
 ?>
   <item>
-    <link><?php printf("%s?feed=kindle_section", $link); ?></link>
+    <link><?php printf("%skindle_section.xml", $link); ?></link>
   </item>
 <?php 
   }; 

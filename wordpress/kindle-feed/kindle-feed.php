@@ -2,7 +2,7 @@
 /*
 Plugin Name: Kindle Feed Manager
 Plugin URI: http://www.loudlever.com/wordpress-plugins/kindle-feed-manager/
-Description: This plugin allows you to create a feed of 'Scheduled' Posts that can be sent to Amazon for publication on Kindle prior to the content going live on your website.
+Description: This plugin allows you to create a feed of 'Posts that can be sent to Amazon for publication on Kindle for Periodicals.
 Version: 0.1.0
 Author: Loudlever, Inc.
 Author URI: http://www.loudlever.com
@@ -44,37 +44,21 @@ if ( !function_exists( 'add_action' ) ) {
 load_template(dirname(__FILE__) . '/includes/KindleFeed.class.php');
 $kf = new KindleFeed();
 
-add_action('do_feed_kindle_manifest', array(&$kf,'format_manifest'), 10, 1);
-add_action('do_feed_kindle_section', array(&$kf,'format_section'), 10, 1);
-add_action('do_feed_kindle_article', array(&$kf,'format_article'), 10, 1);
+
+
 // enable our link to the settings
 add_filter('plugin_action_links', array(&$kf,'plugin_links'), 10, 2 );
-
-function kindle_feed_rewrite($wp_rewrite) {
-  $feed_rules = array(
-    'feed/(.+)' => 'index.php?feed=' . $wp_rewrite->preg_index(1),
-    '(.+).xml' => 'index.php?feed='. $wp_rewrite->preg_index(1)
-    );
-    $wp_rewrite->rules = $feed_rules + $wp_rewrite->rules;
-    // printf("<pre>Rewrite Rules\n%s</pre>",print_r($wp_rewrite->rules,1));
-
-  // $feed_rules = array(
-  // 'feed/kindle' => 'index.php?feed=kindle',
-  // '/kindle/' => 'index.php?feed=kindle',
-  // '/kindle.xml' => 'index.php?feed=kindle'
-  // );
-  // $rules = $feed_rules + $rules;
-  // return $rules;
-}
-
-// add_filter('transient_rewrite_rules','kindle_feed_rewrite');
-// add_filter('rewrite_rules_array','kindle_feed_rewrite');
-add_filter('generate_rewrite_rules', 'kindle_feed_rewrite');
-
+add_action('init', 'kindle_feed_rules');
 // Enable the Admin Menu and Contextual Help
 add_action('admin_menu', 'kindle_admin_settings');
 add_filter('contextual_help', array(&$kf,'configuration_screen_help'), 10, 3);
 
+function kindle_feed_rules() {
+	global $kf;
+	add_feed('kindle_manifest', array(&$kf,'format_manifest'));
+	add_feed('kindle_section', array(&$kf,'format_section'));
+	add_feed('kindle_article', array(&$kf,'format_article'));
+}
 function kindle_admin_settings() {
   global $kf;
  	//create Options Management Screen
