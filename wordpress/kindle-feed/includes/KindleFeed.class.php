@@ -9,37 +9,51 @@ class KindleFeed {
 
   var $slug = 'kindle-custom-feed';
   var $plugin_file = 'kindle-feed/kindle-feed.php';  # this helps us with the plugin_links
-  var $opt_key = '_kindle_feed_settings';
   var $help = false;
-  var $opt_values = array('kindle_feed_next_period','kindle_feed_pre_number','kindle_feed_pre_period','kindle_feed_category_order'); // form options
-  var $feed = false;
-  var $feed_key = '_kindle_feed';
+  // Configuration options stored as a hash of hashes
+  var $options = array(
+    // controlled via in-code settings
+    'static' => array(
+    	'live' => false,
+    	'build_period' => false,
+    	'published' => false,
+    	'pub' => false,
+    	'month' => false,
+    	'year' => false,
+    	'build' => false
+    )
+  );
+  var $opt_key = '_kindle_static_values';
+  var $config_key = '_kindle_configuration_options';
+  var $config_val = 'kindle';
 
   public function __construct() {
 	  // initialize the dates
+	  $this->options = get_option($this->opt_key);
     $this->date_range_for_feed();
   }   
 
   public function __destruct() {
-
+    // force save of options to db
+    // This is throwing a cache error
+    // update_option($this->opt_key,$this->options);
   }
   
   public function register_options() {
-    foreach ($this->opt_values as $key) {
-      register_setting( $this->opt_key, $key );
-    }
+    // configs that are editable by user
+    register_setting( $this->config_key, $this->config_val );
   }
   
   public function plugin_links($links, $file) {
     if ($file == $this->plugin_file) {
-      $settings_link = '<a href="admin.php?page='.$this->slug.'">'.__("Settings", "kindle-feed").'</a>';
+      $settings_link = '<a href="options-general.php?page='.$this->slug.'">'.__("Settings", "kindle-feed").'</a>';
       array_unshift($links, $settings_link);
     }
     return $links;
   }
 
   public function feed_title() {
-    $string = sprintf('%s : %s',get_bloginfo('name'), $this->feed[pub]);
+    $string = sprintf('%s : %s',get_bloginfo('name'), $this->options['static']['pub']);
     return $string;
   }
 
@@ -49,8 +63,8 @@ class KindleFeed {
   public function query_string_for_posts($custom=array()) {
 		// Date Range Params
 		$params = array(
-			'monthnum' 	=> $this->feed['month'],
-			'year' 			=> $this->feed['year'],
+			'monthnum' 	=> $this->options['static']['month'],
+			'year' 			=> $this->options['static']['year'],
 			'posts_per_page' => -1,
 			'post_status'  => 'publish'
 			);
@@ -110,7 +124,7 @@ EOF;
 	// v.1 will display minimal info
 	// v.2 will display configurations for future dates
   public function configuration_screen() {
-    $opts = $this->get_options();
+    $opts = $this->options['configuration'];
 
 		$cat_order = array('alphabetically');
 		// Not currently in use
@@ -122,20 +136,43 @@ EOF;
   <h2>Kindle Feed Settings</h2>
 	<p>Need to know what these fields mean?  Simply click the "Help" link at the top of your screen.</p> 
 	  <form method="post" action="options.php">
-    <?php settings_fields( $this->opt_key ); ?>
+    <?php settings_fields( $this->config_key ); ?>
+    <?php $opts = get_option( $this->config_val ); ?>
+    
     <table class="form-table">
 			<tr valign="top">
         <th scope="row">Organize Categories by:</th>
         <td>
-          <select name="kindle_feed_category_order">
+          <select name="kindle[category_order]">
         <?php 
           foreach ($cat_order as $val) {
-            echo $this->build_option_string($val,$opts['kindle_feed_category_order']);
+            echo $this->build_option_string($val,$opts['category_order']);
           }
         ?>
           </select>
         </td>
       </tr>
+			<tr valign="top">
+        <th scope="row">URL of Cover Art:</th>
+        <td>
+          <input type='text' name="kindle[cover_art_url]" value='<?php echo $opts['cover_art_url']; ?>'>
+          <small>(image must have dimensions of 800x600 and be < 1Mb in size)</small>
+        </td>
+      </tr>
+<?php
+  // Attempt to fetch the cover art
+  if (FALSE != $opts['cover_art_url']) {
+?>
+	<tr valign="top">
+    <th scope="row">Cover Art Preview:</th>
+    <td>Please verify that this is the image you want to use with Kindle Publishing.<br/>
+    It has been reduced from it's original size for display purposes.<br/>
+      <img width='400' src='<?php echo $opts['cover_art_url']; ?>' alt='cover art'>
+    </td>
+  </tr>
+<?php
+  }
+?>
 
 <?php
 /*
@@ -185,22 +222,14 @@ EOF;
     
   }
   
-  public function get_options() {
-    $opts = array();
-    foreach ($this->opt_values as $key) {
-      $opts[$key] = get_option($key);
-    }
-    return $opts;
-  }
-  
 	/**
 	* Ensure our configuration gets cleaned out if this plugin is uninstalled
 	*/
 	public function deactivate_plugin() {
-		delete_option($this->feed_key);
-	  foreach ($this->opt_values as $key) {
-			delete_option($key);
-		}
+	  $this->options = false;
+    delete_option($this->config_val);
+		delete_option($this->opt_key);
+    unregister_setting( $this->config_key, $this->config_val );
 	  return;
 	}
 
@@ -218,20 +247,15 @@ EOF;
 	
 		// For pulling ALL content from current month/year
     $today = date('Y-m-d',time());
-    $opts = $this->get_options();
 		$this_build_month = sprintf("%s-01",date('Y-m', strtotime($today)));
 
-    $opts = $this->get_options();
-		$this->feed = get_option($this->feed_key);
-		$this->feed[live] = true;
-		$this->feed[build_period] = $this_build_month;
-    $this->feed[published] = date(DATE_ATOM, mktime(0, 0, 0, date('n'), 1)); 
-		$this->feed[pub] = date('F, Y', strtotime($today));
-		$this->feed[month] = date('n', strtotime($today));
-		$this->feed[year] = date('Y', strtotime($today));
-		$this->feed[build] = date(DATE_ATOM, time());  // This needs to be static - so we'll need to store in db
-		update_option($this->feed_key,$this->feed);
-
+		$this->options['static']['live'] = true;
+		$this->options['static']['build_period'] = $this_build_month;
+    $this->options['static']['published'] = date(DATE_ATOM, mktime(0, 0, 0, date('n'), 1)); 
+		$this->options['static']['pub'] = date('F, Y', strtotime($today));
+		$this->options['static']['month'] = date('n', strtotime($today));
+		$this->options['static']['year'] = date('Y', strtotime($today));
+		$this->options['static']['build'] = date(DATE_ATOM, time());  // This needs to be static - so we'll need to store in db
 
 		//  ALL OF THE BELOW IF FOR WHEN WE START FUTURE-PUBLISHING
 		//     $this->feed = get_option($this->feed_key);
@@ -239,7 +263,6 @@ EOF;
 		// $last_build_month = $this->feed[build_period];
 		// 
 		//     $today = date('Y-m-d',time());
-		//     $opts = $this->get_options();
 		//     $next_period = (FALSE != $opts[kindle_feed_next_period]) ? $opts[kindle_feed_next_period] : 'month';
 		//     $pre_number = (FALSE != $opts[kindle_feed_pre_number]) ? $opts[kindle_feed_pre_number] : '1';
 		//     $pre_period = (FALSE != $opts[kindle_feed_pre_period]) ? $opts[kindle_feed_pre_period] : 'week';

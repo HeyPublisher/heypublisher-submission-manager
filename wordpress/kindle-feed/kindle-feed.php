@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: Kindle Feed Manager
-Plugin URI: http://www.loudlever.com/wordpress-plugins/kindle-feed-manager/
-Description: This plugin allows you to create a feed of 'Posts that can be sent to Amazon for publication on Kindle for Periodicals.
+Plugin Name: Kindle Periodical Manager
+Plugin URI: http://www.loudlever.com/wordpress-plugins/kindle-periodical-manager/
+Description: This plugin creates the XML feed of 'Posts' that Amazon requires for publication on <a href='https://kindlepublishing.amazon.com/gp/vendor/kindlepubs/kpp/kpp-home' target='_blank'>Kindle for Periodicals</a>.
 Version: 0.1.0
 Author: Loudlever, Inc.
 Author URI: http://www.loudlever.com
