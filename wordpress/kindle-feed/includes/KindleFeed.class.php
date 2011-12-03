@@ -303,32 +303,57 @@ EOF;
 
 		// strip collector
 		$strip_arr = array();
-
-		// load XHTML with SimpleXML
-		$data_sxml = simplexml_load_string('<root>'. $data_str .'</root>', 'SimpleXMLElement', LIBXML_NOERROR | LIBXML_NOXMLDECL);
-
-		if ($data_sxml ) {
-		    // loop all elements with an attribute
-		    foreach ($data_sxml->xpath('descendant::*[@*]') as $tag) {
-		        // loop attributes
-		        foreach ($tag->attributes() as $name=>$value) {
-		            // check for allowable attributes
-		            if (!in_array($name, $allowable_atts)) {
-		                // set attribute value to empty string
-		                $tag->attributes()->$name = '';
-		                // collect attribute patterns to be stripped
-		                $strip_arr[$name] = '/ '. $name .'=""/';
-		            }
-		        }
-		    }
-		}
+    $data_str = $this->_translateLiteral2NumericEntities($data_str);
+    $data_sxml = simplexml_load_string($header.'<root>'. $data_str .'</root>', 'SimpleXMLElement');
+    if ($data_sxml ) {
+        // loop all elements with an attribute
+        foreach ($data_sxml->xpath('descendant::*[@*]') as $tag) {
+            // loop attributes
+            foreach ($tag->attributes() as $name=>$value) {
+                // check for allowable attributes
+                if (!in_array($name, $allowable_atts)) {
+                    // set attribute value to empty string
+                    $tag->attributes()->$name = '';
+                    // collect attribute patterns to be stripped
+                    $strip_arr[$name] = '/ '. $name .'=""/';
+                }
+            }
+        }
+    } else {
+          // We encountered XML errors.
+          $errors = array();
+          foreach(libxml_get_errors() as $error) {
+            // $errors[] = $error;
+          }
+          printf("<pre>XML Errors:\n%s</pre>",print_r(libxml_get_errors(),1));
+        }
+		
 		// ALL <p> tags must be <p align='left'>
 		// All <strong> must be <b>; all <em> must be <i>
 		// strip unallowed attributes and root tag
-		$data_str = strip_tags(preg_replace($strip_arr,array(''),$data_sxml->asXML()), $allowable_tags);
-		return $data_str;
-
+    $data_str = strip_tags(preg_replace($strip_arr,array(''),$data_sxml->asXML()), $allowable_tags);
+    return $data_str;
 	}
+
+  // Helper code from https://bugs.php.net/bug.php?id=15092
+  // This ensures that junk lik &nbsp; gets converted to XML-safe entities
+  public function _translateLiteral2NumericEntities($xmlSource, $reverse = FALSE) {
+    static $literal2NumericEntity;
+
+    if (empty($literal2NumericEntity)) {
+      $transTbl = get_html_translation_table(HTML_ENTITIES);
+      foreach ($transTbl as $char => $entity) {
+        if (strpos('&"<>', $char) !== FALSE) continue;
+        $literal2NumericEntity[$entity] = '&#'.ord($char).';';
+      }
+    }
+    if ($reverse) {
+      return strtr($xmlSource, array_flip($literal2NumericEntity));
+    } else {
+      return strtr($xmlSource, $literal2NumericEntity);
+    }
+  }	
+	
 }
 
 ?>

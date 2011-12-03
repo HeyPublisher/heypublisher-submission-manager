@@ -18,7 +18,10 @@ while( have_posts()) : the_post();
 <html>
 	<head>
 		<title><?php the_title(); ?></title>
-		<meta name="abstract" content="<?php echo $kf->strip_excerpt(get_the_excerpt()); ?>"/>
+		<meta name="abstract" content="<?php echo '' 
+		/* don't want this right now as it messes up display 
+		  $kf->strip_excerpt(get_the_excerpt()); 
+		*/ ?>"/>
 		<meta name="author" content="by <?php the_author(); ?>"/>
 		<meta name="dc.date.issued" content="<?php the_date('Ymd'); ?>"/>
 	</head>

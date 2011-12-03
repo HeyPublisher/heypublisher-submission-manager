@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: kindle, ebook, periodical, publisher, magazine, electronic, amazon
 Requires at least: 3.2.0
 Tested up to: 3.2.0
-Stable Tag: 0.1.0
+Stable Tag: 0.1.2
 
 This plugin will create a feed of 'Posts that can be sent to Amazon for publication on [Kindle for Periodicals](https://kindlepublishing.amazon.com/gp/vendor/kindlepubs/kpp/kpp-home).
 
