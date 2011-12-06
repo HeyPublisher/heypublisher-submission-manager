@@ -26,10 +26,13 @@ echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>'; ?>
   <description><?php bloginfo_rss("description") ?></description>
   <pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', $kf->options['static']['published'], false); ?></pubDate>
   <lastBuildDate><?php echo mysql2date('D, d M Y H:i:s +0000', $kf->options['static']['build'], false); ?></lastBuildDate>
+<?php
+/* This is not accurate
   <item>
     <link><?php printf("%s/kindle_cover", site_url()); ?></link>
   </item>
-
+*/
+?>
 <?php
   foreach ($categories as $slug=>$link) { 
 ?>
