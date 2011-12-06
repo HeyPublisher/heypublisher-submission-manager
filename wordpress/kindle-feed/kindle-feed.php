@@ -58,6 +58,9 @@ function kindle_feed_rules() {
 	add_feed('kindle_manifest', array(&$kf,'format_manifest'));
 	add_feed('kindle_section', array(&$kf,'format_section'));
 	add_feed('kindle_article', array(&$kf,'format_article'));
+	add_feed('kindle_cover', array(&$kf,'format_cover'));
+	add_feed('kindle_cover_details', array(&$kf,'format_cover_details'));
+	add_feed('kindle_masthead', array(&$kf,'format_masthead'));
 }
 function kindle_admin_settings() {
   global $kf;

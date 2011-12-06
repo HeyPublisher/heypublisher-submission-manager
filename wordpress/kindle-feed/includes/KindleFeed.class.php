@@ -78,21 +78,30 @@ class KindleFeed {
 		// return the array
     return $params;
   }
-  
+
+	// dynamicly create the cover manifest
+	public function format_cover() {
+   load_template(dirname(__FILE__) . '/templates/cover.php');
+	}
+	// dynamically create the cover art layout
+	public function format_cover_details() {
+   load_template(dirname(__FILE__) . '/templates/cover_details.php');
+	}
+	// dynamically create the masthead layout
+	public function format_masthead() {
+		
+	}
   // The entry point manifest format.  This is the primary entry point for the primary manifest
   public function format_manifest() {
-   // load the feed template
    load_template(dirname(__FILE__) . '/templates/manifest.php');
   }
 
   // The section manifest format.  This is the primary entry point for the categories manifest
   public function format_section() {
-   // load the feed template
    load_template(dirname(__FILE__) . '/templates/section.php');
   }
 
   public function format_article() {
-   // load the feed template
    load_template(dirname(__FILE__) . '/templates/article.php');
   }
   

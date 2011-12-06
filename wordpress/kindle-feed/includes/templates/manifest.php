@@ -24,16 +24,22 @@ echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>'; ?>
   <title><?php echo $kf->feed_title(); ?></title>
   <link><?php bloginfo_rss('url') ?></link>
   <description><?php bloginfo_rss("description") ?></description>
-  <pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', $kf->feed[published], false); ?></pubDate>
-  <lastBuildDate><?php echo mysql2date('D, d M Y H:i:s +0000', $kf->feed[build], false); ?></lastBuildDate>
+  <pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', $kf->options['static']['published'], false); ?></pubDate>
+  <lastBuildDate><?php echo mysql2date('D, d M Y H:i:s +0000', $kf->options['static']['build'], false); ?></lastBuildDate>
+  <item>
+    <link><?php printf("%s/kindle_cover", site_url()); ?></link>
+  </item>
+
 <?php
   foreach ($categories as $slug=>$link) { 
 ?>
   <item>
-    <link><?php printf("%sfeed/kindle_section", $link); ?></link>
+    <link><?php printf("%skindle_section", $link); ?></link>
   </item>
 <?php 
   }; 
+	// Need to add the masthead here
+
 ?>
 </channel>
 </rss>
