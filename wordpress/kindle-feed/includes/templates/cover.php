@@ -12,7 +12,7 @@ header('Content-Type: ' . feed_content_type('rss-http') . '; charset=' . get_opt
 echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>'; ?>
 <rss version="2.0">
 <channel>
-	<title>Cover <?php echo $kf->feed_title(); ?></title>
+	<title>Cover</title>
   <item>
     <link><?php printf("%s/kindle_cover_details", site_url()); ?></link>
   </item>

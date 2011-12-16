@@ -19,7 +19,7 @@ echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>'; ?>
   <title><?php echo $category[0]->cat_name; ?></title>
 <?php while( have_posts()) : the_post(); ?>
   <item>
-    <link><?php printf("%sfeed/kindle_article",get_permalink()) ; ?></link>
+    <link><?php printf("%skindle_article",get_permalink()) ; ?></link>
   </item>
 <?php endwhile; ?>
 </channel>

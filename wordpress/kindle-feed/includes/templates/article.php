@@ -6,7 +6,11 @@
  */
 
 // The class with set options should already be loaded.
-global $kf, $post;
+global $kf, $post, $cons_shareFollow;
+// dump the Share and Follow junk, if present.
+if ($cons_shareFollow) {
+	remove_filter('the_content', array(&$cons_shareFollow, 'addContent'));
+}
 query_posts( $kf->query_string_for_posts(array('p'=> $post->ID )));
 while( have_posts()) : the_post();
 	$post = get_post(get_the_ID(), OBJECT);
@@ -32,8 +36,8 @@ while( have_posts()) : the_post();
 	$content = str_replace(']]>', ']]&gt;', $content);
 	print $kf->strip_content($content);
 	// Add the author bio
-	print '<p> </p>';
-	printf('<p>%s</p>', get_the_author_meta('description'));
+	print '<br/>';
+	printf('<p align="left" width="0">%s</p>', get_the_author_meta('description'));
 ?>
 	</body>
 </html>
