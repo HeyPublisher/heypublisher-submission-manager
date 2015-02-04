@@ -2,12 +2,10 @@
 /*
 Plugin Name: HeyPublisher Submission Manager
 Plugin URI: http://loudlever.com
-Description: This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them.  You can define acceptable categories and other filters to ensure you only receive the submissions that meet your publication's needs.
-Version: 1.4.2
+Description: This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them within WordPress.  You can define acceptable categories and other filters to ensure you only receive the submissions that meet your publication's needs.
+Version: 1.4.3
 Author: Loudlever, Inc.
 Author URI: http://www.loudlever.com
-
-  $Id: heypublisher-sub-mgr.php 145 2010-12-16 22:20:13Z rluck $
 
   Copyright 2010-2011 Loudlever, Inc. (wordpress@loudlever.com)
 
@@ -63,10 +61,10 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "48");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_BUILD_DATE", "2010-09-27");  
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "49");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_BUILD_DATE", "2015-02-03");  
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_VERSION", "1.4.2");
+define("HEYPUB_PLUGIN_VERSION", "1.4.3");
 
 # Base domain 
 define('HEYPUB_DOMAIN','http://heypublisher.com');    
