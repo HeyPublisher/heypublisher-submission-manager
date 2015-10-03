@@ -194,11 +194,11 @@ if ($hp_xml->is_validated) {
 <?php  
 }
 ?>    
-  
+  <!--
   <h3>How to Control the Style of the Submission Form</h3>
-  <p>This plugin uses your current theme's <!-- (<i><?php echo get_current_theme(); ?></i>) --> stylesheet to control the layout of the submission form.</p>
+  <p>This plugin uses your current theme's stylesheet to control the layout of the submission form.</p>
   <p>If you want to customize how the submission form looks, please <a href="<?php echo HEYPUB_SVC_URL_STYLE_GUIDE; ?>" target=_new title='Click to open the style guide in a new window'>read the style guide</a>.</p> 
-  
+  -->
   </div>
 <?php
 }
