@@ -33,7 +33,6 @@ class HeyPublisherXML {
     $this->config = get_option(HEYPUB_PLUGIN_OPT_CONFIG);
     $this->install = get_option(HEYPUB_PLUGIN_OPT_INSTALL);
     $this->set_is_validated();
-    // printf("<pre>install obj = %s\nconfig obje = %s</pre>",print_r($this->install,1),print_r($this->config,1));
   }   
 
   public function __destruct() {
@@ -226,7 +225,8 @@ class HeyPublisherXML {
       'url'           => htmlentities(stripslashes($this->get_config_option('url'))),
       'email'         => htmlentities(stripslashes($user['username'])),
       'password'      => htmlentities(stripslashes($user['password'])),
-      'version'       => $this->get_install_option('version_current')
+      'version'       => HEYPUB_PLUGIN_VERSION,
+      'build'         => HEYPUB_PLUGIN_BUILD_NUMBER
       );
 
     $xml_parts = '';
@@ -333,8 +333,9 @@ EOF;
 EOF;
     return $ret;
   }
-
-  function update_publisher($post,$ignore_errors=false) {
+  
+  // When uninstalling plugin we also supress errors.
+  function update_publisher($post,$uninstall_plugin=false) {
     $categories = $this->update_publisher_categories($post);
     $reading = $this->update_publisher_reading_period($post);
     $simulsubs = $this->boolean($post[simu_subs]);
@@ -355,6 +356,11 @@ EOF;
     $twitter = htmlentities(stripslashes($post[twitter]));
     $facebook = htmlentities(stripslashes($post[facebook]));
     $url = htmlentities(stripslashes($post[url]));
+    
+    $uninstall = '';
+    if ($uninstall_plugin) {
+      $uninstall = '<uninstall_plugin>true</uninstall_plugin>';
+    }
 
     $post = <<<EOF
 <publisher>
@@ -392,11 +398,13 @@ EOF;
     $categories
     $reading
     $paying
+    $uninstall
 </publisher>
 EOF;
 
     $ret = $this->send(HEYPUB_SVC_URL_UPDATE_PUBLISHER,$this->prepare_request_xml($post,true));
-    if (FALSE == $ret && FALSE == $ignore_errors) {
+    $this->log(sprintf("updating publisher results = \n%s",print_r($ret,1)));
+    if (FALSE == $ret && FALSE == $uninstall_plugin) {
       $this->print_webservice_errors();
     } 
     else {
@@ -414,7 +422,7 @@ EOF;
         } else {
           $this->error = 'Error updating publisher data at HeyPublisher.com';
         }
-        if (FALSE == $ignore_errors) {
+        if (FALSE == $uninstall_plugin) {
           $this->print_webservice_errors();
         }
       }
@@ -733,6 +741,12 @@ EOF;
     $string = preg_replace('/[^0-9a-zA-Z\s]+/','',html_entity_decode($string,ENT_QUOTES));
     $string = preg_replace('/ /','+',$string);
     return $string;
+  }
+  // Private functions
+  private function log($msg) {
+    if ($this->debug) {
+      error_log(sprintf("%s\n",$msg),3,dirname(__FILE__) . '/../../error.log');
+    }
   }
   
 }

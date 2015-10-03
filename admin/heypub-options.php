@@ -369,7 +369,7 @@ function heypub_get_category_mapping($id,$show) {
 function heypub_set_category_mapping($post) {
   global $hp_xml;
   $result = array();
-  if ($post[accepting_subs]) {
+  if ($post[accepting_subs] && $post[genres_list]) {
     $map = $post[category_map];
     $genres = $post[genres_list];
     foreach ($genres as $x) {
