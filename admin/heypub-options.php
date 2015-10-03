@@ -22,8 +22,8 @@ function heypub_show_menu_options() {
 ?>
     <h3>HeyPublisher Account Info</h3>
     <p>If your publication is <a href="<?php echo HEYPUB_DOMAIN; ?>/publishers/search/all/none/<?php printf('%s',$hp_xml->searchable($opts['name'])); ?>" target=_new>listed in HeyPublisher's database</a>, please enter your publication's name and URL below <i>exactly</i> as it appears on HeyPublisher.</p>
-    <p>If your publication is not already in our database, tell us the name and URL of your publication (the defaults listed below are based upon your Wordpress settings).</p>
-    <p><p><b>IMPORTANT:</b> Please provide an email address and desired password below.  We will use this information to create an 'administrator' account in our system, allowing you to manage your publication's listing from the <a href='http://heypublisher.com/'  target='_new'>HeyPublisher.com website</a>, as well as from this plugin.</p>
+    <p>If your publication is not already in our database, tell us the name and URL of your publication and we will add it.  The defaults listed below are based upon your Wordpress settings.</p>
+    <p><p><b>IMPORTANT:</b> Please provide an email address and desired password below.  We will use this information to create an 'administrator' account in our system that allows you to better manage the plugin.</p>
     
   <label class='heypub' for='hp_name'>Publication Name</label>
   <input type="text" name="hp_user[name]" id="hp_name" class='heypub' value="<?php echo $opts['name']; ?>" />
