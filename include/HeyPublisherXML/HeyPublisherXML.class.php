@@ -5,6 +5,7 @@
 */
 class HeyPublisherXML {
 
+  var $debug = false;
   var $svc_url = HEYPUB_SVC_URL_BASE;
   var $curl = false;
   var $error = false;
@@ -188,6 +189,9 @@ class HeyPublisherXML {
     curl_setopt($this->curl, CURLOPT_POSTFIELDS, $post);
     // Execute the request and also time the transaction
     $result = curl_exec($this->curl);
+    $this->log(sprintf("send():\URL = %s\nPOST = %s",$url,print_r($post,1)));
+    $this->log(sprintf("INFO:\n%s",print_r(curl_getinfo($this->curl),1)));
+    // $this->log(sprintf("RESULT: %s",$result));
     // Check for errors
     if ( curl_errno($this->curl) ) {
       $this->error = 'HeyPublisher Service ERROR : ' . curl_error($this->curl);
@@ -409,6 +413,7 @@ EOF;
     } 
     else {
       $xml = new SimpleXMLElement($ret);
+      $this->log(sprintf("XML results \n%s",print_r($xml,1)));
       // printf( "<pre>XML = %s</pre>",print_r($xml,1));
       # this is an object, convert to string
       if ($xml->success->message) {
@@ -434,6 +439,7 @@ function get_publisher_info() {
   $post = '';
   $return = array();
   $ret = $this->send(HEYPUB_SVC_URL_GET_PUBLISHER,$this->prepare_request_xml($post));
+  $this->log(sprintf("get_publisher_info params = \n%s\n RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
   if (FALSE == $ret) {
     $this->print_webservice_errors();
   } 
@@ -483,7 +489,7 @@ EOF;
       $this->print_webservice_errors();
     } 
     else {
-      // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
+      $this->log(sprintf("RAW XML = \n%s",$ret));
       $xml = new SimpleXMLElement($ret);
       // printf( "<pre>XML = %s</pre>",print_r($xml,1));
       # this is an object, convert to string
@@ -525,7 +531,7 @@ EOF;
     } 
     else {
       $xml = new SimpleXMLElement($ret);
-      // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
+      $this->log(sprintf("RAW XML = \n%s",$ret));
       // printf( "<pre>XML = %s</pre>",print_r($xml,1));
       # this is an object, convert to string
       if ($xml->success->message) {
