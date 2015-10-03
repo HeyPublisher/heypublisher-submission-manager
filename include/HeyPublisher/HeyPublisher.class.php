@@ -39,14 +39,14 @@ class HeyPublisher {
     <br/>
     <a href='mailto:{$_CONSTANTS['HEY_BASE_URL']}'>Email Us</a>
 EOF;
-    $seo = 'foo';
-//  $seo = $hp_xml->get_config_option('seo_url');
-    if ($seo) {
-      $content .= <<<EOF
-<hr>
-<b><a target='_blank' href="$seo">See Your Site in Our Database</a></b>
-EOF;
-    }
+    // $seo = 'foo';
+    // $seo = $hp_xml->get_config_option('seo_url');
+//     if ($seo) {
+//       $content .= <<<EOF
+// <hr>
+// <b><a target='_blank' href="$seo">See Your Site in Our Database</a></b>
+// EOF;
+//     }
     $ret = sprintf($format,$content);
     return $ret;
   }
