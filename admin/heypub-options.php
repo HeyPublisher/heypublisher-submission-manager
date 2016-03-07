@@ -21,9 +21,9 @@ function heypub_show_menu_options() {
   if (!$hp_xml->is_validated) {
 ?>
     <h3>HeyPublisher Account Info</h3>
-    <p>If your publication is <a href="<?php echo HEYPUB_DOMAIN; ?>/publishers/search/all/none/<?php printf('%s',$hp_xml->searchable($opts['name'])); ?>" target=_new>listed in HeyPublisher's database</a>, please enter your publication's name and URL below <i>exactly</i> as it appears on HeyPublisher.</p>
-    <p>If your publication is not already in our database, tell us the name and URL of your publication and we will add it.  The defaults listed below are based upon your Wordpress settings.</p>
-    <p><p><b>IMPORTANT:</b> Please provide an email address and desired password below.  We will use this information to create an 'administrator' account in our system that allows you to better manage the plugin.</p>
+    <p>If your publication is <a href="<?php echo HEYPUB_DOMAIN; ?>/publishers/search/all/none/<?php printf('%s',$hp_xml->searchable($opts['name'])); ?>" target=_new>listed in HeyPublisher's database</a>, please enter your publication's name and URL <i>exactly</i> as it appears on HeyPublisher.</p>
+    <p>If your publication is not already in our database, tell us the name and URL and we will add it.  The defaults listed below are based upon your current WordPress settings.</p>
+    <p><p><b>IMPORTANT:</b> Please provide an email address and desired password below.  We use this information to create an 'administrator' account in our system that allows you to better manage the plugin.</p>
     
   <label class='heypub' for='hp_name'>Publication Name</label>
   <input type="text" name="hp_user[name]" id="hp_name" class='heypub' value="<?php echo $opts['name']; ?>" />
@@ -265,9 +265,9 @@ function heypub_show_menu_options() {
 <!-- Notification Options -->
 <div id='heypub_n_info' style='display:none;'>
       <h3>Author Notification Options</h3>
-      <p>By default, this plugin will send an email to the author when their submission transitions through each of the <a href='http://blog.heypublisher.com/docs/plugins/wordpress/submission-states/' target='_blank'>states in the submission cycle</a>.</p>
-<p>If you want to supress sending any of these notifications, indicate so below by setting the value to 'No'.</p>
-<p>Additionally, you can customize the emails sent to the author via the <a href='admin.php?page=heypub_response_templates' target=_top>Response Templates</a> screen.</p>
+      <p>This plugin will send an email to the author when their submission transitions through each of the <a href='<?php echo HEYPUB_DOMAIN; ?>/about/submission_states' target='_blank'>states in the submission cycle</a>.</p>
+<p>You can turn off sending each of these notifications by setting the value to 'No' below.</p>
+<p>You can also customize the emails sent to the author via the <a href='admin.php?page=heypub_response_templates' target=_top>Response Templates</a> screen.</p>
 <?php
 // We'll introduce this later - for now it's hard-coded to yes
 // 
@@ -335,7 +335,7 @@ function heypub_show_menu_options() {
     <br/>
     <div class="alignleft actions">
     	<input type="hidden" name="save_settings" value="0" />
-    	<input type="submit" name="save_button" id="save_button" value="Save &raquo;" />
+    	<input type="submit" class="heypub-button button-primary" name="save_button" id="save_button" value="Save &raquo;" />
 		</div>
 	</form>
  </div>
