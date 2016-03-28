@@ -16,7 +16,7 @@ class HeyPublisherXML {
     'unread' => 'New',
     'read' => 'Read',
     'under_consideration' => 'Under Review',
-    'accepted' => 'Accepted for Publication',
+    'accepted' => 'Accepted',
     'rejected' => 'Rejected',
     'published' => 'Published',
     'publisher_revision_requested' => 'Revision Requested',
@@ -34,7 +34,7 @@ class HeyPublisherXML {
     $this->config = get_option(HEYPUB_PLUGIN_OPT_CONFIG);
     $this->install = get_option(HEYPUB_PLUGIN_OPT_INSTALL);
     $this->set_is_validated();
-  }   
+  }
 
   public function __destruct() {
     curl_close($this->curl);
@@ -45,7 +45,7 @@ class HeyPublisherXML {
       update_option(HEYPUB_PLUGIN_OPT_CONFIG,$this->config);
     }
   }
-  
+
   protected function clean_local_vars($array) {
     $tmp = array();
     foreach ($array as $key=>$val) {
@@ -57,7 +57,7 @@ class HeyPublisherXML {
     }
     return $tmp;
   }
-  
+
   public function get_category_mapping() {
     if ($this->config[categories]) {
       return $this->config[categories];
@@ -71,14 +71,14 @@ class HeyPublisherXML {
     $this->config[categories] = $map;
     return;
   }
-  
+
   public function initialize_plugin() {
     $this->init_install_options();
     add_option(HEYPUB_PLUGIN_OPT_INSTALL,$this->install);
     $this->init_config_options();
     add_option(HEYPUB_PLUGIN_OPT_CONFIG,$this->config);
   }
-  
+
   private function init_install_options(){
     $this->install = array(
       'version_last'    => 0,
@@ -174,7 +174,7 @@ class HeyPublisherXML {
     $this->pub_oid = $this->install['publisher_oid'];
     if ($this->user_oid && $this->pub_oid) { $this->is_validated = $this->install['is_validated']; }
   }
-  
+
   public function send($path,$post) {
     $return = false;
     $url = sprintf("%s/%s",$this->svc_url,$path);
@@ -195,7 +195,7 @@ class HeyPublisherXML {
     // Check for errors
     if ( curl_errno($this->curl) ) {
       $this->error = 'HeyPublisher Service ERROR : ' . curl_error($this->curl);
-    } 
+    }
     else {
      $http_code = (int)curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
      switch($http_code){
@@ -206,7 +206,7 @@ class HeyPublisherXML {
          $this->error = 'HeyPublisher POST ERROR Code : ' . $http_code;
          break;
      }
-    }   
+    }
     if (FALSE != $this->error) {
       $trace=debug_backtrace();
       $this_func = array_shift($trace);
@@ -225,7 +225,7 @@ class HeyPublisherXML {
     $xml_ops = array(
       'token'         => HEYPUB_SVC_TOKEN_VALUE,
       # no htmlentities here, otherwise " becomes %quote; and cronks the seo name
-      'publishername' => stripslashes($this->get_config_option('name')),     
+      'publishername' => stripslashes($this->get_config_option('name')),
       'url'           => htmlentities(stripslashes($this->get_config_option('url'))),
       'email'         => htmlentities(stripslashes($user['username'])),
       'password'      => htmlentities(stripslashes($user['password'])),
@@ -242,7 +242,7 @@ class HeyPublisherXML {
     $ret = $this->send(HEYPUB_SVC_URL_AUTHENTICATE,$post);
     if (FALSE == $ret) {
       $this->print_webservice_errors();
-    } 
+    }
     else {
       $xml = new SimpleXMLElement($ret);
       // printf( "<pre>XML = %s</pre>",print_r($xml,1));
@@ -254,7 +254,7 @@ class HeyPublisherXML {
       }
       else {
         $err = $xml->error->message;
-        if ($err) { 
+        if ($err) {
           $this->error = "$err";
         } else {
           $this->error = 'Did not receive authentication from HeyPublisher.com';
@@ -310,7 +310,7 @@ class HeyPublisherXML {
     }
     return $ret;
   }
-  
+
   function prepare_request_xml($post,$suppress_publisher=false) {
     $account = $this->get_account_request_header();
     if (FALSE == $suppress_publisher) {
@@ -319,11 +319,13 @@ class HeyPublisherXML {
     $ret = sprintf('<?xml version="1.0" encoding="UTF-8"?><request>%s%s%s</request>',$account,$publisher,$post);
     return $ret;
   }
-  
+
   function get_publisher_request_header() {
+    $version = HEYPUB_PLUGIN_VERSION;
     $ret = <<<EOF
     <publisher>
         <oid>$this->pub_oid</oid>
+        <version>$version</version>
     </publisher>
 EOF;
     return $ret;
@@ -337,7 +339,7 @@ EOF;
 EOF;
     return $ret;
   }
-  
+
   // When uninstalling plugin we also supress errors.
   function update_publisher($post,$uninstall_plugin=false) {
     $categories = $this->update_publisher_categories($post);
@@ -360,7 +362,7 @@ EOF;
     $twitter = htmlentities(stripslashes($post[twitter]));
     $facebook = htmlentities(stripslashes($post[facebook]));
     $url = htmlentities(stripslashes($post[url]));
-    
+
     $uninstall = '';
     if ($uninstall_plugin) {
       $uninstall = '<uninstall_plugin>true</uninstall_plugin>';
@@ -398,7 +400,7 @@ EOF;
     <notify_published>$post[notify_published]</notify_published>
     <notify_accepted>$post[notify_accepted]</notify_accepted>
     <notify_under_consideration>$post[notify_under_consideration]</notify_under_consideration>
-    
+
     $categories
     $reading
     $paying
@@ -410,7 +412,7 @@ EOF;
     $this->log(sprintf("updating publisher results = \n%s",print_r($ret,1)));
     if (FALSE == $ret && FALSE == $uninstall_plugin) {
       $this->print_webservice_errors();
-    } 
+    }
     else {
       $xml = new SimpleXMLElement($ret);
       $this->log(sprintf("XML results \n%s",print_r($xml,1)));
@@ -422,7 +424,7 @@ EOF;
       }
       else {
         $err = $xml->error->message;
-        if ($err) { 
+        if ($err) {
           $this->error = "$err";
         } else {
           $this->error = 'Error updating publisher data at HeyPublisher.com';
@@ -442,7 +444,7 @@ function get_publisher_info() {
   $this->log(sprintf("get_publisher_info params = \n%s\n RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
   if (FALSE == $ret) {
     $this->print_webservice_errors();
-  } 
+  }
   else {
     $xml = new SimpleXMLElement($ret);
     // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
@@ -451,11 +453,11 @@ function get_publisher_info() {
       foreach ($xml->publisher->children() as $x) {
         $name = $x->getName();
         $return["$name"] = "$x";
-      } 
+      }
     }
     else {
       $err = $xml->error->message;
-      if ($err) { 
+      if ($err) {
         $this->error = "$err";
       } else {
         $this->error = 'Error retrieving publisher info from HeyPublisher.com';
@@ -474,7 +476,7 @@ function get_publisher_info() {
       return 'Unknown';
     }
   }
-  
+
   function get_recent_submissions() {
     $post = <<<EOF
 <submissions>
@@ -487,7 +489,7 @@ EOF;
     $ret = $this->send(HEYPUB_SVC_URL_GET_SUBMISSIONS,$this->prepare_request_xml($post));
     if (FALSE == $ret) {
       $this->print_webservice_errors();
-    } 
+    }
     else {
       $this->log(sprintf("RAW XML = \n%s",$ret));
       $xml = new SimpleXMLElement($ret);
@@ -507,7 +509,7 @@ EOF;
       }
       else {
         $err = $xml->error->message;
-        if ($err) { 
+        if ($err) {
           $this->error = "$err";
         } else {
           $this->error = 'Error updating publisher data at HeyPublisher.com';
@@ -528,7 +530,7 @@ EOF;
     $ret = $this->send(HEYPUB_SVC_READ_SUBMISSION,$this->prepare_request_xml($post));
     if (FALSE == $ret) {
       $this->print_webservice_errors();
-    } 
+    }
     else {
       $xml = new SimpleXMLElement($ret);
       $this->log(sprintf("RAW XML = \n%s",$ret));
@@ -539,10 +541,10 @@ EOF;
       }
       else {
         $err = $xml->error->message;
-        if ($err) { 
-          if ($err == '403 Forbidden') { # we let these ones slide
+        if ($err) {
+          if ($err == '403 Forbidden') {
             $this->error = 'The content of this submission is temporarily unavailable.';
-            $return = $xml->submission;
+            // $return = $xml->submission; // don't return content - nothing editor can do with this
           } else {
             $this->error = "$err";
           }
@@ -561,13 +563,13 @@ EOF;
     <div id='heypub_error' class='flash error'>
       <h2>Error Encountered</h2>
       <p><?php echo $this->error; ?></p>
-<?php      
+<?php
     if ($show_contact) {
-?>      
+?>
       <p><b><?php echo HEYPUB_PLUGIN_ERROR_CONTACT; ?></b></p>
 <?php
     }
-?>    
+?>
     </div>
 <?php
   }
@@ -600,7 +602,7 @@ EOF;
     $ret = $this->send(HEYPUB_SVC_URL_GET_PUB_TYPES,$this->prepare_request_xml($post));
     if (FALSE == $ret) {
       $this->print_webservice_errors();
-    } 
+    }
     else {
       $xml = new SimpleXMLElement($ret);
       // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
@@ -612,7 +614,7 @@ EOF;
             if ($id) {
               $return["$x"] = array('name' => "$x", 'id' => "$id");
             }
-          } 
+          }
           // We man not yet have submission categories defined remotely (if this is an initial install) - so account for that.
           if ($xml->mine->publisher_type) {
             foreach ($xml->mine->publisher_type as $x) {
@@ -620,12 +622,12 @@ EOF;
               if ($id) {
                 $return["$x"]['has'] = 1;
               }
-            } 
+            }
           }
         }
         else {
           $err = $xml->error->message;
-          if ($err) { 
+          if ($err) {
             $this->error = "$err";
           } else {
             $this->error = 'Error getting publisher data from HeyPublisher.com';
@@ -654,7 +656,7 @@ EOF;
     $ret = $this->send(HEYPUB_SVC_URL_GET_GENRES,$this->prepare_request_xml($post));
     if (FALSE == $ret) {
       $this->print_webservice_errors();
-    } 
+    }
     else {
       $xml = new SimpleXMLElement($ret);
       // printf( "<pre>XML = %s</pre>",print_r($xml,1));
@@ -666,7 +668,7 @@ EOF;
             if ($id) {
               $return["$x"] = array('name' => "$x", 'id' => "$id");
             }
-          } 
+          }
           // We may not yet have submission categories defined remotely (if this is an initial install) - so account for that.
           if ($xml->mine->category) {
             foreach ($xml->mine->category as $x) {
@@ -674,12 +676,12 @@ EOF;
               if ($id) {
                 $return["$x"]['has'] = 1;
               }
-            } 
+            }
           }
         }
         else {
           $err = $xml->error->message;
-          if ($err) { 
+          if ($err) {
             $this->error = "$err";
           } else {
             $this->error = 'Error getting publisher data from HeyPublisher.com';
@@ -714,12 +716,12 @@ EOF;
     $notify
 </submission>
 EOF;
-    
+
     // printf("<pre>XML request to webservice = %s</pre>",htmlentities($post));
     $ret = $this->send(HEYPUB_SVC_URL_RESPOND_TO_SUBMISSION,$this->prepare_request_xml($post));
     if (FALSE == $ret) {
       $this->print_webservice_errors();
-    } 
+    }
     else {
       $xml = new SimpleXMLElement($ret);
       // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
@@ -731,7 +733,7 @@ EOF;
         }
         else {
           $err = $xml->error->message;
-          if ($err) { 
+          if ($err) {
             $this->error = "$err";
           } else {
             $this->error = 'Error updating submission status at HeyPublisher.com';
@@ -741,19 +743,19 @@ EOF;
       }
       return $return;
   }
-  
+
   // Get a publisher name into the format expected by HeyPub search
   public function searchable($string) {
     $string = preg_replace('/[^0-9a-zA-Z\s]+/','',html_entity_decode($string,ENT_QUOTES));
     $string = preg_replace('/ /','+',$string);
     return $string;
   }
-  // Private functions
-  private function log($msg) {
+  // logging function
+  public function log($msg) {
     if ($this->debug) {
       error_log(sprintf("%s\n",$msg),3,dirname(__FILE__) . '/../../error.log');
     }
   }
-  
+
 }
 ?>

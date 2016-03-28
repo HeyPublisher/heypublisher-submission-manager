@@ -2,12 +2,12 @@
 /*
 Plugin Name: HeyPublisher Submission Manager
 Plugin URI: http://loudlever.com
-Description: This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them within WordPress.  You can define acceptable categories and other filters to ensure you only receive the submissions that meet your publication's needs.
+Description: This plugin allows you as to accept unsolicited submissions from writers.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.
 Author: Loudlever
 Author URI: http://www.loudlever.com
-Version: 1.4.4
+Version: 1.5.0
 
-  Copyright 2010-2015 Loudlever, Inc. (wordpress@loudlever.com)
+  Copyright 2010-2016 Loudlever, Inc. (wordpress@loudlever.com)
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation
@@ -57,24 +57,25 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   1.4.2 => 48
   1.4.3 => 49
   1.4.4 => 50
+  1.4.5 => 51
+  1.5.0 => 52
 ---------------------------------------------------------------------------------
 */  
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "50");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_BUILD_DATE", "2015-10-02");  
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "52");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_BUILD_DATE", "2016-03-27");  
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_VERSION", "1.4.4");
+define("HEYPUB_PLUGIN_VERSION", "1.5.0");
 
 # Base domain 
-define('HEYPUB_DOMAIN','http://heypublisher.com');    
+define('HEYPUB_DOMAIN','https://www.heypublisher.com');    
 
-define('HEYPUB_PLUGIN_ERROR_CONTACT','Please contact <a href="mailto:support@heypublisher.com?subject=plugin%20error">support@heypublisher.com</a> to report this error');
+define('HEYPUB_PLUGIN_ERROR_CONTACT','Please contact <a href="mailto:support@heypublisher.com?subject=plugin%20error">support@heypublisher.com</a> for further information.');
 
 define('HEYPUB_DONATE_URL','https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6');
-define('HEYPUB_LICENSE_URL',sprintf('%s/license',HEYPUB_DOMAIN));
 
 // which method handles the not-authenticated condition?
 define('HEYPUB_PLUGIN_NOT_AUTHENTICATED_ACTION','heypub_show_menu_options');
@@ -88,7 +89,7 @@ define('HEYPUB_FEEDBACK_GETSATISFACTION','mailto:support@heypublisher.com?Subjec
 // define('HEYPUB_SVC_URL_STYLE_GUIDE','http://blog.heypublisher.com/docs/plugins/wordpress/style_guide/');     # designates the URL of the style guide
 define('HEYPUB_SVC_URL_BASE', HEYPUB_DOMAIN . '/api/v1');                 # designates the base URL and version of API
 # Stylesheet for plugin resides on HP server now
-define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugin.css?R15.2');
+define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugin.css?' . HEYPUB_PLUGIN_VERSION);
 
 define('HEYPUB_SVC_URL_SUBMIT_FORM','submissions');           
 define('HEYPUB_SVC_URL_AUTHENTICATE','publishers/fetch_or_create');           # initial plugin authentication
@@ -195,7 +196,7 @@ function RegisterHeyPublisherAdminMenu(){
   //  $countHTML = ' <span id="awaiting-mod" class="count-1"><span class="pending-count">'.$count.'</span></span>';
   // }
 
-    $admin_menu = add_menu_page('HeyPublisher Stats','HeyPublisher', 8, HEY_DIR, 'heypub_menu_main', HEY_BASE_URL.'images/heypub-icon.png');
+    $admin_menu = add_menu_page('HeyPublisher Stats','HeyPublisher', 8, HEY_DIR, 'heypub_menu_main', 'dashicons-book');
     add_action("admin_print_styles-$admin_menu", 'HeyPublisherAdminHeader' );
 
   if ($hp_xml->is_validated) {
@@ -236,6 +237,7 @@ function HeyPublisherAdminInit() {
 	$parts = array(WP_PLUGIN_URL,HEY_DIR,'include','js','heypublisher.js');
 	$url = implode(DIRECTORY_SEPARATOR,$parts);
   wp_enqueue_script('heypublisher', $url, array('prototype')); 
+  wp_enqueue_style('heypub_font_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array(), HEYPUB_PLUGIN_VERSION);
 }
 
 /*

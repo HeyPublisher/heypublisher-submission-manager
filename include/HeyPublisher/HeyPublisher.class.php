@@ -99,25 +99,18 @@ EOF;
     } else {
       $p = $hp_xml->get_publisher_info();
       if ($p[total_open_subs]) {
-        $p[total_open_subs] = $this->submission_summary_link($p[total_open_subs]);
+        $p[total_open_subs] = $this->submission_summary_link("$p[total_open_subs] Pending Subs");
     }
+    $style = " style='width:50%;float:left;'";
     $data = <<<EOF
-<td class="first b">$p[total_subs]</td>
-<td class='t'>Total Subs</td>
-<td class='b'>$p[total_open_subs]</td>
-<td class='last t waiting'>Pending</td>
-</tr>
-<tr>
-<td class="first b">$p[total_published_subs]</td>
-<td class='t approved'>Published</td>
-<td class='b'>$p[total_rejected_subs]</td>
-<td class='last t spam'>Rejected</td>
-</tr>
-<tr>
-<td class="first b">$p[published_rate]</td>
-<td class='t approved'>Published %</td>
-<td class='b'>$p[rejected_rate]</td>
-<td class='last t spam'>Rejected %</td>
+<ul style='margin:0;overflow:hidden;'>  
+    <li $style>$p[total_subs] Total Submissions</li>
+    <li $style>$p[total_open_subs]</li>
+    <li $style>$p[total_published_subs] Published Subs</li>
+    <li $style>$p[total_rejected_subs] Rejected Sub</li>
+    <li $style>$p[published_rate] Publish Rate</li>
+    <li $style>$p[rejected_rate] Reject Rate</li>
+</ul>
 EOF;
 // for future ref, if we want to add this in:
 // </tr>
@@ -143,24 +136,13 @@ EOF;
   public function right_now_widget() {
     $data = $this->get_dashboard_stats();
     $str = <<<EOF
-<div class='table' id='dashboard_right_now'>
-<table>
-  <tr class='first'>$data</tr>
-</table>
+<div class='main' id='heypub_dashboard' style='overflow:hidden;padding:0 12px 11px;'>
+  $data
 </div>
 EOF;
     return $str;
   }
 
-  public function make_license_link() {
-    global $hp_xml;
-    $url = sprintf('%s/%s',HEYPUB_LICENSE_URL,$hp_xml->get_install_option('publisher_oid'));
-    $format = "<a href='%s' target='_blank' title='See the Additional Features Available when you License this Plugin' class='heypub_smart_button green'>License Plugin</a>";
-    $str = sprintf($format,$url);
-    return $str;
-  }
-
-    
   public function make_donation_link($text_only=false) {
     $format = "<a href='".HEYPUB_DONATE_URL."' target='_blank' title='Thank You for Donating to HeyPublisher'>%s</a>";
     if ($text_only) {

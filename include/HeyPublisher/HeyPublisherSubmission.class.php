@@ -8,16 +8,25 @@ class HeyPublisherSubmission extends HeyPublisher {
 
   var $nounce = 'heypub-bulk-submit';
   var $disallowed_states = array('withdrawn','published','rejected');
+
+  var $submission_state = array(
+    'read' => 'read',
+    'under_consideration' => 'review',
+    'accepted' => 'accept',
+    'rejected' => 'reject',
+    'publisher_revision_requested' => 'request_revision'
+    );
+
   public function __construct() {
   	parent::__construct();
 
-  }   
+  }
 
   public function __destruct() {
   	parent::__destruct();
 
   }
-  
+
   // Deprecating with v 1.4.0
   public function revision_request_link($id) {
     $form = $this->revision_request_form($id);
@@ -37,7 +46,7 @@ EOF;
   public function revision_request_form($id) {
     $url = $this->get_form_post_url_for_page('heypub_show_menu_submissions');
     $nounce = wp_nonce_field($this->nounce);
-    
+
     $str = <<<EOF
 <hr>
 <h3>Note to Author:</h3>
@@ -93,5 +102,15 @@ EOF;
     return $str;
   }
 
+  public function select_selected($option,$val) {
+    global $hp_xml;
+    // $val is an array - so stringify it
+    $hp_xml->log(sprintf("select_selected(%s,%s)",$option,$val));
+    $hp_xml->log(sprintf("hash (%s)",$this->submission_state["$val"]));
+    if ($this->submission_state["$val"] && $this->submission_state["$val"] == $option) {
+      return 'selected';
+    }
+    return '';
+  }
 
 }

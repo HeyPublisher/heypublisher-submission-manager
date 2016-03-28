@@ -1,10 +1,10 @@
 === HeyPublisher Submisson Manager ===
 Contributors: loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
-Tags: anonymous, post, contributor, submit, submission, unregistered user, custom post interface, plugin, slushpile, HeyPublisher
+Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, loudlever, online applications, slushpile, submission forms, submission manager, submission, unregistered user
 Requires at least: 2.8.6
 Tested up to: 4.2.1
-Stable Tag: 1.4.4
+Stable Tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,43 +12,21 @@ This plugin allows you as a publisher or blog owner to accept unsolicited submis
 
 == Description ==
 
-**About HeyPublisher Submission Manager**
+This plugin allows you as to accept unsolicited submissions from writers.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.
 
-This plugin allows publishers and blog owners to accept unsolicited submissions from unregistered users.  You no longer have to create accounts for each and every writer in your system who wants to submit content to you for consideration.  Instead, submissions to your website are handled by the [HeyPublisher.com](http://www.heypublisher.com) web-service via this plugin.  
+**How HeyPublisher Submission Manager Helps**
+
+Normally if you wanted to allow readers to submit their writing to your publication you would need to create an account in WordPress for each writer, then educate them on how to write and edit Posts within the publishing tool.
+
+With the HeyPublisher Submission Manager plugin submissions to your publication are instead uploaded to the  [HeyPublisher.com](http://www.heypublisher.com) web-service.  You still review the submissions within WordPress.  But you no longer have to manage user accounts or worry about unwanted posts filling up your system.
+
+Mark submissions for review, accept submissions for publication, or reject submissions to remove them from your slush pile.  All acceptance/rejection communications with the writer are handled automatically by HeyPublisher, freeing you from the time-consuming task of having to respond to each submission individually.
 
 You define the type of writing you want to receive.  You control the flow of unsolicited content coming into your publication.  You have more time to run your publication.  
 
-Think of us as a "digital [slush pile](http://en.wikipedia.org/wiki/Slush_pile)" for your website.
-
-Use of this plugin allows you to quickly and easily preview submissions, mark submissions for 'review', accept submissions for publication, or reject submissions, removing them from your slush pile.  All acceptance/rejection communications with the writer are handled automatically by the web-service, freeing you from the time-consuming task of having to respond to each submission individually.
-
-HeyPublisher Submission Manager allows you to:
-
-* Define specific genres of work you will accept and limit the submissions to only works within those genres.
-
-* Enforce your publication's simultaneous submission rules.  If you don't accept simultaneous submissions, the plugin will prevent writers from submitting work to you and another press simultaneously.
-
-* Prevent writers from spamming you with submissions (unless you accept multiple submissions)
-
-* Publish your submission guidelines in [HeyPublisher's Publisher Database](http://heypublisher.com/publishers/search), where they can be discovered by thousands of creative writers world-wide.
-
-**How it Works**
-
-This plugin allows you to keep your database clear of unsolicited submissions and unnecessary user accounts.
-
-All submissions are stored remotely on our servers so we can filter out the submissions you don't want to see.  The only time a submission or user account is ever copied over to your system is when you "accept" a submission for publication.
-
-Spam submissions are a virtual impossibility.  Since all writers must have valid accounts with HeyPublisher before they can submit work to your publication, we prevent spam from getting in.  And since you as a publisher can toggle on or off the ability to accept simultaneous submissions and multiple submissions, you can very easily control the flow of new content coming to your publication.
-
 == About Us ==
 
-Developed by the fine folks at [Loudlever, Inc.](http://loudlever.com), HeyPublisher is the premier online tool for writers to discover publishers and new writing markets.  
-
-At Loudlever, Inc. we believe writers and publishers should be well-matched — compatible in a long-term relationship.  This is why we're applying the same computer algorithms used by online dating sites to our tools to ensure writers and publishers are perfectly paired.
-
-When writers and publishers are perfectly matched, magic can happen.  Writers are more creative.  Publishers are able to get issues out faster.
-
-We are Loudlever.  Creativity.  Accelerated.
+HeyPublisher is developed by the fine folks at [Loudlever, Inc.](http://loudlever.com).
 
 == Installation ==
 
@@ -60,19 +38,18 @@ We are Loudlever.  Creativity.  Accelerated.
 
 * Active the plugin via the WordPress plugin menu.  
 
-Once activated you will need to 'validate' the plugin with the HeyPublisher webservice.  To do this, click on the HeyPublisher link in the newly created side-nav box and follow the on-screen instructions.
+Once activated you will need to 'validate' the plugin with the HeyPublisher web-service.  To do this click on the HeyPublisher link in the newly created menu and follow the on-screen instructions.
 
 **Validate Plugin**
 
-To validate the plugin you will need to provide some basic information about your publication and yourself as the administrator of this publication:
+To validate the plugin you will need to provide basic information about your publication and yourself as the administrator of this publication:
 
 * Your publication name
 * Your publication url
-
-If your publication already exists in the [HeyPublisher.com](http://heypublisher.com/publishers/search) database, enter the name _exactly as it appears_ in our database.  If it doesn't already exist, simply enter the name as you want it to appear within our database.
-
 * Your email address
 * A password
+
+If your publication already exists in the [HeyPublisher.com](http://heypublisher.com/publishers/search) database, enter the name _exactly as it appears_ in our database.  If it doesn't already exist, simply enter the name as you want it to appear within our database.
 
 If you already have an account with HeyPublisher.com, enter the email address and password you use to login.  If you do not already have an account, enter the email address and password you would like to use.  This username and password will be used if you ever need to reinstall or upgrade the plugin.  This information is also used to ensure that **_ONLY YOU_** can modify your publication's listing in the HeyPublisher database.
 
@@ -100,6 +77,9 @@ Once you have made the appropriate configurations, click the "Save" button.
 
 If you have any questions not addressed here, [please email us](mailto:support@heypublisher.com?subject=Question+about+plugin).
 
+* **What happens when I save a submission for later review?**  
+If you do not allow simultaneous submissions, this puts a 'lock' on the work preventing the writer from submitting it to another press while you are considering whether or not to publish it.  The writer, however, may choose to withdraw their submission if it stays in this state for too long.
+
 * **What happens when I accept a submission?**  
 When you accept a submission, a copy of that submission is inserted as a Post into your WordPress system.  The post is marked as 'pending' so you can easily find the accepted submission and make any necessary edits to it prior to publication.
 
@@ -109,17 +89,11 @@ When you reject a submission it is immediately removed from your slush pile and 
 * **Can I reject a published submission?**  
 No - once you publish an accepted submission, the author is automatically notified that their work has been published by you and the work is removed from your "Submissions" administration  screen (Screenshot 7) 
 
-* **What happens when I save a submission for later review?**  
-If you do not allow simultaneous submissions, this puts a 'lock' on the work preventing the writer from submitting it to another press while you are considering whether or not to publish it.  The writer, however, may choose to withdraw their submission if it stays in this state for too long.
-
 * **We don't have submission guidelines.  Should we create them?**   
 Yes - absolutely.  HeyPublisher indexes and archives all publisher submission guidelines, making them immediately searchable by writers around the world.  It's important as a publisher to be very clear with writers beforehand about what you are looking for in terms of genre, length, quality and content.
 
-* **Can we style the submission form to better align with our look and feel?**   
-Yes you can.  Your theme's stylesheet is used by the plugin when rendering the submission form.  If you want to change the look of an element on the submission form, simply declare a style for that element in your theme's stylesheet and it will take effect immediately.  Read the [online style guide](http://blog.heypublisher.com/docs/plugins/wordpress/style_guide/) for more detailed information.
-
 * **Can we change the content of the emails sent to writers regarding their submissions?**   
-Yes, as of version 1.2.0 you can define custom response templates that contain whatever message you want to send to your writers.  These emails are automatically whenever you reject, accept, or save a submission for later review.  An email is also sent the first time an editor reads a new submission.  Click on 'Response Templates' in the side-bar and follow the on-screen instructions.
+Yes - you can define custom response templates that contain whatever message you want to send to your writers.  These emails are sent automatically whenever you reject, accept, or save a submission for later review.  An email is also sent the first time an editor reads a new submission.  Click on 'Response Templates' in the side-bar and follow the on-screen instructions.
 
 == Screenshots ==
 
@@ -137,8 +111,20 @@ Yes, as of version 1.2.0 you can define custom response templates that contain w
 12. Email Template Add/Edit Screen.  Add new (or edit existing) email templates. 
 13. Plugin and Publisher Statistics screen.  Gives you a quick snapshot of total submissions, pending submissions, and how many writers have made comments about your publication on HeyPublisher.com
 14. Dashboard Summary.  A summary of total submissions received and how many are pending review has been added to the Dashboard, providing you with a quick snapshot.
+15. You can re-import a submission that has already been accepted.  Just select 'Reimport into WordPress' and click the submit button.
 
 == Changelog ==
+
+= 1.5.0 =
+
+* You now have the ability to request a revision for an already accepted submission.  Since this is the place and time where you would typically want to request a revision, we thought we should let you do that.  
+* You now have the ability to re-import previously accepted submissions - which is really important if you've already accepted a submission that has now been revised.  
+* We fixed a bug where a "submission not found" error would display if the user deleted their submission.  While technically this makes sense, it doesn't do you any good.  What are you going to do with this knowledge?  Now we just remove the submission from the list.
+* We did some general code cleanup and removed some assets that were no longer needed.  You probably didn't even know these assets were there to begin with - so we consider this a win-win.
+
+= 1.4.5 =
+
+* Fixed redirect error by pointing directly to www.heypublisher.com
 
 = 1.4.4 =
 
@@ -227,6 +213,15 @@ Yes, as of version 1.2.0 you can define custom response templates that contain w
 * Initial release of HeyPublisher Submission Manager Plugin
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+
+* You now have the ability to request a revision of an already accepted submission - which you will probably want at some time.  
+* You now have the ability to reimport previously accepted submissions.  This is cool.  Upgrade just for this functionality.
+
+= 1.4.5 = 
+
+* Fixes problem where errors are being thrown because heypublisher.com domain can't be found.
 
 = 1.4.2 = 
 
