@@ -1,11 +1,7 @@
-// $Id: heypublisher.js 95 2010-05-07 23:14:18Z dimaxsvn $
-// 
 // Javascript library for HeyPublisher Wordpress plugin
-// 
-// Copyright (c) 2010 - Loudlever, Inc.
-// Author - Richard Luck <richard.luck@loudlever.com>
-// 
-// This Library assumes Prototype is installed.
+//
+// Copyright (c) 2010-2016 Loudlever, Inc.
+// Author - Richard Luck <richard@loudlever.com>
 
 function heypub_auto_check(src,form) {
   var checked = false;
@@ -22,7 +18,7 @@ function heypub_toggle(chk,div) {
   } else {
     $(div).hide();
   }
-  
+
   return false;
 }
 
@@ -42,7 +38,7 @@ function heypub_click_toggle(div) {
    $(div).show();
  }
  return false;
-  
+
 }
 
 function heypub_click_check(src,dest) {
@@ -65,10 +61,28 @@ function heypub_toggle_tabs(on) {
       }
       if ($("heypub_"+keys[i]+"_tab")) {
         $("heypub_"+keys[i]+"_tab").removeClassName('heypub-tab-pressed');
-      }    
-    } 
+      }
+    }
   }
   $(div).show();
   $(tab).addClassName('heypub-tab-pressed');
 }
+// Library of HeyPub functions
+(function( HeyPublisher, $, undefined ) {
 
+  HeyPublisher.toggleDetails = function(elem) {
+    event.preventDefault();
+    var id = $(elem).closest('tr').data('sid');
+    var span = $(elem).find('span')[0];
+    if ($('#post_bio_' + id).is(":visible")) {
+      // hide it
+      $('#post_bio_' + id).hide();
+      $(span).removeClass('dashicons-dismiss').addClass('dashicons-plus-alt');
+    } else {
+      // show it
+      $('#post_bio_' + id).show();
+      $(span).removeClass('dashicons-plus-alt').addClass('dashicons-dismiss');
+    }
+  };
+
+}( window.HeyPublisher = window.HeyPublisher || {}, jQuery ));
