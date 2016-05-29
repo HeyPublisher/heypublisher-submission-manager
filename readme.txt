@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, loudlever, online applications, slushpile, submission forms, submission manager, submission, unregistered user
 Requires at least: 2.8.6
 Tested up to: 4.2.1
-Stable Tag: 1.5.0
+Stable Tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,7 @@ With the HeyPublisher Submission Manager plugin submissions to your publication 
 
 Mark submissions for review, accept submissions for publication, or reject submissions to remove them from your slush pile.  All acceptance/rejection communications with the writer are handled automatically by HeyPublisher, freeing you from the time-consuming task of having to respond to each submission individually.
 
-You define the type of writing you want to receive.  You control the flow of unsolicited content coming into your publication.  You have more time to run your publication.  
+You define the type of writing you want to receive.  You control the flow of unsolicited content coming into your publication.  You have more time to run your publication.
 
 == About Us ==
 
@@ -36,7 +36,7 @@ HeyPublisher is developed by the fine folks at [Loudlever, Inc.](http://loudleve
 
 * Extract the files to a subdirectory called `heypublisher-submission-manager`.
 
-* Active the plugin via the WordPress plugin menu.  
+* Active the plugin via the WordPress plugin menu.
 
 Once activated you will need to 'validate' the plugin with the HeyPublisher web-service.  To do this click on the HeyPublisher link in the newly created menu and follow the on-screen instructions.
 
@@ -71,28 +71,28 @@ After the plugin has been validated, you can configure it to meet your submissio
 
 * **Miscellaneous :** configuration to help you clean up bad HTML formatting.
 
-Once you have made the appropriate configurations, click the "Save" button.  
+Once you have made the appropriate configurations, click the "Save" button.
 
 == Frequently Asked Questions ==
 
 If you have any questions not addressed here, [please email us](mailto:support@heypublisher.com?subject=Question+about+plugin).
 
-* **What happens when I save a submission for later review?**  
+* **What happens when I save a submission for later review?**
 If you do not allow simultaneous submissions, this puts a 'lock' on the work preventing the writer from submitting it to another press while you are considering whether or not to publish it.  The writer, however, may choose to withdraw their submission if it stays in this state for too long.
 
-* **What happens when I accept a submission?**  
+* **What happens when I accept a submission?**
 When you accept a submission, a copy of that submission is inserted as a Post into your WordPress system.  The post is marked as 'pending' so you can easily find the accepted submission and make any necessary edits to it prior to publication.
 
-* **What happens when I reject a submission?**  
+* **What happens when I reject a submission?**
 When you reject a submission it is immediately removed from your slush pile and the writer is notified of your decision automatically.  If the work had previously been 'accepted' by you, then rejecting it would also remove it from your pending posts.
 
-* **Can I reject a published submission?**  
-No - once you publish an accepted submission, the author is automatically notified that their work has been published by you and the work is removed from your "Submissions" administration  screen (Screenshot 7) 
+* **Can I reject a published submission?**
+No - once you publish an accepted submission, the author is automatically notified that their work has been published by you and the work is removed from your "Submissions" administration  screen (Screenshot 7)
 
-* **We don't have submission guidelines.  Should we create them?**   
+* **We don't have submission guidelines.  Should we create them?**
 Yes - absolutely.  HeyPublisher indexes and archives all publisher submission guidelines, making them immediately searchable by writers around the world.  It's important as a publisher to be very clear with writers beforehand about what you are looking for in terms of genre, length, quality and content.
 
-* **Can we change the content of the emails sent to writers regarding their submissions?**   
+* **Can we change the content of the emails sent to writers regarding their submissions?**
 Yes - you can define custom response templates that contain whatever message you want to send to your writers.  These emails are sent automatically whenever you reject, accept, or save a submission for later review.  An email is also sent the first time an editor reads a new submission.  Click on 'Response Templates' in the side-bar and follow the on-screen instructions.
 
 == Screenshots ==
@@ -108,17 +108,22 @@ Yes - you can define custom response templates that contain whatever message you
 9. Submissions Summary.  From this screen you can view and manage the submissions received by your publication, including rejecting the submission, saving the submission for later review, or accepting the submission for publication.  Clicking on the Author's Name will bring up their bio in preview mode (if available).  Clicking on the title of the submission will allow you to 'preview' the submission.
 10. Submission Status.  When 'previewing' a submission, the submission status side-bar will give you quick stats on the submission, including how many days it's been in your slushpile, and whether or not the work has been submitted to (or published by) any other publishers.
 11. Email Template Summary.  Get a quick view of the custom emails you are sending to writers at each stage of the submission process.
-12. Email Template Add/Edit Screen.  Add new (or edit existing) email templates. 
+12. Email Template Add/Edit Screen.  Add new (or edit existing) email templates.
 13. Plugin and Publisher Statistics screen.  Gives you a quick snapshot of total submissions, pending submissions, and how many writers have made comments about your publication on HeyPublisher.com
 14. Dashboard Summary.  A summary of total submissions received and how many are pending review has been added to the Dashboard, providing you with a quick snapshot.
 15. You can re-import a submission that has already been accepted.  Just select 'Reimport into WordPress' and click the submit button.
 
 == Changelog ==
 
+= 1.5.1 =
+
+* Writers will now be prompted to provide their name, bio and website URL when submitting works to your publication.
+* Better yet - that information is fully imported into WordPress when you accept their submission for publication.
+
 = 1.5.0 =
 
-* You now have the ability to request a revision for an already accepted submission.  Since this is the place and time where you would typically want to request a revision, we thought we should let you do that.  
-* You now have the ability to re-import previously accepted submissions - which is really important if you've already accepted a submission that has now been revised.  
+* You now have the ability to request a revision for an already accepted submission.  Since this is the place and time where you would typically want to request a revision, we thought we should let you do that.
+* You now have the ability to re-import previously accepted submissions - which is really important if you've already accepted a submission that has now been revised.
 * We fixed a bug where a "submission not found" error would display if the user deleted their submission.  While technically this makes sense, it doesn't do you any good.  What are you going to do with this knowledge?  Now we just remove the submission from the list.
 * We did some general code cleanup and removed some assets that were no longer needed.  You probably didn't even know these assets were there to begin with - so we consider this a win-win.
 
@@ -174,7 +179,7 @@ Yes - you can define custom response templates that contain whatever message you
 
 * Fixed issue where previously accepted submissions that were moved to the trash were not marked as 'rejected'.
 
-* Fixed issue where accepted submissions that were scheduled for publication at a future date were not transitioning to 'published' on that date. 
+* Fixed issue where accepted submissions that were scheduled for publication at a future date were not transitioning to 'published' on that date.
 
 = 1.2.4 =
 
@@ -206,7 +211,7 @@ Yes - you can define custom response templates that contain whatever message you
 
 * Fixed code related to User<->Post mapping so that the plugin uses the new functions introduced in WordPress 3.0
 
-* Removed the inclusion of the custom stylesheet on the Submission Form page, as it was conflicting with some themes.  Now, the width/height of the IFRAME in which the submission form displays is styled inline.  If you want to override the size or style of this IFRAME reset the attributes for `#heypub_submission_iframe` in your stylesheet. 
+* Removed the inclusion of the custom stylesheet on the Submission Form page, as it was conflicting with some themes.  Now, the width/height of the IFRAME in which the submission form displays is styled inline.  If you want to override the size or style of this IFRAME reset the attributes for `#heypub_submission_iframe` in your stylesheet.
 
 = 1.0.1 =
 
@@ -214,28 +219,32 @@ Yes - you can define custom response templates that contain whatever message you
 
 == Upgrade Notice ==
 
+= 1.5.1 =
+
+* Pompt for writer bio when not present during submission process.
+
 = 1.5.0 =
 
-* You now have the ability to request a revision of an already accepted submission - which you will probably want at some time.  
+* You now have the ability to request a revision of an already accepted submission - which you will probably want at some time.
 * You now have the ability to reimport previously accepted submissions.  This is cool.  Upgrade just for this functionality.
 
-= 1.4.5 = 
+= 1.4.5 =
 
 * Fixes problem where errors are being thrown because heypublisher.com domain can't be found.
 
-= 1.4.2 = 
+= 1.4.2 =
 
 * Released : 2011-09-27
 
 * Adds user creation feature request.
 
-= 1.4.1 = 
+= 1.4.1 =
 
 * Released : 2011-06-25
 
 * Fixes minor typos.
 
-= 1.4.0 = 
+= 1.4.0 =
 
 * Released : 2011-06-24
 
@@ -296,5 +305,3 @@ Yes - you can define custom response templates that contain whatever message you
 = 1.0.1 =
 
 * Initial Release : 2010-04-29
-
-

@@ -8,7 +8,7 @@ class HeyPublisher {
   var $error = false;
   public function __construct() {
 
-  }   
+  }
 
   public function __destruct() {
 
@@ -19,16 +19,16 @@ class HeyPublisher {
     $ret .= $this->page_logo();
     return $ret;
   }
-  
+
   public function page_title($title) {
     return "<h2>$title</h2>";
   }
-  
+
   public function get_form_post_url_for_page($page) {
     $url = sprintf('%s/wp-admin/admin.php?page=%s',get_bloginfo('wpurl'),$page);
     return $url;
   }
-  
+
   public function page_logo() {
     global $hp_xml;
     $format = "<div id='heypub_logo'>%s</div>";
@@ -59,9 +59,9 @@ EOF;
 EOF;
     return $ret;
   }
-  
+
   // This is a non-printing function.  Output will be returned as a string
-  // Two input params : 
+  // Two input params :
   // - the contextual publisher object
   // - the submission object
   public function other_publisher_link($obj,$sub) {
@@ -90,7 +90,7 @@ EOF;
     }
     return $string;
   }
-  
+
   public function get_dashboard_stats() {
     global $hp_xml;
     if (!$hp_xml->is_validated) {
@@ -103,7 +103,7 @@ EOF;
     }
     $style = " style='width:50%;float:left;'";
     $data = <<<EOF
-<ul style='margin:0;overflow:hidden;'>  
+<ul style='margin:0;overflow:hidden;'>
     <li $style>$p[total_subs] Total Submissions</li>
     <li $style>$p[total_open_subs]</li>
     <li $style>$p[total_published_subs] Published Subs</li>
@@ -131,7 +131,7 @@ EOF;
     }
     return $data;
   }
-  
+
   // for version >= 3.0 stats are displayed in their own dashboard widget
   public function right_now_widget() {
     $data = $this->get_dashboard_stats();
@@ -157,7 +157,7 @@ EOF;
     $str = sprintf("<a href='admin.php?page=heypub_show_menu_submissions'>%s</a>",$text);
     return $str;
   }
-  
+
   public function get_yes_no_checkbox($label,$key,$val,$alt=false) {
     $no = ($val == '0' || $val == FALSE) ? 'selected=selected' : null;
     $yes = ($val == '1' || $val == TRUE) ? 'selected=selected' : null;
@@ -171,24 +171,24 @@ EOF;
 EOF;
     return $str;
   }
-  
+
   public function truncate($string, $limit=15) {
-    $break=" "; 
+    $break=" ";
     $pad="...";
-    // return with no change if string is shorter than $limit  
-    if(strlen($string) <= $limit) return $string; 
-    $string = substr($string, 0, $limit); 
-    if(false !== ($breakpoint = strrpos($string, $break))) { 
-      $string = substr($string, 0, $breakpoint); 
-    } 
-    return $string . $pad; 
+    // return with no change if string is shorter than $limit
+    if(strlen($string) <= $limit) return $string;
+    $string = substr($string, 0, $limit);
+    if(false !== ($breakpoint = strrpos($string, $break))) {
+      $string = substr($string, 0, $breakpoint);
+    }
+    return $string . $pad;
   }
-  
+
   public function blank($str='Not Provided') {
    $ret = sprintf('<span class="heypub_empty">%s</span>',$str);
-   return $ret;  
+   return $ret;
   }
-  
+
   public function tabbed_nav($key,$label) {
     $class = '';
     if ($key == 'p') { // Initializer
@@ -201,8 +201,8 @@ EOF;
     $ret = sprintf("<blockquote class='heypub_summary'>%s</blockquote>",$content);
     return $ret;
   }
-  
-  /** 
+
+  /**
   * Wrapper for the get_user_meta() function that changed in WP 3.0
   */
   private function get_author_meta($uid,$key) {
@@ -210,10 +210,10 @@ EOF;
       $val = get_user_meta($uid,$key,true);
     } else {
       $val = get_usermeta($uid,$key,true);
-    }	
+    }
     return $val;
   }
-  /** 
+  /**
   * Wrapper for the update_user_meta() function that changed in WP 3.0
   */
   private function update_author_meta($uid,$key,$val) {
@@ -222,16 +222,16 @@ EOF;
         update_user_meta($uid,$key,"$val");
       } else {
         update_usermeta($uid,$key,"$val");
-      }	
+      }
     }
   }
-  
+
   /**
   * Update Meta Info on this Author in the WP database.  We will already have a valid User ID at this stage.
   *
   * @param int $uid Record ID of WP User record
   * @param object $a The Author object returned by HeyPublisher API
-  */ 
+  */
   public function update_author_info($uid,$a) {
     // Get the existing Author Info, including Meta
     $author = get_userdata($uid);
@@ -245,10 +245,15 @@ EOF;
       }
     }
     // Update bio for this author if we have it.  No need to test for existing value; we want latest pushed.
-    if ($a->bio) {
+    if (FALSE != $a->bio) {
       $this->update_author_meta($uid,'description',sprintf("%s",$a->bio));
     }
-    
+    // Update the writer website value
+    if (FALSE != $a->website) {
+      // we don't care about errors at this stage
+      wp_update_user( array( 'ID' => $uid, 'user_url' => $a->website ) );
+    }
+
     // Finally, ensure that all meta keys used for lookup are set properly.
     // The 'old' method of mapping on email....
     $meta1 = $this->get_author_meta($uid,HEYPUB_USER_META_KEY_AUTHOR_ID);
@@ -268,36 +273,36 @@ EOF;
   *
   * @param object $a The User Object returned by the HeyPublisher webservice.
   * @return bool|int $uid Return the User ID of the author (if found) or return FALSE.
-  */ 
+  */
   public function get_author_id($a) {
     global $wpdb;
-    // If we already have this user in the database with meta data that matches our known meta values 
+    // If we already have this user in the database with meta data that matches our known meta values
     // for this submission, then we auto-map that user to this piece.
     // Otherwise we'll return false which will trigger a prompt for the admin to create a 'user' account.
     $uid = FALSE;
     $msg = array();
     if (function_exists('get_users')) {
-      // First look by OID 
+      // First look by OID
       $users = get_users(array('meta_key'=> HEYPUB_USER_META_KEY_AUTHOR_OID, 'meta_value' => $a->oid));
-      if (FALSE != $users) { 
-        $uid = $users[0]->ID; 
+      if (FALSE != $users) {
+        $uid = $users[0]->ID;
         // $msg[] = "Setting user ID '$uid' by OID";
       } else {
         // then by HP User ID
         $users = get_users(array('meta_key'=> HEYPUB_USER_META_KEY_AUTHOR_ID, 'meta_value' => $a->email ));
   			// printf("<pre>users array = %s</pre>",print_r($users,1));
         if (FALSE != $users) {
-          $uid = $users[0]->ID; 
+          $uid = $users[0]->ID;
           // $msg[] = "Setting user ID '$uid' by Author ID";
         }
       }
     }
-    
+
     // If we're still FALSE, attempt to find by email address
     if (FALSE == $uid) {
       $user = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->users WHERE user_email= %s",$a->email));
-      if (FALSE != $user) { 
-        $uid = $user; 
+      if (FALSE != $user) {
+        $uid = $user;
         // $msg[] = "Setting user ID '$uid' by Email in WP";
       }
     }
@@ -306,14 +311,14 @@ EOF;
       // If we're NOT FALSE, update the author info.
       $this->update_author_info($uid,$a);
       return $uid;
-    } else { 
+    } else {
       return FALSE;
     }
   }
 
   /**
   * Create the User Account if we don't already have it
-  * 
+  *
   * @param object $a The User Object returned by the HeyPublisher webservice.
   */
   public function create_author($username,$a) {
@@ -326,7 +331,7 @@ EOF;
     } else {
       $uid = $user->ID;
     }
-    
+
     // SANITY CHECK.  If we're creating a 'new' user and we already have META data for that user, throw an error
     // The 'old' method of mapping on email....
     $this->error = false;
@@ -340,22 +345,22 @@ EOF;
     if ($this->error) {
       return FALSE;
     }
-    
+
     if (FALSE != $uid) {
       // If we're NOT FALSE, update the author info.
       $this->update_author_info($uid,$a);
       return $uid;
-    } else { 
+    } else {
       $this->error = 'Unable to create the user record';
       return FALSE;
     }
   }
-  
+
   /**
   * Helper function to get the URL to edit the author record
   */
   public function get_author_edit_url($id) {
-    $url = sprintf('%s/%s?user_id=%s',get_bloginfo('wpurl'),'wp-admin/user-edit.php',$id); 
+    $url = sprintf('%s/%s?user_id=%s',get_bloginfo('wpurl'),'wp-admin/user-edit.php',$id);
     return $url;
   }
 }
