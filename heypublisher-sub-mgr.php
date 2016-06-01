@@ -5,7 +5,7 @@ Plugin URI: http://loudlever.com
 Description: This plugin allows you as to accept unsolicited submissions from writers.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.
 Author: Loudlever
 Author URI: http://www.loudlever.com
-Version: 1.5.0
+Version: 1.5.1
 
   Copyright 2010-2016 Loudlever, Inc. (wordpress@loudlever.com)
 
@@ -32,10 +32,10 @@ Version: 1.5.0
 
 */
 
-/* 
+/*
  Older versions of PHP may not define DIRECTORY_SEPARATOR so define it here,
  just in case.
-*/ 
+*/
 if(!defined('DIRECTORY_SEPARATOR')) {
   define('DIRECTORY_SEPARATOR','/');
 }
@@ -48,7 +48,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 /*
 ---------------------------------------------------------------------------------
   OPTION SETTINGS
-  
+
   1.1.0 => 29
   1.2.0 => 35
   1.2.4 => 38
@@ -59,16 +59,17 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   1.4.4 => 50
   1.4.5 => 51
   1.5.0 => 52
+  1.5.1 => 53
 ---------------------------------------------------------------------------------
-*/  
+*/
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
 define("HEYPUB_PLUGIN_BUILD_NUMBER", "52");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_BUILD_DATE", "2016-03-27");  
+define("HEYPUB_PLUGIN_BUILD_DATE", "2016-05-29");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_VERSION", "1.5.0");
+define("HEYPUB_PLUGIN_VERSION", "1.5.1");
 
 # Base domain 
 define('HEYPUB_DOMAIN','https://www.heypublisher.com');    
@@ -91,7 +92,7 @@ define('HEYPUB_SVC_URL_BASE', HEYPUB_DOMAIN . '/api/v1');                 # desi
 # Stylesheet for plugin resides on HP server now
 define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugin.css?' . HEYPUB_PLUGIN_VERSION);
 
-define('HEYPUB_SVC_URL_SUBMIT_FORM','submissions');           
+define('HEYPUB_SVC_URL_SUBMIT_FORM','submissions');
 define('HEYPUB_SVC_URL_AUTHENTICATE','publishers/fetch_or_create');           # initial plugin authentication
 define('HEYPUB_SVC_URL_GET_PUBLISHER','publishers/show');                     # update the options
 define('HEYPUB_SVC_URL_UPDATE_PUBLISHER','publishers/update_publisher');      # update the options
@@ -102,7 +103,7 @@ define('HEYPUB_SVC_URL_RESPOND_TO_SUBMISSION','submissions/submission_action'); 
 define('HEYPUB_SVC_READ_SUBMISSION','submissions/show');                      # fetch a single submission for reading.  also sets the 'read' status
 
 # if this changes, plugin will not work.  You have been warned
-define('HEYPUB_SVC_TOKEN_VALUE','534ba1c699ca9310d7acf4832e12bed87c4d5917c5063c58382e9766bca11800');  
+define('HEYPUB_SVC_TOKEN_VALUE','534ba1c699ca9310d7acf4832e12bed87c4d5917c5063c58382e9766bca11800');
 
 // Locally stored option keys
 define('HEYPUB_PLUGIN_OPT_INSTALL', '_heypub_plugin_opt_install');
@@ -163,8 +164,8 @@ add_action('wp_dashboard_setup', 'RegisterHeyPublisherDashboardWidget' );
 // to the writer when the submission is either published, or rejected after acceptance,
 // you will need to modify the 3 add_action() statements below.
 // Simply change '_post' to '_your_custom_post type'
-// For example, if your custom post type is called 'story', 
-// Change 
+// For example, if your custom post type is called 'story',
+// Change
 //          add_action('publish_post','heypub_publish_post');
 // to read:
 //          add_action('publish_story','heypub_publish_post');
@@ -177,7 +178,7 @@ add_action('trash_post','heypub_reject_post');
 // this one executes when you skip the trash an simply 'delete' the submission
 add_action('delete_post','heypub_reject_post');
 
-// Ensure we go through the upgrade path even if the user simply installs 
+// Ensure we go through the upgrade path even if the user simply installs
 // a new version of the plugin over top of the old plugin.
 if ($hp_xml->install['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
   heypub_init();
@@ -231,12 +232,12 @@ function HeyPublisherAdminHeader() {
 ?>
   <!-- HeyPublisher Header -->
   <link rel='stylesheet' href='<?php echo HEYPUB_SVC_STYLESHEET_URL; ?>' type='text/css' />
-<?php  
+<?php
 }
 function HeyPublisherAdminInit() {
 	$parts = array(WP_PLUGIN_URL,HEY_DIR,'include','js','heypublisher.js');
 	$url = implode(DIRECTORY_SEPARATOR,$parts);
-  wp_enqueue_script('heypublisher', $url, array('prototype')); 
+  wp_enqueue_script('heypublisher', $url, array('prototype'));
   wp_enqueue_style('heypub_font_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array(), HEYPUB_PLUGIN_VERSION);
 }
 
@@ -250,7 +251,7 @@ require_once(HEYPUB_PLUGIN_FULLPATH.'include'.DIRECTORY_SEPARATOR.'HeyPublisher'
 }
 
 function RegisterHeyPublisherDashboardWidget() {
-  wp_add_dashboard_widget('heypub_dash_widget', 'HeyPublisher Statistics', 'heypub_right_now');	
+  wp_add_dashboard_widget('heypub_dash_widget', 'HeyPublisher Statistics', 'heypub_right_now');
 }
 function heypub_right_now() {
  global $hp_base;
@@ -287,7 +288,7 @@ function heypub_init(){
     // This key was never used in the code and can simply be cleaned up
     delete_option('_heypub_opt_svc_publisher');
 
-    
+
     //  NEED to migrate these CONFIG options
     $hp_xml->set_config_option('name',get_option('_heypub_opt_publication_name'));
     delete_option('_heypub_opt_publication_name');
@@ -323,7 +324,7 @@ function heypub_init(){
     delete_option('_heypub_opt_submission_guide_id');
     delete_option('_heypub_opt_sub_guide_url');
     $hp_xml->set_is_validated();
-  } 
+  }
   elseif (get_option(HEYPUB_PLUGIN_OPT_INSTALL) == false) {
     // NEW Install Path
     $hp_xml->initialize_plugin();
@@ -337,8 +338,8 @@ function heypub_init(){
     }
     $hp_xml->set_install_option('version_current_date',null);
     $hp_xml->set_config_option('editor_name','Editor');
-  } 
-  
+  }
+
   // now check for a normal upgrade path
   $opts = $hp_xml->install;
   if ($opts['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
@@ -364,12 +365,12 @@ function heypub_init(){
           $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
       }
     }
-    
+
     // For future reference, just keep adding new hash keys that are version specific by following same logic
     // if ($opts['version_current'] < 50) {  // upgrade to 1.4.x options
-    //    ... do something here  
+    //    ... do something here
     // }
-    
+
     // finally - ensure that the last version and current version are set
     $hp_xml->set_install_option('version_last',$opts['version_current']);
     $hp_xml->set_install_option('version_last_date',$opts['version_current_date']);

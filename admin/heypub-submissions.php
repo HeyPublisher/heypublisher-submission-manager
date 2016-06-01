@@ -41,7 +41,7 @@ function heypub_submission_actions($nounce,$detail=false,$sel='',$published=fals
     <option <?php echo $hp_sub->select_selected('review',$sel); ?> value="review">Save for Later Review</option>
 <?php
   }
-?>  
+?>
     <option <?php echo $hp_sub->select_selected('reject',$sel); ?> value="reject">Reject Submission</option>
 
 <?php   //  !!!    request_revision ?>
@@ -50,7 +50,7 @@ function heypub_submission_actions($nounce,$detail=false,$sel='',$published=fals
   </select>
   <br/>
   <input type="submit" class="heypub-button button-primary" value="Update Submission" name="doaction" id="doaction" />
-<?php 
+<?php
   if ($detail) {
     printf('<span id="return_to_summary">%s</span>',$hp_base->submission_summary_link('cancel'));
   }
@@ -127,7 +127,7 @@ function heypub_list_submissions() {
 <tbody>
 <?php
 if(!empty($subs)) {
-  
+
   foreach($subs as $x => $hash) {
     $count++;
     $class = null;
@@ -200,14 +200,27 @@ if(!empty($subs)) {
         } else {
           echo $status;
         }
-        
+
 ?>    </td>
     </tr>
-<?php if ($hash->author->bio != '') { ?>
-    <tr id='post_bio_<?php echo "$x"; ?>' style='display:none;'>
-      <td colspan='8'><div class='heypub_author_bio_preview'><b>Author Bio:</b> <?php printf("%s", $hash->author->bio); ?></div></td>
-    </tr>
-<?php }
+<?php
+    if (FALSE != $hash->author->bio) {
+      $website = '';
+      if (FALSE != $hash->author->website) {
+        $website = sprintf('<br/><b>Author Website:</b> <a href="%s" target="_new">%s</a>',$hash->author->website,$hash->author->website);
+      }
+      $author_bio = <<<EOF
+        <tr id='post_bio_{$x}' style='display:none;'>
+          <td colspan='8'>
+            <div class='heypub_author_bio_preview'>
+              <b>Author Bio:</b> {$hash->author->bio}
+              {$website}
+            </div>
+          </td>
+        </tr>
+EOF;
+      print($author_bio);
+    }
   }
 }
 else {
@@ -267,8 +280,8 @@ function heypub_show_submission($id) {
     $days_pending = ($sub->days_pending >= 60) ? 'late': (($sub->days_pending >= 30) ? 'warn' : 'ok');
     if ($sub) {
       $post_id = heypub_get_post_id_by_submission_id($id);
-      
-      
+
+
 ?>
   <div class="wrap">
   <h2>Preview: "<?php echo $sub->title; ?>"</h2>
@@ -295,6 +308,11 @@ function heypub_show_submission($id) {
       }
       // $block .= sprintf('<b>Author Bio:</b> %s<br/>',$bio);
       $block .= sprintf('<dt>Author Bio:</dt><dd>%s</dd>',$bio);
+      $hp_xml->log(sprintf("author = %s",print_r($sub->author,1)));
+      if (FALSE != $sub->author->website) {
+        $block .= sprintf('<dt>Author Website:</dt><dd><a href="%s" target="_new">%s</a></dd>',$sub->author->website,$sub->author->website);
+      }
+
       // submission summary
       if ($sub->description != '') {
 				$block .= sprintf('<dt>Summary:</dt><dd>%s</dd>',$sub->description);
@@ -397,7 +415,7 @@ function pluralize_submission_message($cnt) {
   }
 }
 
-/* 
+/*
  * Get all the submissions that have already been imported
  */
 function heypub_get_accepted_post_ids() {
@@ -584,7 +602,7 @@ function heypub_accept_submission($req) {
 					<input type='hidden' name="action" value="create_user" />
 					<label for='username'>Username:</label>
 					<input type='text' name="username" id='username' value="<?php echo $sub->author->email; ?>" />
-				  <input type="submit" value="Create User" name="doaction" id="doaction" />
+				  <input type="submit" class="heypub-button button-primary" value="Create User" name="doaction" id="doaction" />
  				  <?php wp_nonce_field('heypub-bulk-submit'); ?>
 	      </form>
 			</td></tr>
