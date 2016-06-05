@@ -66,13 +66,13 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "52");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "53");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_BUILD_DATE", "2016-05-29");
 // Version Number (can be text)
 define("HEYPUB_PLUGIN_VERSION", "1.5.1");
 
-# Base domain 
-define('HEYPUB_DOMAIN','https://www.heypublisher.com');    
+# Base domain
+define('HEYPUB_DOMAIN','https://www.heypublisher.com');
 
 define('HEYPUB_PLUGIN_ERROR_CONTACT','Please contact <a href="mailto:support@heypublisher.com?subject=plugin%20error">support@heypublisher.com</a> for further information.');
 
