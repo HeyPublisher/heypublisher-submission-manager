@@ -5,7 +5,7 @@
 */
 class HeyPublisherXML {
 
-  var $debug = true;
+  var $debug = false;
   var $svc_url = HEYPUB_SVC_URL_BASE;
   var $curl = false;
   var $error = false;

@@ -5,7 +5,7 @@
 
 if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyPublisher: Illegal Page Call!'); }
 
-load_template(dirname(__FILE__) . '/../include/classes/HeyPublisher/Page/Overview.class.php');
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Overview.class.php');
 $hp_main = new \HeyPublisher\Page\Overview;
 // $hp_main = new Main();
 

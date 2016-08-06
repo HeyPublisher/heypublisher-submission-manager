@@ -73,9 +73,11 @@ define("HEYPUB_PLUGIN_BUILD_DATE", "2016-08-04");
 define("HEYPUB_PLUGIN_VERSION", "2.0.0");
 
 # Base domain
-// define('HEYPUB_DOMAIN','https://www.heypublisher.com');
-define('HEYPUB_DOMAIN','http://127.0.0.1:3000');
+define('HEYPUB_DOMAIN','https://www.heypublisher.com');
+// define('HEYPUB_DOMAIN','http://127.0.0.1:3000');
 define('HEYPUB_PLUGIN_ERROR_CONTACT','support@heypublisher.com');
+// TODO: pull from env var for debug
+// $hp_xml->debug = (getenv('HEYPUB_DEBUG') === 'true');
 
 define('HEYPUB_DONATE_URL','https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6');
 
