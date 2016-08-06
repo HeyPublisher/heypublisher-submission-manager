@@ -13,7 +13,7 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
  */
 
 // Load the class files and associated scoped functionality
-load_template(dirname(__FILE__) . '/../Page.class.php');
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
 class Options extends \HeyPublisher\Page {
 
   public function __construct() {
@@ -157,7 +157,7 @@ EOF;
   }
 
   private function contact_information($opts){
-    require_once(HEYPUB_PLUGIN_FULLPATH.'include'.DIRECTORY_SEPARATOR.'country_list.php');
+    require_once(HEYPUB_PLUGIN_FULLPATH.'/include/country_list.php');
 
     $options = '';
 
@@ -414,7 +414,7 @@ EOF;
       <p>
         In most cases you will want to leave this set to <code>No</code>.
         <br/>
-         Set to <code>YES</code> if you accept submissions from writers that use a different character set than your own.  
+         Set to <code>YES</code> if you accept submissions from writers that use a different character set than your own.
       </p>
       <ul>
         <li>

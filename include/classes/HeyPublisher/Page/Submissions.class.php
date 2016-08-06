@@ -7,9 +7,9 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
  * HeyPublisher class for handling options updates and editing page
  *
  */
-load_template(dirname(__FILE__) . '/../../../HeyPublisher/HeyPublisherSubmission.class.php');
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/HeyPublisher/HeyPublisherSubmission.class.php');
 // Load the class files and associated scoped functionality
-load_template(dirname(__FILE__) . '/../Page.class.php');
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
 class Submissions extends \HeyPublisher\Page {
 
   var $disallowed_states = array('withdrawn','published','rejected');

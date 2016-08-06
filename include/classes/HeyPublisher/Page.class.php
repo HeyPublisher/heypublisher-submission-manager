@@ -9,7 +9,7 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
  */
 
 // Load the class files and associated scoped functionality
-load_template(dirname(__FILE__) . '/../Loudlever/Loudlever.class.php');
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/Loudlever/Loudlever.class.php');
 class Page extends \Loudlever\Loudlever {
   var $i18n = 'heypublisher';
   var $logo_block = '';
@@ -26,7 +26,7 @@ class Page extends \Loudlever\Loudlever {
     $this->plugin['home'] = 'https://wordpress.org/plugins/heypublisher-submission-manager/';
     $this->plugin['support'] = 'https://wordpress.org/support/plugin/heypublisher-submission-manager';
     $this->plugin['contact'] = 'mailto:support@heypublisher.com';
-    $this->log_file = dirname(__FILE__) . '/../../../error.log';
+    $this->log_file = HEYPUB_PLUGIN_FULLPATH . '/error.log';
     $this->xml = $hp_xml;
   }
 

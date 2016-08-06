@@ -9,7 +9,7 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
  */
 
 // Load the class files and associated scoped functionality
-load_template(dirname(__FILE__) . '/../Page.class.php');
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
 class Overview extends \HeyPublisher\Page {
 
 

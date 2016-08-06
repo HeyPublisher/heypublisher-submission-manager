@@ -73,14 +73,13 @@ define("HEYPUB_PLUGIN_BUILD_DATE", "2016-08-04");
 define("HEYPUB_PLUGIN_VERSION", "2.0.0");
 
 # Base domain
-define('HEYPUB_DOMAIN','https://www.heypublisher.com');
-
+// define('HEYPUB_DOMAIN','https://www.heypublisher.com');
+define('HEYPUB_DOMAIN','http://127.0.0.1:3000');
 define('HEYPUB_PLUGIN_ERROR_CONTACT','support@heypublisher.com');
 
 define('HEYPUB_DONATE_URL','https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6');
 
-define('HEYPUB_PLUGIN_FULLPATH', WP_PLUGIN_DIR.DIRECTORY_SEPARATOR.HEY_DIR.DIRECTORY_SEPARATOR);
-
+define('HEYPUB_PLUGIN_FULLPATH', dirname(__FILE__));
 // How to connect to the service
 define('HEYPUB_FEEDBACK_EMAIL_VALUE','support@heypublisher.com?subject=HeyPublisher%20Wordpress%20Plugin');
 // define('HEYPUB_FEEDBACK_GETSATISFACTION','http://getsatisfaction.com/hey');
@@ -91,6 +90,7 @@ define('HEYPUB_SVC_URL_BASE', HEYPUB_DOMAIN . '/api/v1');
 # Stylesheet for plugin resides on HP server now
 define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugin.css?' . HEYPUB_PLUGIN_VERSION);
 
+// TODO: remove these defines and reference directly from XML code that makes query
 define('HEYPUB_SVC_URL_SUBMIT_FORM','submissions');
 define('HEYPUB_SVC_URL_AUTHENTICATE','publishers/fetch_or_create');           # initial plugin authentication
 define('HEYPUB_SVC_URL_GET_PUBLISHER','publishers/show');                     # update the options
@@ -127,31 +127,29 @@ define('HEYPUB_POST_META_KEY_SUB_ID','_heypub_post_meta_key_sub_id');
 /**
 * Load all of the plugin files
 */
-require_once(HEYPUB_PLUGIN_FULLPATH.'include'.DIRECTORY_SEPARATOR.'HeyPublisherXML'.DIRECTORY_SEPARATOR.'HeyPublisherXML.class.php');
-require_once(HEYPUB_PLUGIN_FULLPATH.'include'.DIRECTORY_SEPARATOR.'HeyPublisher'.DIRECTORY_SEPARATOR.'HeyPublisher.class.php');
-
 global $hp_xml;
 global $hp_base;
-
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/HeyPublisherXML/HeyPublisherXML.class.php');
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/HeyPublisher/HeyPublisher.class.php');
 $hp_xml = new HeyPublisherXML;
 $hp_base = new HeyPublisher;
 
 // These files are required for basic functions
-require_once(HEYPUB_PLUGIN_FULLPATH.'include'.DIRECTORY_SEPARATOR.'heypub-template-functions.php');
+require_once(HEYPUB_PLUGIN_FULLPATH.'/include/heypub-template-functions.php');
 
 // Load the classes
 // Mail page
-require_once(HEYPUB_PLUGIN_FULLPATH.'admin'.DIRECTORY_SEPARATOR.'heypub-main.php');
+require_once(HEYPUB_PLUGIN_FULLPATH . '/admin/heypub-main.php');
 // Plugin configuration options
-load_template(dirname(__FILE__) . '/include/classes/HeyPublisher/Page/Options.class.php');
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Options.class.php');
 $hp_opt = new \HeyPublisher\Page\Options;
 
 // Submissions
-load_template(dirname(__FILE__) . '/include/classes/HeyPublisher/Page/Submissions.class.php');
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Submissions.class.php');
 $hp_subs = new \HeyPublisher\Page\Submissions;
 
 // Email Templates
-load_template(dirname(__FILE__) . '/include/classes/HeyPublisher/Page/Email.class.php');
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Email.class.php');
 $hp_email = new \HeyPublisher\Page\Email;
 
 // Initiate the callbacks
@@ -234,7 +232,7 @@ function HeyPublisherAdminInit() {
 // Handler for display the Response Templates admin page
 // */
 // function heypub_response_templates() {
-// require_once(HEYPUB_PLUGIN_FULLPATH.'include'.DIRECTORY_SEPARATOR.'HeyPublisher'.DIRECTORY_SEPARATOR.'HeyPublisherResponse.class.php');
+// require_once(HEYPUB_PLUGIN_FULLPATH.'/include/HeyPublisher/HeyPublisherResponse.class.php');
 //   $hp_res = new HeyPublisherResponse;
 //   $hp_res->handler();
 // }

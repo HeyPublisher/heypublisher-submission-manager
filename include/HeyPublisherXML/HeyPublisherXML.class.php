@@ -771,7 +771,7 @@ EOF;
   // logging function
   public function log($msg) {
     if ($this->debug) {
-      error_log(sprintf("%s\n",$msg),3,dirname(__FILE__) . '/../../error.log');
+      error_log(sprintf("%s\n",$msg),3,HEYPUB_PLUGIN_FULLPATH . '/error.log');
     }
   }
   // Sync the local store of publisher metadata with the remote store.
