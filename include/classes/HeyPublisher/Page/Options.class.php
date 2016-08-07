@@ -15,6 +15,7 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
 // Load the class files and associated scoped functionality
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
 class Options extends \HeyPublisher\Page {
+  var $domain = '';
 
   public function __construct() {
   	parent::__construct();
@@ -65,13 +66,13 @@ EOF;
     return $html;
   }
   private function not_validated_form() {
-    $domain = HEYPUB_DOMAIN;
     $opts = $this->xml->config;
+    // $this->log(sprintf("not_validated_form opts: %s",print_r($opts,1)));
     $searchable = sprintf('%s',$this->xml->searchable($opts['name']));
 
     $html = <<<EOF
       <h2>HeyPublisher Account Info</h2>
-      <p>If your publication is <a href="{$domain}/publishers/search/all/none/{$searchable}" target=_new> listed in HeyPublisher's database</a>, please enter your publication's name and URL <i>exactly</i> as it appears on HeyPublisher.</p>
+      <p>If your publication is <a href="{$this->domain}/publishers/search/all/none/{$searchable}" target=_new> listed in HeyPublisher's database</a>, please enter your publication's name and URL <i>exactly</i> as it appears on HeyPublisher.</p>
       <p>If your publication is not already in our database, tell us the name and URL and we will add it.  The defaults listed below are based upon your current WordPress settings.</p>
       <p><b>IMPORTANT:</b> The email address and password you use below will be used to create an 'administrator' account in our system so you can better manage the plugin.</p>
 
@@ -368,7 +369,7 @@ EOF;
 
 
   private function writer_notifications($opts) {
-    $sub_states = sprintf('%s/about/submission_states',HEYPUB_DOMAIN);
+    $sub_states = sprintf('%s/about/submission_states',$this->domain);
     $html = <<<EOF
       <h3>Writer Notifications</h3>
       <p>
