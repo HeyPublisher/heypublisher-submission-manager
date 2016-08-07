@@ -2,9 +2,9 @@
 Contributors: loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, loudlever, online applications, slushpile, submission forms, submission manager, submission, unregistered user
-Requires at least: 2.8.6
-Tested up to: 4.2.1
-Stable Tag: 1.5.1
+Requires at least: 4.0
+Tested up to: 4.5.3
+Stable Tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -115,6 +115,13 @@ Yes - you can define custom response templates that contain whatever message you
 
 == Changelog ==
 
+= 2.0.0 =
+
+* Finally got around to that redesign everyone has been begging us for :)
+* The Options page is now a single form, which should prevent those pesky javascript errors that prevented some folks from fully configuring the plugin because they couldn't bring up the other tabs.
+* The uninstall plugin link is now on the first screen, beneath the Plugin Statistics - not that you'd ever want to use this, but just in case.
+* The plugin was basically overhauled, from the ground up.  It renders faster.  The code is better organized.  Building upon this version will allow us to turn around new features faster.
+
 = 1.5.1 =
 
 * Writers will now be prompted to provide their name, bio and website URL when submitting works to your publication.
@@ -219,9 +226,14 @@ Yes - you can define custom response templates that contain whatever message you
 
 == Upgrade Notice ==
 
+= 2.0.0 =
+
+* Finally got around to that redesign everyone has been begging us for :)
+* You should upgrade because this version is so, so much better than the previous versions.
+
 = 1.5.1 =
 
-* Pompt for writer bio when not present during submission process.
+* Prompt for writer bio when not present during submission process.
 
 = 1.5.0 =
 
