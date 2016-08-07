@@ -19,7 +19,7 @@ class HeyPublisherXML {
     'accepted' => 'Accepted',
     'rejected' => 'Rejected',
     'published' => 'Published',
-    'publisher_revision_requested' => 'Revision Requested',
+    'publisher_revision_requested' => 'Revision Req.',
     'writer_revision_provided' => 'Revised by Author'
     );
   var $is_validated = false;
@@ -34,9 +34,17 @@ class HeyPublisherXML {
     $this->config = get_option(HEYPUB_PLUGIN_OPT_CONFIG);
     $this->install = get_option(HEYPUB_PLUGIN_OPT_INSTALL);
     $this->set_is_validated();
+    // $this->log(sprintf("construct INSTALL Opts: %s",print_r($this->install,1)));
+    // $this->log(sprintf("construct CONFIG Opts: %s",print_r($this->config,1)));
+    register_shutdown_function(array($this,'save_option_state'));
   }
-
   public function __destruct() {
+
+  }
+  public function save_option_state() {
+    // Register the shutdown functions
+    // http://stackoverflow.com/questions/33231656/register-static-class-method-as-shutdown-function-in-php
+    // http://us.php.net/manual/en/function.register-shutdown-function.php
     curl_close($this->curl);
     if ($this->install) {
       update_option(HEYPUB_PLUGIN_OPT_INSTALL,$this->install);
@@ -543,7 +551,7 @@ EOF;
         $err = $xml->error->message;
         if ($err) {
           if ($err == '403 Forbidden') {
-            $this->error = 'The content of this submission is temporarily unavailable.';
+            $this->error = "The content of this submission is temporarily unavailable (# $id).";
             // $return = $xml->submission; // don't return content - nothing editor can do with this
           } else {
             $this->error = "$err";
@@ -551,27 +559,37 @@ EOF;
         } else {
           $this->error = 'Error retrieving submission for reading from HeyPublisher.com';
         }
-        $this->print_webservice_errors();
+        $this->print_webservice_errors(true,$id);
       }
     }
     return $return;
   }
 
-
-  function print_webservice_errors($show_contact=true) {
-?>
-    <div id='heypub_error' class='flash error'>
-      <h2>Error Encountered</h2>
-      <p><?php echo $this->error; ?></p>
-<?php
+  // TODO: consolidate this with Page::print_message()
+  function print_webservice_errors($show_contact=true,$id=null) {
+    $contact = null;
     if ($show_contact) {
-?>
-      <p><b><?php echo HEYPUB_PLUGIN_ERROR_CONTACT; ?></b></p>
-<?php
+      $email = HEYPUB_PLUGIN_ERROR_CONTACT;
+      $contact = <<<EOF
+        <p>
+          Please contact
+          <a href="mailto:{$email}?subject=plugin%20error%20{$id}">
+            support@heypublisher.com
+          </a>
+          for further information.
+        </p>
+EOF;
     }
-?>
-    </div>
-<?php
+    $e = <<<EOF
+      <div id="message" class="error">
+        <p>
+          <b>ERROR:</b>
+          {$this->error}
+        </p>
+        {$contact}
+      </div>
+EOF;
+    print($e);
   }
 
   /**
@@ -591,7 +609,7 @@ EOF;
   * Fetch the hash of 'all' publisher types, plus the publisher type associated with this publication suitable for making drop-down list with.
   */
   function get_my_publisher_types_as_hash() {
-      $return = false;
+      $return = array();
       $post = <<<EOF
 <publisher_types>
     <sort>name</sort>
@@ -753,9 +771,25 @@ EOF;
   // logging function
   public function log($msg) {
     if ($this->debug) {
-      error_log(sprintf("%s\n",$msg),3,dirname(__FILE__) . '/../../error.log');
+      error_log(sprintf("%s\n",$msg),3,HEYPUB_PLUGIN_FULLPATH . '/error.log');
     }
   }
-
+  // Sync the local store of publisher metadata with the remote store.
+  public function sync_publisher_info() {
+    $p = $this->get_publisher_info();
+    if ($p) {
+      $this->set_config_option('seo_url',$p[seo_url]);
+      $this->set_config_option('homepage_first_validated_at',$p[homepage_first_validated_at]);
+      $this->set_config_option('homepage_last_validated_at',$p[homepage_last_validated_at]);
+      $this->set_config_option('guide_first_validated_at',$p[guide_first_validated_at]);
+      $this->set_config_option('guide_last_validated_at',$p[guide_last_validated_at]);
+      // we won't store total subs and open subs
+      // xml.avg_response_days(-1)   # we'll calculate this later
+      // xml.avg_acceptance_rate(-1) # we'll calculate this later
+      // xml.writer_comments(@pub.comments.count(:include => [:comment_type],:conditions=>["comment_types.name = 'public'"]))
+      // xml.writer_favorites(@pub.user_publishers.count)
+    }
+    return $p;
+  }
 }
 ?>

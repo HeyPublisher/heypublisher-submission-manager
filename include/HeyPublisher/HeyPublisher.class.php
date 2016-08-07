@@ -154,7 +154,8 @@ EOF;
   }
 
   public function submission_summary_link($text='See All Submissions') {
-    $str = sprintf("<a href='admin.php?page=heypub_show_menu_submissions'>%s</a>",$text);
+    global $hp_subs;
+    $str = sprintf("<a href='admin.php?page=%s'>%s</a>",$hp_subs->slug,$text);
     return $str;
   }
 
@@ -195,10 +196,6 @@ EOF;
       $class = 'heypub-tab-pressed';
     }
     $ret = sprintf("<a href='#' class='heypub-tab %s' id='heypub_%s_tab' onclick='heypub_toggle_tabs(\"%s\");return false;'>%s</a>", $class,$key,$key,$label);
-    return $ret;
-  }
-  public function blockquote($content){
-    $ret = sprintf("<blockquote class='heypub_summary'>%s</blockquote>",$content);
     return $ret;
   }
 
@@ -286,27 +283,31 @@ EOF;
       $users = get_users(array('meta_key'=> HEYPUB_USER_META_KEY_AUTHOR_OID, 'meta_value' => $a->oid));
       if (FALSE != $users) {
         $uid = $users[0]->ID;
-        // $msg[] = "Setting user ID '$uid' by OID";
+        $msg[] = "Setting user ID '$uid' by OID";
       } else {
         // then by HP User ID
         $users = get_users(array('meta_key'=> HEYPUB_USER_META_KEY_AUTHOR_ID, 'meta_value' => $a->email ));
   			// printf("<pre>users array = %s</pre>",print_r($users,1));
         if (FALSE != $users) {
           $uid = $users[0]->ID;
-          // $msg[] = "Setting user ID '$uid' by Author ID";
+          $msg[] = "Setting user ID '$uid' by Author ID";
         }
       }
     }
 
     // If we're still FALSE, attempt to find by email address
     if (FALSE == $uid) {
-      $user = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->users WHERE user_email= %s",$a->email));
-      if (FALSE != $user) {
-        $uid = $user;
-        // $msg[] = "Setting user ID '$uid' by Email in WP";
+      $msg[] = "attempting to find by email address";
+      $msg[] = sprintf("looking for email: %s",$a->email );
+      $uid = username_exists( "$a->email" );
+      $msg[] = sprintf("user ID from username: %", $uid);
+      if (FALSE == $uid) {
+        $uid = email_exists("$a->email");
+        $msg[] = sprintf("user ID from email: %", $uid);
       }
     }
     // printf("<pre>message from user create: %s</pre>",print_r($msg,1));
+    // printf("<pre>$uid: %s</pre>",print_r($uid,1));
     if (FALSE != $uid) {
       // If we're NOT FALSE, update the author info.
       $this->update_author_info($uid,$a);
@@ -323,13 +324,16 @@ EOF;
   */
   public function create_author($username,$a) {
     $uid = false;
-    $user = get_user_by('login',$username);
-    if (!$user) {
+
+    // $user = get_user_by('login',$username);
+    $uid = username_exists( $username );
+    if ( !$uid ) {
+      $uid = email_exists($username);
+    }
+    if (!$uid) {
       // create the record
     	$random_password = wp_generate_password( 12, false );
     	$uid = wp_create_user( $username, $random_password, $a->email );
-    } else {
-      $uid = $user->ID;
     }
 
     // SANITY CHECK.  If we're creating a 'new' user and we already have META data for that user, throw an error

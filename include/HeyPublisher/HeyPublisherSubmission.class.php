@@ -7,8 +7,6 @@ require_once('HeyPublisher.class.php');
 class HeyPublisherSubmission extends HeyPublisher {
 
   var $nounce = 'heypub-bulk-submit';
-  var $disallowed_states = array('withdrawn','published','rejected');
-
   var $submission_state = array(
     'read' => 'read',
     'under_consideration' => 'review',
@@ -44,7 +42,8 @@ EOF;
   }
   // Deprecating with v 1.4.0
   public function revision_request_form($id) {
-    $url = $this->get_form_post_url_for_page('heypub_show_menu_submissions');
+    global $hp_subs;
+    $url = $this->get_form_post_url_for_page($hp_subs->slug);
     $nounce = wp_nonce_field($this->nounce);
 
     $str = <<<EOF
