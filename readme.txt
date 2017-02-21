@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, loudlever, online applications, slushpile, submission forms, submission manager, submission, unregistered user
 Requires at least: 4.0
 Tested up to: 4.5.3
-Stable Tag: 2.0.0
+Stable Tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,10 @@ Yes - you can define custom response templates that contain whatever message you
 11. Reimport.  If a writer modifies a submission you have already 'Accepted' - you can re-import the submission into WordPress by selecting the "Reimport Into WordPress" value from the drop-down and clicking the "Update Submission" button.
 
 == Changelog ==
+
+= 2.0.1 =
+
+* Fix style sheet not properly styling custom email templates edit form.
 
 = 2.0.0 =
 
