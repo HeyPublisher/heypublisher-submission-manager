@@ -5,9 +5,9 @@ Plugin URI: http://loudlever.com
 Description: This plugin allows you as to accept unsolicited submissions from writers.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.
 Author: Loudlever
 Author URI: http://www.loudlever.com
-Version: 2.0.0
+Version: 2.0.1
 
-  Copyright 2010-2016 Loudlever, Inc. (wordpress@loudlever.com)
+  Copyright 2010-2017 Loudlever, Inc. (wordpress@loudlever.com)
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation
@@ -61,16 +61,17 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   1.5.0 => 52
   1.5.1 => 53
   2.0.0 => 60
+  2.0.1 => 61
 ---------------------------------------------------------------------------------
 */
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "60");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_BUILD_DATE", "2016-08-04");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "61");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_BUILD_DATE", "2017-02-20");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_VERSION", "2.0.0");
+define("HEYPUB_PLUGIN_VERSION", "2.0.1");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';

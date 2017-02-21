@@ -138,7 +138,7 @@ EOF;
     $base = HEYPUB_SVC_URL_BASE;
     $uid = $this->xml->user_oid;
     $pid = $this->xml->pub_oid;
-    $admin_url = sprintf("%s/wp-admin/load-styles.php?c=1&dir=ltr&load=admin-bar,wp-admin,buttons&ver=%s",get_bloginfo('wpurl'), get_bloginfo('version'));
+    $admin_url = sprintf("%s/wp-admin/load-styles.php?c=1&dir=ltr&load=admin-bar,common,wp-admin,buttons&ver=%s",get_bloginfo('wpurl'), get_bloginfo('version'));
     $url = sprintf('%s/response_template/index/%s/%s?v=%s&css=%s',$base,$uid,$pid,HEYPUB_PLUGIN_BUILD_NUMBER,urlencode($admin_url));
     $html = <<<EOF
 <iframe src="$url" width='100%' height='500' scrolling='auto'> </iframe>
