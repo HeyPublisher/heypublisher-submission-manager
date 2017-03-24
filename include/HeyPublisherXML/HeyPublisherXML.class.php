@@ -115,6 +115,7 @@ class HeyPublisherXML {
       'name'  => null,
       'url'   => null,
       'circulation' => null,
+      'issn' => null,
       'established' => null,
       'editor_name' => null,
       'editor_email' => null,
@@ -359,6 +360,7 @@ EOF;
     $paying = $this->update_publisher_paying_market($post);
     # no htmlentities here, otherwise " becomes %quote; and cronks the seo name
     $name = stripslashes($post[name]);
+    $issn = htmlentities(stripslashes($post[issn]));
     $established = htmlentities(stripslashes($post[established]));
     $editor = htmlentities(stripslashes($post[editor_name]));
     $editor_email = htmlentities(stripslashes($post[editor_email]));
@@ -382,6 +384,7 @@ EOF;
     <publishertype_id>$post[pub_type]</publishertype_id>
     <name>$name</name>
     <url>$url</url>
+    <issn>$issn</issn>
     <established>$established</established>
     <circulation>$post[circulation]</circulation>
     <sub_guideline>$post[guide]</sub_guideline>

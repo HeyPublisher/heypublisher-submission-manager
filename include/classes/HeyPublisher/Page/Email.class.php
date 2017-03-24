@@ -65,7 +65,7 @@ Sincerely,
 <pre>
 Dear Janet,
 
-Thank you so much for submitting "An Night to Remember" to us.  All of us here at Amazing Stories
+Thank you so much for submitting "A Night to Remember" to us.  All of us here at Amazing Stories
 really enjoyed reading this piece and we can't wait to publish it.
 
 We will be in touch shortly.
@@ -92,6 +92,7 @@ EOF;
       The keyword will be substituted with actual values from the submission or your
       publication at the time the email is sent out.
     </p>
+    <p>Keywords are case-sensitive and must include the enclosing square braces when used.</p>
     <table class="widefat post fixed ll-plugin" cellspacing="0">
       <thead>
         <tr>
@@ -102,31 +103,39 @@ EOF;
       <tbody>
         <tr>
           <td><b>[SubmissionTitle]</b></td>
-          <td>The title of the submission</td>
+          <td>The title of the submission.</td>
         </tr>
         <tr>
           <td><b>[WriterFirstName]</b></td>
-          <td>The first name of the writer who sent the submission</td>
+          <td>The first name of the writer who submitted the work for consideration.</td>
         </tr>
         <tr>
           <td><b>[WriterLastName]</b></td>
-          <td>The last name of the writer who sent the submission</td>
+          <td>The last name of the writer.</td>
         </tr>
         <tr>
           <td><b>[PublisherName]</b></td>
-          <td>The name of your publication</td>
+          <td>The title of your publication.</td>
         </tr>
         <tr>
           <td><b>[PublisherURL]</b></td>
-          <td>The URL of your publication</td>
+          <td>The URL of your publication.</td>
         </tr>
         <tr>
           <td><b>[EditorName]</b></td>
-          <td>The first and last name of your editor</td>
+          <td>The first and last name of your editor, as set on the <b>Plugin Options</b> screen.</td>
         </tr>
         <tr>
           <td><b>[EditorNoteToWriter]</b></td>
-          <td>The contents of the note written to the author on the submission review screen</td>
+          <td>The contents of the note written to the author on the Submission Review screen.</td>
+        </tr>
+        <tr>
+          <td><b>[UserID]</b></td>
+          <td>A unique ID identifying the author in HeyPublisher.  This value is guaranteed to be unique across all HeyPublisher accounts and is not changable once set.  It could be used by you as an alternative ID for the author.</td>
+        </tr>
+        <tr>
+          <td><b>[Username]</b></td>
+          <td>A unique username picked by the writer.  Guaranteed to be unique within HeyPublisher, but may be changed by the writer if they choose.  If you accept work by the author, HeyPublisher will attempt to create an account using this same username in WordPress, if available.</td>
         </tr>
       </tbody>
     </table>
