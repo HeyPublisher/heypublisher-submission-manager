@@ -124,6 +124,10 @@ EOF;
         <input type="text" name="heypub_opt[url]" id="hp_url" value="{$this->strip($opts['url'])}" class='heypub'/>
       </li>
       <li>
+        <label class='heypub' for='hp_issn'>ISSN</label>
+        <input type="text" name="heypub_opt[issn]" id="hp_issn" value="{$this->strip($opts['issn'])}" class='heypub'/>
+      </li>
+      <li>
         <label class='heypub' for='hp_established'>Year Established</label>
         <input type="text" name="heypub_opt[established]" id="hp_established" value="{$this->strip($opts['established'])}" class='heypub'/>
       </li>

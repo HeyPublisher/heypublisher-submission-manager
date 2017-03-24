@@ -1,18 +1,18 @@
 === HeyPublisher Submisson Manager ===
-Contributors: loudlever
+Contributors: loudlever, aguywithanidea
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
-Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, loudlever, online applications, slushpile, submission forms, submission manager, submission, unregistered user
+Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user
 Requires at least: 4.0
-Tested up to: 4.5.3
-Stable Tag: 2.0.1
+Tested up to: 4.7.3
+Stable Tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin allows you as a publisher or blog owner to accept unsolicited submissions from writers without having to create an account for them.
+HeyPublisher gives you a better way of managing submissions directly within WordPress.
 
 == Description ==
 
-This plugin allows you as to accept unsolicited submissions from writers.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.
+This plugin allows you as to accept submissions from writers.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.  And there is no need to create user accounts for writers just so they can submit content to your publication.
 
 **How HeyPublisher Submission Manager Helps**
 
@@ -111,9 +111,16 @@ Yes - you can define custom response templates that contain whatever message you
 
 == Changelog ==
 
+= 2.1.0 =
+
+* Released : 2017-03-23
+* You now can use [Username] and [UserID] keyword substitutions in email templates (thanks for the suggestion Andy!)
+* Even though Andy didn't ask for it, we also added the ability for publishers to include their [ISSN](http://www.issn.org/understanding-the-issn/the-issn-international-register/) in their HeyPublisher listing.
+
 = 2.0.1 =
 
-* Fix style sheet not properly styling custom email templates edit form.
+* Released : 2017-02-20
+* Fixed style sheet not properly styling custom email template edit forms.  It was ugly - we know that now.
 
 = 2.0.0 =
 
@@ -126,114 +133,6 @@ Yes - you can define custom response templates that contain whatever message you
 
 * Writers will now be prompted to provide their name, bio and website URL when submitting works to your publication.
 * Better yet - that information is fully imported into WordPress when you accept their submission for publication.
-
-= 1.5.0 =
-
-* You now have the ability to request a revision for an already accepted submission.  Since this is the place and time where you would typically want to request a revision, we thought we should let you do that.
-* You now have the ability to re-import previously accepted submissions - which is really important if you've already accepted a submission that has now been revised.
-* We fixed a bug where a "submission not found" error would display if the user deleted their submission.  While technically this makes sense, it doesn't do you any good.  What are you going to do with this knowledge?  Now we just remove the submission from the list.
-* We did some general code cleanup and removed some assets that were no longer needed.  You probably didn't even know these assets were there to begin with - so we consider this a win-win.
-
-= 1.4.5 =
-
-* Fixed redirect error by pointing directly to www.heypublisher.com
-
-= 1.4.4 =
-
-* Verified works on WP 4.2.1.
-* Fixed links to external documentation that were not actually there.
-* Uninstall was not properly registering or cleaning up data.
-
-= 1.4.3 =
-
-* Verified works on WP 4.0+.
-
-= 1.4.2 =
-
-* You can no longer 'accept for publication' more than one submission at a time.
-
-* When accepting a submission for publication, if the author record does not exist in your WP database you are now prompted to input the desired 'username' for the newly created author record.  If the author record already exists, then this step is skipped.
-
-* Fixed improperly closed DIV tag on the submission summary that was causing the WordPress footer to appear mid-list.
-
-= 1.4.1 =
-
-* Completely rewrote the HTML cleanup code. All fonts and embedded styles are now removed from submitted works.  If you find that you're having problems with multibyte characters, turn off HTML cleanup in the Plugin Options -> Miscellaneous screen.
-
-* Completely rewrote configuration screen to be tabbed and to better group/organize the configurations.
-
-* Changed contact email address to support@heypublisher.com.
-
-* Added support for sub-categories.
-
-* Cleaned up the plugin submission pages to better handle extra long titles and to indicate when writers do not provide a return email address.
-
-* Added Twitter as a social media login type we support.  We've removed support for Windows Live ID
-
-= 1.3.1 =
-
-* Fixed error that is thrown when trying to deactivate the plugin.
-
-= 1.3.0 =
-
-* Introduced the ability for editors to turn off the email notifications sent to writers when a submission changes state.
-
-* Added 'Year Established', 'Monthly Circulation', 'Facebook' and 'Twitter' configuration options.  When populated, these values will be displayed with your publication listing at HeyPublisher.com
-
-* Fixed an edge-case where publishers could continue to see withdrawn submissions.
-
-* Better layout of the Publication Information configuration section, to separate contact info from publication info.
-
-* Fixed issue where previously accepted submissions that were moved to the trash were not marked as 'rejected'.
-
-* Fixed issue where accepted submissions that were scheduled for publication at a future date were not transitioning to 'published' on that date.
-
-= 1.2.4 =
-
-* Fixed tagging issue that caused submissions page to throw fatal error regarding missing class file.
-
-= 1.2.3 =
-
-* Fixed wrapping issue seen in Dashboard widget when at small scale and in some circumstances always in XP (thanks Shrikant!).
-
-= 1.2.2 =
-
-* Fixes two typos, including an invalid URL.
-
-= 1.2.1 =
-
-* Added Submission Summary counts to the Dashboard and to the main plugin information screen.  Introduces metrics on accept vs. reject percentage.
-
-= 1.2.0 =
-
-* Added Custom Response Templates; the ability to customize the emails that are sent to your writers during each stage of the submission review process.
-
-* Added summary submission statistics to the plugin 'home' page
-
-* Added detailed statistics on the submission preview page, informing publisher if work is outstanding with another publisher (or has been previously published).
-
-= 1.1.0 =
-
-* Fixed an issue where the custom javascript in this plugin could possibly conflict with Admin Themes that also used javascript.
-
-* Fixed code related to User<->Post mapping so that the plugin uses the new functions introduced in WordPress 3.0
-
-* Removed the inclusion of the custom stylesheet on the Submission Form page, as it was conflicting with some themes.  Now, the width/height of the IFRAME in which the submission form displays is styled inline.  If you want to override the size or style of this IFRAME reset the attributes for `#heypub_submission_iframe` in your stylesheet.
-
-= 1.0.1 =
-
-* Initial release of HeyPublisher Submission Manager Plugin
-
-== Upgrade Notice ==
-
-= 2.0.0 =
-
-* Finally got around to that redesign everyone has been begging us for :)
-* You should upgrade because this version is so, so much better than the previous versions.
-
-= 1.5.1 =
-
-* Prompt for writer bio when not present during submission process.
 
 = 1.5.0 =
 
