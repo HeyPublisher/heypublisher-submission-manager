@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: HeyPublisher Submission Manager
-Plugin URI: http://loudlever.com
-Description: This plugin allows you as to accept unsolicited submissions from writers.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.
-Author: Loudlever, aguywithanidea
-Author URI: https://github.com/aguywithanidea/
+Plugin URI: https://www.heypublisher.com
+Description: HeyPublisher is a better way of managing unsolicited submissions directly within WordPress.
+Author: HeyPublisher
+Author URI: https://www.heypublisher.com
 Version: 2.1.0
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
@@ -64,6 +64,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.0.0 => 60
   2.0.1 => 61
   2.1.0 => 62
+  2.2.0 => 63
 ---------------------------------------------------------------------------------
 */
 
@@ -165,8 +166,6 @@ register_activation_hook (__FILE__, 'heypub_init');
 register_deactivation_hook( __FILE__, 'heypub_uninit');
 // Register the adminstration menu
 add_action('admin_menu', 'RegisterHeyPublisherAdminMenu');
-// Hook into the 'dashboard' to display some stats
-add_action('wp_dashboard_setup', 'RegisterHeyPublisherDashboardWidget' );
 
 // IMPORTANT: If you have custom posts and want to have HeyPublisher send a notice
 // to the writer when the submission is either published, or rejected after acceptance,
@@ -245,13 +244,6 @@ function HeyPublisherAdminInit() {
 //   $hp_res->handler();
 // }
 
-function RegisterHeyPublisherDashboardWidget() {
-  wp_add_dashboard_widget('heypub_dash_widget', 'HeyPublisher Statistics', 'heypub_right_now');
-}
-function heypub_right_now() {
- global $hp_base;
- print $hp_base->right_now_widget();
-}
 /*
 -------------------------------------------------------------------------------
 Initialize / Upgrade

@@ -91,58 +91,6 @@ EOF;
     return $string;
   }
 
-  public function get_dashboard_stats() {
-    global $hp_xml;
-    if (!$hp_xml->is_validated) {
-      $data = sprintf("<td colspan='4'><i>Plugin needs to be validated first &nbsp;&nbsp;<a href='%s'>CLICK HERE to VALIDATE</a></i></td>",
-        heypub_get_authentication_url());
-    } else {
-      $p = $hp_xml->get_publisher_info();
-      if ($p[total_open_subs]) {
-        $p[total_open_subs] = $this->submission_summary_link("$p[total_open_subs] Pending Subs");
-    }
-    $style = " style='width:50%;float:left;'";
-    $data = <<<EOF
-<ul style='margin:0;overflow:hidden;'>
-    <li $style>$p[total_subs] Total Submissions</li>
-    <li $style>$p[total_open_subs]</li>
-    <li $style>$p[total_published_subs] Published Subs</li>
-    <li $style>$p[total_rejected_subs] Rejected Sub</li>
-    <li $style>$p[published_rate] Publish Rate</li>
-    <li $style>$p[rejected_rate] Reject Rate</li>
-</ul>
-EOF;
-// for future ref, if we want to add this in:
-// </tr>
-// <tr>
-// <td colspan=4 class='t'><b>Response Statistics:</b></td>
-// </tr>
-// <tr>
-// <td class="first b">$p[avg_response_days]</td>
-// <td class='t'>Avg. Response Days</td>
-// <td class='b'>$p[total_thirty_late]</td>
-// <td class='last t approved'>30 Days Old</td>
-// </tr>
-// <tr>
-// <td class="first b">$p[total_sixty_late]</td>
-// <td class='t waiting'>60 Days Old</td>
-// <td class='b'>$p[total_ninety_late]</td>
-// <td class='last t spam'>90 Days Old</td>
-    }
-    return $data;
-  }
-
-  // for version >= 3.0 stats are displayed in their own dashboard widget
-  public function right_now_widget() {
-    $data = $this->get_dashboard_stats();
-    $str = <<<EOF
-<div class='main' id='heypub_dashboard' style='overflow:hidden;padding:0 12px 11px;'>
-  $data
-</div>
-EOF;
-    return $str;
-  }
-
   public function make_donation_link($text_only=false) {
     $format = "<a href='".HEYPUB_DONATE_URL."' target='_blank' title='Thank You for Donating to HeyPublisher'>%s</a>";
     if ($text_only) {

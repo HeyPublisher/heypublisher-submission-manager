@@ -1,7 +1,7 @@
 === HeyPublisher Submisson Manager ===
-Contributors: loudlever, aguywithanidea
+Contributors: heypublisher, aguywithanidea, loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
-Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user
+Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
 Requires at least: 4.0
 Tested up to: 4.7.3
 Stable Tag: 2.1.0
@@ -110,6 +110,9 @@ Yes - you can define custom response templates that contain whatever message you
 11. Reimport.  If a writer modifies a submission you have already 'Accepted' - you can re-import the submission into WordPress by selecting the "Reimport Into WordPress" value from the drop-down and clicking the "Update Submission" button.
 
 == Changelog ==
+
+= NEXT =
+* Removed the Dashboard widget that was not being used by anyone, ever.
 
 = 2.1.0 =
 
