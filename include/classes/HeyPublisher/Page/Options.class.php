@@ -65,6 +65,21 @@ class Options extends \HeyPublisher\Page {
 EOF;
     return $html;
   }
+
+  private function get_years_for_select($current) {
+    $cy = $this->strip($current);
+    $start = date('Y');
+    $end  =date('Y', strtotime('-90 year'));
+    $opts = '';
+    for($start; $start >= $end; $start--) {
+
+      $sel = '';
+      if ($start == $cy) { $sel = ' selected="selected"'; }
+      $opts .= sprintf('<option value="%s" %s>%s</option>',$start, $sel, $start);
+    }
+    return $opts;
+  }
+
   private function not_validated_form() {
     $opts = $this->xml->config;
     // $this->log(sprintf("not_validated_form opts: %s",print_r($opts,1)));
@@ -104,6 +119,8 @@ EOF;
     $this->log(sprintf("opts in publication_block: %s",print_r($opts,1)));
     $name = htmlentities(stripslashes($opts['name']));
 
+    $years = $this->get_years_for_select($opts['established']);
+
     $html = <<<EOF
     <!-- Publication Block -->
     <h3 class='first'>Publication Information</h3>
@@ -129,7 +146,9 @@ EOF;
       </li>
       <li>
         <label class='heypub' for='hp_established'>Year Established</label>
-        <input type="text" name="heypub_opt[established]" id="hp_established" value="{$this->strip($opts['established'])}" class='heypub'/>
+        <select name="heypub_opt[established]" id="hp_established" class='heypub'>
+        {$years}
+        </select>
       </li>
       <li>
         <label class='heypub' for='hp_circulation'>Monthly Circulation (Visitors)</label>
