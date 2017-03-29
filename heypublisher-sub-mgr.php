@@ -165,6 +165,7 @@ $hp_email = new \HeyPublisher\Page\Email;
 register_activation_hook (__FILE__, 'heypub_init');
 register_deactivation_hook( __FILE__, 'heypub_uninit');
 // Register the adminstration menu
+add_action('admin_init', 'RegisterHeyPublisherAdminStyle');
 add_action('admin_menu', 'RegisterHeyPublisherAdminMenu');
 
 // IMPORTANT: If you have custom posts and want to have HeyPublisher send a notice
@@ -191,6 +192,11 @@ if ($hp_xml->install['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
   heypub_init();
 }
 
+// register the admin styles
+function RegisterHeyPublisherAdminStyle() {
+  wp_register_style( 'heypublisher', plugins_url( 'include/css/heypublisher.css', __FILE__ ), array(), HEYPUB_PLUGIN_VERSION );
+}
+
 /**
 *  Configure and Register the Admin Menu
 *  Invoke the hook, sending function name
@@ -198,7 +204,7 @@ if ($hp_xml->install['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
 function RegisterHeyPublisherAdminMenu(){
   global $hp_xml, $hp_opt, $hp_subs, $hp_main, $hp_email;
   // Initilise the plugin for the first time here. This gets called when you click the HeyPublisher link.
-  $admin_menu = add_menu_page('HeyPublisher Stats','HeyPublisher', 8, HEY_DIR, 'heypub_menu_main', 'dashicons-book');
+  $admin_menu = add_menu_page('HeyPublisher Stats','HeyPublisher', 8, HEY_DIR, 'heypub_menu_main', 'dashicons-book-alt');
   add_action("admin_print_styles-$admin_menu", 'HeyPublisherAdminHeader' );
 
   // Configure Options
@@ -222,16 +228,15 @@ function RegisterHeyPublisherAdminMenu(){
   // Uninstall Plugin - now moved to Overview page :)
 }
 
+// Load the custom .css that's already been registered
 function HeyPublisherAdminHeader() {
-?>
-  <!-- HeyPublisher Header -->
-  <link rel='stylesheet' href='<?php echo HEYPUB_SVC_STYLESHEET_URL; ?>' type='text/css' />
-<?php
+  wp_enqueue_style( 'heypublisher' );
 }
+// Load the custom .js
 function HeyPublisherAdminInit() {
 	$parts = array(WP_PLUGIN_URL,HEY_DIR,'include','js','heypublisher.js');
-	$url = implode(DIRECTORY_SEPARATOR,$parts);
-  wp_enqueue_script('heypublisher', $url, array('prototype'));
+	$url = implode('/',$parts);
+  wp_enqueue_script('heypublisher', $url, array('jquery'), HEYPUB_PLUGIN_VERSION );
   // wp_enqueue_style('heypub_font_css', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array(), HEYPUB_PLUGIN_VERSION);
 }
 

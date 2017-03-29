@@ -138,15 +138,6 @@ EOF;
    return $ret;
   }
 
-  public function tabbed_nav($key,$label) {
-    $class = '';
-    if ($key == 'p') { // Initializer
-      $class = 'heypub-tab-pressed';
-    }
-    $ret = sprintf("<a href='#' class='heypub-tab %s' id='heypub_%s_tab' onclick='heypub_toggle_tabs(\"%s\");return false;'>%s</a>", $class,$key,$key,$label);
-    return $ret;
-  }
-
   /**
   * Wrapper for the get_user_meta() function that changed in WP 3.0
   */

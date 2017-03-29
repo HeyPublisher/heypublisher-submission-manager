@@ -310,11 +310,11 @@ EOF;
       <ul>
         <li>
           <label class='heypub' for='hp_accepting_subs'>Currently Accepting Submissions?</label>
-          <select name="heypub_opt[accepting_subs]" id="hp_accepting_subs" onchange="heypub_select_toggle('hp_accepting_subs','heypub_show_genres_list');">
+          <select name="heypub_opt[accepting_subs]" id="hp_accepting_subs" onchange="HeyPublisher.selectToggle(this,'#heypub_show_genres_list');">
             {$this->boolean_options('accepting_subs',$opts)}
           </select>
         </li>
-      <ul>
+      </ul>
 EOF;
     $hidden = ($opts['accepting_subs']) ? null : "style='display:none;' ";
     $html .= <<<EOF
@@ -322,15 +322,17 @@ EOF;
         <!-- Content Specific for the Genres -->
         <h3>Select all categories of work your publication accepts.</h3>
         {$this->genre_map()}
+        <br/>
       </div>
+
 EOF;
     $html .= <<<EOF
       <ul>
         <li>
-          {$this->boolean_select('Accept Simultaneous Submissions?','simu_subs',$opts)}
+          {$this->boolean_select('Simultaneous Submissions?','simu_subs',$opts)}
         </li>
         <li>
-          {$this->boolean_select('Accept Multiple Submissions?','multi_subs',$opts)}
+          {$this->boolean_select('Multiple Submissions?','multi_subs',$opts)}
         </li>
         <li>
           {$this->boolean_select('Accept Reprints?','reprint_subs',$opts)}
@@ -361,15 +363,16 @@ EOF;
         $mapping .= sprintf("</tr><tr class='%s'>",$class);
       }
       $mapping .= sprintf('
-        <td>%s &nbsp; <input id="cat_%s"type="checkbox" name="heypub_opt[genres_list][]" value="%s" %s onclick="heypub_click_check(this,\'chk_%s\');"/></td>
+        <td>%s &nbsp; <input id="cat_%s"type="checkbox" name="heypub_opt[genres_list][]" value="%s" %s onclick="HeyPublisher.clickCheck(this,\'chk_%s\');"/></td>
         <td>%s</td>',
           $hash[name],$hash[id],$hash[id],($hash[has]) ? "checked=checked" : null,$hash[id],$this->heypub_get_category_mapping($hash[id],$hash[has])
       );
       $cnt ++;
     }
+    // fill in the blank spaces
     if ($cnt < $cols) {
       for ($x=($cols-$cnt);$x<$cols;$x++) {
-        $mapping .= "<td>&nbsp;</td>";
+        $mapping .= "<td>&nbsp;</td><td>&nbsp;</td>";
       }
     }
     $html = <<<EOF
@@ -421,7 +424,7 @@ EOF;
           {$this->boolean_select('Rejected?','notify_rejected',$opts,'Sent if the submission is Rejected by an Editor.')}
         </li>
         <li>
-          {$this->boolean_select('Published?','notify_published',$opts,'Sent when a submission is Published.  Sent on the actual publication date if scheduled.')}
+          {$this->boolean_select('Published?','notify_published',$opts,'Sent when a submission is Published, or on the actual publication date if Scheduled.')}
         </li>
       </ul>
 EOF;
