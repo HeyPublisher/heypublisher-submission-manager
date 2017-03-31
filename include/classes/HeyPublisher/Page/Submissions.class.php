@@ -535,7 +535,7 @@ protected function create_new_account_form($array) {
     			<input type='hidden' name="notes" value="{$notes}" />
     			<input type='hidden' name="action" value="create_user" />
     			<label class='heypub' for='username'>Username:</label>
-    			<input type='text' name="username" id='username' class='heypub' value="{$sub->author->email}" />
+    			<input type='text' name="username" id='username' class='heypub' value="{$sub->author->username}" />
         </li>
       </ul>
       {$nonce}
