@@ -382,9 +382,13 @@ float: right;
   border-color: #C6D880;
   color:#264409 !important;
 }
-
+/*p.heypub-subtext {
+  margin-left: 230px;
+  padding-left: 0px !important;
+}*/
 BLOCKQUOTE.heypub {
  color: #D54E21;
+ /*margin-left: 230px;*/
 }
 A.heypub_smart_button {
   margin: 3px 0px;

@@ -261,40 +261,40 @@ EOF;
       $link_url = wp_nonce_url($link_url,'create_form');
     }
     $html = "<h3>Submission Form</h3>";
+    $nopage = 'style="display:none;"';
+    $yespage = '';
     if (!$opts[sub_page_id]) {
-      $html .= <<<EOF
-        <p>
-          Select the page that will contain your submission form.
-          If you haven't yet created this page, don't worry.
-          <br/>
-          Just <a href="{$link_url}">CLICK HERE &raquo; </a> and we will create the page now.
-          You can change the content and title of this page at any time.
-        </p>
-EOF;
+      $yespage = 'style="display:none;"';
+      $nopage = '';
     }
-    else {
-      $html .= <<<EOF
-        <p>The submission form is where writers will submit their work.</p>
+    $html .= <<<EOF
+      <p {$nopage} id='heypub-no-guidelines'>
+        Select the page that contains your submission form.
+        If you have not yet created this page, don't worry.
+        <br/>
+        Just <a href="{$link_url}">CLICK HERE &raquo; </a> to create the page now.
+        You can change the content and title of this page at any time.
+      </p>
+      <p {$yespage} id='heypub-yes-guidelines'>This is the page where writers will submit their work.</p>
 EOF;
-    }
     $select = '';
     $pages = get_pages();
     foreach ($pages as $p) {
       $select .= sprintf('<option value="%s" %s>%s</option>', $p->ID, ($p->ID == $opts[sub_page_id]) ? 'selected=selected' : null, $p->post_title);
     }
     $html .= <<<EOF
-      <p>Ensure that the following code is contained somewhere in this page.</p>
-      <blockquote class='heypub'><b>{$replacer}</b></blockquote>
-      <p>This code will be replaced by the actual submission form when writers visit this page.</p>
       <ul>
         <li>
           <label class='heypub' for='hp_submission_page'>Submission Form Page</label>
-          <select name="heypub_opt[sub_page_id]" id="hp_submission_page" class='heypub'>
+          <select name="heypub_opt[sub_page_id]" id="hp_submission_page" class='heypub' onchange='HeyPublisher.toggleGuidelines(this)'>
             <option value="">-- Select --</option>
             {$select}
           </select>
         </li>
       </ul>
+      <p class='heypub-subtext'>Ensure that the following code is contained somewhere within this page.</p>
+      <blockquote class='heypub'><b>{$replacer}</b></blockquote>
+      <p class='heypub-subtext'>This code will be replaced by the submission form when writers visit this page.</p>
 EOF;
     return $html;
   }

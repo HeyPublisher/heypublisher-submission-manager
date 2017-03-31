@@ -15,6 +15,15 @@
     }
   };
 
+  HeyPublisher.toggleGuidelines = function(sel) {
+    if ($(sel).val() && $(sel).val() > 0) {
+      $('#heypub-no-guidelines').hide();
+      $('#heypub-yes-guidelines').show();
+    } else {
+      $('#heypub-no-guidelines').show();
+      $('#heypub-yes-guidelines').hide();
+    }
+  };
   HeyPublisher.selectToggle = function(sel,div) {
     if ($(sel).val() == '1') {
       $(div).show();
