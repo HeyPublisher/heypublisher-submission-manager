@@ -261,40 +261,40 @@ EOF;
       $link_url = wp_nonce_url($link_url,'create_form');
     }
     $html = "<h3>Submission Form</h3>";
+    $nopage = 'style="display:none;"';
+    $yespage = '';
     if (!$opts[sub_page_id]) {
-      $html .= <<<EOF
-        <p>
-          Select the page that will contain your submission form.
-          If you haven't yet created this page, don't worry.
-          <br/>
-          Just <a href="{$link_url}">CLICK HERE &raquo; </a> and we will create the page now.
-          You can change the content and title of this page at any time.
-        </p>
-EOF;
+      $yespage = 'style="display:none;"';
+      $nopage = '';
     }
-    else {
-      $html .= <<<EOF
-        <p>The submission form is where writers will submit their work.</p>
+    $html .= <<<EOF
+      <p {$nopage} id='heypub-no-guidelines'>
+        Select the page that contains your submission form.
+        If you have not yet created this page, don't worry.
+        <br/>
+        Just <a href="{$link_url}">CLICK HERE &raquo; </a> to create the page now.
+        You can change the content and title of this page at any time.
+      </p>
+      <p {$yespage} id='heypub-yes-guidelines'>This is the page where writers will submit their work.</p>
 EOF;
-    }
     $select = '';
     $pages = get_pages();
     foreach ($pages as $p) {
       $select .= sprintf('<option value="%s" %s>%s</option>', $p->ID, ($p->ID == $opts[sub_page_id]) ? 'selected=selected' : null, $p->post_title);
     }
     $html .= <<<EOF
-      <p>Ensure that the following code is contained somewhere in this page.</p>
-      <blockquote class='heypub'><b>{$replacer}</b></blockquote>
-      <p>This code will be replaced by the actual submission form when writers visit this page.</p>
       <ul>
         <li>
           <label class='heypub' for='hp_submission_page'>Submission Form Page</label>
-          <select name="heypub_opt[sub_page_id]" id="hp_submission_page" class='heypub'>
+          <select name="heypub_opt[sub_page_id]" id="hp_submission_page" class='heypub' onchange='HeyPublisher.toggleGuidelines(this)'>
             <option value="">-- Select --</option>
             {$select}
           </select>
         </li>
       </ul>
+      <p class='heypub-subtext'>Ensure that the following code is contained somewhere within this page.</p>
+      <blockquote class='heypub'><b>{$replacer}</b></blockquote>
+      <p class='heypub-subtext'>This code will be replaced by the submission form when writers visit this page.</p>
 EOF;
     return $html;
   }
@@ -310,11 +310,11 @@ EOF;
       <ul>
         <li>
           <label class='heypub' for='hp_accepting_subs'>Currently Accepting Submissions?</label>
-          <select name="heypub_opt[accepting_subs]" id="hp_accepting_subs" onchange="heypub_select_toggle('hp_accepting_subs','heypub_show_genres_list');">
+          <select name="heypub_opt[accepting_subs]" id="hp_accepting_subs" onchange="HeyPublisher.selectToggle(this,'#heypub_show_genres_list');">
             {$this->boolean_options('accepting_subs',$opts)}
           </select>
         </li>
-      <ul>
+      </ul>
 EOF;
     $hidden = ($opts['accepting_subs']) ? null : "style='display:none;' ";
     $html .= <<<EOF
@@ -322,15 +322,17 @@ EOF;
         <!-- Content Specific for the Genres -->
         <h3>Select all categories of work your publication accepts.</h3>
         {$this->genre_map()}
+        <br/>
       </div>
+
 EOF;
     $html .= <<<EOF
       <ul>
         <li>
-          {$this->boolean_select('Accept Simultaneous Submissions?','simu_subs',$opts)}
+          {$this->boolean_select('Simultaneous Submissions?','simu_subs',$opts)}
         </li>
         <li>
-          {$this->boolean_select('Accept Multiple Submissions?','multi_subs',$opts)}
+          {$this->boolean_select('Multiple Submissions?','multi_subs',$opts)}
         </li>
         <li>
           {$this->boolean_select('Accept Reprints?','reprint_subs',$opts)}
@@ -361,15 +363,16 @@ EOF;
         $mapping .= sprintf("</tr><tr class='%s'>",$class);
       }
       $mapping .= sprintf('
-        <td>%s &nbsp; <input id="cat_%s"type="checkbox" name="heypub_opt[genres_list][]" value="%s" %s onclick="heypub_click_check(this,\'chk_%s\');"/></td>
+        <td>%s &nbsp; <input id="cat_%s"type="checkbox" name="heypub_opt[genres_list][]" value="%s" %s onclick="HeyPublisher.clickCheck(this,\'chk_%s\');"/></td>
         <td>%s</td>',
           $hash[name],$hash[id],$hash[id],($hash[has]) ? "checked=checked" : null,$hash[id],$this->heypub_get_category_mapping($hash[id],$hash[has])
       );
       $cnt ++;
     }
+    // fill in the blank spaces
     if ($cnt < $cols) {
       for ($x=($cols-$cnt);$x<$cols;$x++) {
-        $mapping .= "<td>&nbsp;</td>";
+        $mapping .= "<td>&nbsp;</td><td>&nbsp;</td>";
       }
     }
     $html = <<<EOF
@@ -421,7 +424,7 @@ EOF;
           {$this->boolean_select('Rejected?','notify_rejected',$opts,'Sent if the submission is Rejected by an Editor.')}
         </li>
         <li>
-          {$this->boolean_select('Published?','notify_published',$opts,'Sent when a submission is Published.  Sent on the actual publication date if scheduled.')}
+          {$this->boolean_select('Published?','notify_published',$opts,'Sent when a submission is Published, or on the actual publication date if Scheduled.')}
         </li>
       </ul>
 EOF;
