@@ -2,11 +2,11 @@
 
 ### 2.2.0
 + Released: 2017-04-02
-+ Changed "Year Established" to a dropdown list.  For publications published in the year "g" we apologize.
-+ Fixed weird formatting that was occurring on the Options page in WP 4.7.3.
-+ Validated that plugin works in WP 4.7.3.
-+ Updated account creation to use the "Username" of the author in HeyPublisher as the Username in WP, when possible.  Email addresses are no longer used as usernames. 
-+ Removed the Dashboard widget that was not being used by anyone, ever.
++ #37 : Changed "Year Established" to a dropdown list.  For publications published in the year "g" we apologize.
++ #54 : Fixed weird formatting that was occurring on the Options page in WP 4.7.3.
++ #40 : Validated that plugin works in WP 4.7.3.
++ #41 : Updated account creation to use the "Username" of the author in HeyPublisher as the Username in WP, when possible.  Email addresses are no longer used as usernames.
++ #50 : Removed the Dashboard widget that was not being used by anyone, ever.
 
 ### 2.1.0
 + Released : 2017-03-23
