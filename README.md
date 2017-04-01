@@ -1,16 +1,9 @@
-=== HeyPublisher Submisson Manager ===
-Contributors: heypublisher, aguywithanidea, loudlever
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
-Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
-Requires at least: 4.0
-Tested up to: 4.7.3
-Stable Tag: 2.2.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+## HeyPublisher Submisson Manager
 
 HeyPublisher gives you a better way of managing submissions directly within WordPress.
 
-== Description ==
+### Description
 
 This plugin allows you as to accept submissions from writers.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.  And there is no need to create user accounts for writers just so they can submit content to your publication.
 
@@ -24,13 +17,9 @@ Mark submissions for review, accept submissions for publication, or reject submi
 
 You define the type of writing you want to receive.  You control the flow of unsolicited content coming into your publication.  You have more time to run your publication.
 
-== About Us ==
+### Installation
 
-HeyPublisher builds tools for writers and publishers.  Find out more by visiting our website [HeyPublisher.com](https://www.heypublisher.com).
-
-== Installation ==
-
-**Install Plugin**
+#### Install Plugin
 
 * Download the zip file and save it in your `WordPress/wp-content/plugins` directory.
 
@@ -40,7 +29,7 @@ HeyPublisher builds tools for writers and publishers.  Find out more by visiting
 
 Once activated you will need to 'validate' the plugin with the HeyPublisher web-service.  To do this click on the HeyPublisher link in the newly created menu and follow the on-screen instructions.
 
-**Validate Plugin**
+#### Validate Plugin
 
 To validate the plugin you will need to provide basic information about your publication and yourself as the administrator of this publication:
 
@@ -53,7 +42,7 @@ If your publication already exists in the [HeyPublisher.com](https://heypublishe
 
 If you already have an account with HeyPublisher, enter the email address and password you use to login.  If you do not already have an account, enter the email address and password you would like to use.  This username and password will be used if you ever need to reinstall or upgrade the plugin.  This information is also used to ensure that **_ONLY YOU_** can modify your publication's listing in the HeyPublisher database.
 
-**Configure Plugin**
+#### Configure Plugin
 
 After the plugin has been validated, you can configure it to meet your submission requirements.  All information entered on this screen is used by HeyPublisher to help filter the submissions you receive.  The configuration sections are:
 
@@ -73,7 +62,7 @@ After the plugin has been validated, you can configure it to meet your submissio
 
 Once you have made the appropriate configurations, click the "Save" button.
 
-== Frequently Asked Questions ==
+### Frequently Asked Questions
 
 If you have any questions not addressed here, [please email us](mailto:support@heypublisher.com?subject=Question+about+plugin).
 
@@ -95,7 +84,7 @@ Yes - absolutely.  HeyPublisher indexes and archives all publisher submission gu
 * **Can we change the content of the emails sent to writers regarding their submissions?**
 Yes - you can define custom response templates that contain whatever message you want to send to your writers.  These emails are sent automatically whenever you reject, accept, or save a submission for later review.  An email is also sent the first time an editor reads a new submission.  Click on 'Response Templates' in the side-bar and follow the on-screen instructions.
 
-== Screenshots ==
+### Screenshots
 
 1. Plugin Validation Screen.  This is how you connect the plugin to HeyPublisher.  Input the username and password you want to create (if you don't already have a HeyPublisher account).
 2. Publication Information screen.  Input how you want your publication to appear within HeyPublisher's database.
@@ -109,118 +98,13 @@ Yes - you can define custom response templates that contain whatever message you
 10. Statistics screen.  Provides a quick snapshot of your slushpile.
 11. Reimport.  If a writer modifies a submission you have already 'Accepted' - you can re-import the submission into WordPress by selecting the "Reimport Into WordPress" value from the drop-down and clicking the "Update Submission" button.
 
-== Changelog ==
+### About Us
 
-= 2.2.0 =
-* Released: 2017-04-02
-* Changed "Year Established" to a dropdown list.  For publications published in the year "g" we apologize.
-* Fixed weird formatting that was occurring on the Options page in WP 4.7.3.
-* Validated that plugin works in WP 4.7.3.
-* Updated account creation to use the "Username" of the author in HeyPublisher as the Username in WP, when possible.  Email addresses are no longer used as usernames.
-* Removed the Dashboard widget that was not being used by anyone, ever.
+HeyPublisher builds tools for writers and publishers.  Find out more by visiting our website [HeyPublisher.com](https://www.heypublisher.com).
 
-= 2.1.0 =
+## About This Plugin
 
-* Released : 2017-03-23
-* You now can use [Username] and [UserID] keyword substitutions in email templates (thanks for the suggestion Andy!)
-* Even though Andy didn't ask for it, we also added the ability for publishers to include their [ISSN](http://www.issn.org/understanding-the-issn/the-issn-international-register/) in their HeyPublisher listing.
-
-= 2.0.1 =
-
-* Released : 2017-02-20
-* Fixed style sheet not properly styling custom email template edit forms.  It was ugly - we know that now.
-
-= 2.0.0 =
-
-* Finally got around to that redesign everyone has been begging us for :)
-* The Options page is now a single form, which should prevent those pesky javascript errors that prevented some folks from fully configuring the plugin because they couldn't bring up the other tabs.
-* The uninstall plugin link is now on the first screen, beneath the Plugin Statistics - not that you'd ever want to use this, but just in case.
-* The plugin was basically overhauled, from the ground up.  It renders faster.  The code is better organized.  Building upon this version will allow us to turn around new features faster.
-
-= 1.5.1 =
-
-* Writers will now be prompted to provide their name, bio and website URL when submitting works to your publication.
-* Better yet - that information is fully imported into WordPress when you accept their submission for publication.
-
-= 1.5.0 =
-
-* You now have the ability to request a revision of an already accepted submission - which you will probably want at some time.
-* You now have the ability to reimport previously accepted submissions.  This is cool.  Upgrade just for this functionality.
-
-= 1.4.5 =
-
-* Fixes problem where errors are being thrown because heypublisher.com domain can't be found.
-
-= 1.4.2 =
-
-* Released : 2011-09-27
-
-* Adds user creation feature request.
-
-= 1.4.1 =
-
-* Released : 2011-06-25
-
-* Fixes minor typos.
-
-= 1.4.0 =
-
-* Released : 2011-06-24
-
-* Primarily fixes UI components and HTML conversion formatting issues.  Upgrade strongly suggested.
-
-= 1.3.2 =
-
-* Released : 2011-03-02
-
-* Fixes error when publisher name has special characters in it.
-
-= 1.3.1 =
-
-* Released : 2011-01-04
-
-* Fixes error thrown when deactivating plugin - please upgrade.
-
-= 1.3.0 =
-
-* Released : 2011-01-03
-
-* Fixes issues with state transitions when submissions are moved to trash, or scheduled for future publication.  See Changelog for details.
-
-= 1.2.4 =
-
-* Released : 2010-11-01
-
-* Fixes Tagging issue. Please ugrade
-
-= 1.2.3 =
-
-* Released : 2010-10-30
-
-* Fixes Dashboard wrapping issue.  Please upgrade.
-
-= 1.2.2 =
-
-* Released : 2010-10-27
-
-= 1.2.1 =
-
-* See Changelog for added functionality.  No bug fixes.
-
-* Released : 2010-10-27
-
-= 1.2.0 =
-
-* See Changelog for added functionality.  No bug fixes.
-
-* Released : 2010-10-23
-
-= 1.1.0 =
-
-* Upgrade to fix possible conflicts with javascript you may experience if your Admin Theme also uses javascript.
-
-* Released : 2010-07-22
-
-= 1.0.1 =
-
-* Initial Release : 2010-04-29
++ WordPress minimum version: 4.0
++ WordPress version tested up to: 4.7.3
++ Current Stable Tag: 2.2.0
++ License: GPLv2
