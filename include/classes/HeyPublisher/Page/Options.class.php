@@ -437,7 +437,7 @@ EOF;
       <!-- MailChimp -->
       <h3>MailChimp Mailing List Subscriptions</h3>
       <p>
-        If you use <a href='https://mailchimp.com/' target='_blank'>MailChimp</a> to manage a mailing list, you can prompt new writers to subscribe to your mailing list at the time they are submitting their work.
+        If you use <a href='https://mailchimp.com/' target='_blank'>MailChimp</a> to manage your mailing list, setting to <code>Yes</code> will prompt new writers to subscribe to your mailing list when they submit their work.
       </p>
       <ul>
         <li>
@@ -590,8 +590,6 @@ EOF;
     $this->xml->sync_publisher_info();
     if ($success) {
       $message = 'Your changes have been saved and syncronized with HeyPublisher.';
-    } else {
-      $message = 'Your changes have been saved locally.';
     }
     return $message;
   }

@@ -277,12 +277,15 @@ class HeyPublisherXML {
 
   function update_publisher_mailchimp($post) {
     $xml = null;
+    $prompt = htmlentities(stripslashes($post[mailchimp][prompt]));
+    $api_key = htmlentities(stripslashes($post[mailchimp][api_key]));
+    $list_id =htmlentities(stripslashes($post[mailchimp][list_id]));
     if ($post[mailchimp]) {
       $xml =<<< EOF
       <mailchimp>
-        <active>{$post[mailchimp][prompt]}</active>
-        <api_key>{$post[mailchimp][api_key]}</api_key>
-        <list_id>{$post[mailchimp][list_id]}</list_id>
+        <active>{$prompt}</active>
+        <api_key>{$api_key}</api_key>
+        <list_id>{$list_id}</list_id>
       </mailchimp>
 EOF;
     }
