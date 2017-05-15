@@ -257,7 +257,7 @@ Initialize / Upgrade
 */
 function heypub_init(){
   global $hp_xml;
-  $hp_xml->log("heypub_init")
+  $hp_xml->log("heypub_init");
 
   // we're referencing the old key names here directly - as we no longer need the defines in the system
   // and this is simply for backwards upgrade compatibility
@@ -320,7 +320,7 @@ function heypub_init(){
     $hp_xml->set_is_validated();
   }
   elseif (get_option(HEYPUB_PLUGIN_OPT_INSTALL) == false) {
-    $hp_xml->log("NEW INSTALL PATH")
+    $hp_xml->log("NEW INSTALL PATH");
     // NEW Install Path
     $hp_xml->initialize_plugin();
     if (function_exists('get_bloginfo')) {
@@ -362,9 +362,7 @@ function heypub_init(){
     }
     // ensure 2.3.0 versons have base config for mailchimp, even if not used
     if ($opts['version_current'] < 64) {  // upgrade to 2.3.0 options
-      if (function_exists('get_bloginfo') && function_exists('get_feed_permastruct')) {
-          $hp_xml->set_config_option('mailchimp', array('active' => false, 'api_key' => null, 'list_id' => null));
-      }
+      $hp_xml->set_config_option('mailchimp', array('active' => false, 'api_key' => null, 'list_id' => null));
     }
     // For future reference, just keep adding new hash keys that are version specific by following same logic
     // if ($opts['version_current'] < 50) {  // upgrade to 1.4.x options

@@ -482,7 +482,15 @@ function get_publisher_info() {
     if ($xml->success->message) {
       foreach ($xml->publisher->children() as $x) {
         $name = $x->getName();
-        $return["$name"] = "$x";
+        // only two dimensions of nesting allowed for now
+        if ($x->count() > 0) {
+          foreach ($x->children() as $y) {
+            $namey = $y->getName();
+            $return["$name"]["$namey"] = "$y";
+          }
+        } else {
+          $return["$name"] = "$x";
+        }
       }
     }
     else {
