@@ -432,7 +432,7 @@ EOF;
   }
 
   private function experimental_options($opts) {
-    $hidden = ($opts['mailchimp'] && $opts['mailchimp']['active']) ? null : "style='display:none;' ";
+    $hidden = ($opts['mailchimp_active']) ? null : "style='display:none;' ";
     $html = <<<EOF
       <!-- MailChimp -->
       <h3>MailChimp Mailing List Subscriptions</h3>
@@ -442,8 +442,8 @@ EOF;
       <ul>
         <li>
           <label class='heypub' for='hp_mailchimp_active'>Prompt to Subscribe?</label>
-          <select name="heypub_opt[mailchimp][active]" id="hp_mailchimp_active" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
-            {$this->boolean_options('active',$opts['mailchimp'])}
+          <select name="heypub_opt[mailchimp_active]" id="hp_mailchimp_active" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
+            {$this->boolean_options('mailchimp_active',$opts)}
           </select>
         </li>
       </ul>
@@ -454,11 +454,11 @@ EOF;
         <ul>
           <li>
             <label class='heypub' for='hp_mailchimp_apikey'>API Key</label>
-            <input type="text" name="heypub_opt[mailchimp][api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip($opts['mailchimp']['api_key'])}" />
+            <input type="text" name="heypub_opt[mailchimp_api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip($opts['mailchimp_api_key'])}" />
           </li>
           <li>
             <label class='heypub' for='hp_mailchimp_listid'>List ID</label>
-            <input type="text" name="heypub_opt[mailchimp][list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip($opts['mailchimp']['list_id'])}" />
+            <input type="text" name="heypub_opt[mailchimp_list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip($opts['mailchimp_list_id'])}" />
           </li>
         </ul>
       </div>

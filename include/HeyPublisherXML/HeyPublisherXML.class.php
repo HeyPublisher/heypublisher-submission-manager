@@ -112,7 +112,6 @@ class HeyPublisherXML {
   private function config_options_definition() {
     $hash = array(
       'categories' => array(),
-      'mailchimp' => array('active' => false, 'api_key' => null, 'list_id' => null),
       'name'  => null,
       'url'   => null,
       'circulation' => null,
@@ -151,7 +150,10 @@ class HeyPublisherXML {
       'notify_under_consideration' => true,
       'turn_off_tidy' => false,
       'link_sub_to_edit' => true,           # don't think we're using this one??
-      'display_download_link' => false      # this is a local-only config
+      'display_download_link' => false,      # this is a local-only config
+      'mailchimp_active' => false,
+      'mailchimp_api_key' => null,
+      'mailchimp_list_id' => null
     );
     return $hash;
   }
@@ -277,18 +279,18 @@ class HeyPublisherXML {
 
   function update_publisher_mailchimp($post) {
     $xml = null;
-    $active = htmlentities(stripslashes($post[mailchimp][active]));
-    $api_key = htmlentities(stripslashes($post[mailchimp][api_key]));
-    $list_id =htmlentities(stripslashes($post[mailchimp][list_id]));
-    if ($post[mailchimp]) {
-      $xml =<<< EOF
-      <mailchimp>
-        <active>{$active}</active>
-        <api_key>{$api_key}</api_key>
-        <list_id>{$list_id}</list_id>
-      </mailchimp>
+    $active =   htmlentities(stripslashes($post[mailchimp_active]));
+    $api_key =  htmlentities(stripslashes($post[mailchimp_api_key]));
+    $list_id =  htmlentities(stripslashes($post[mailchimp_list_id]));
+    // if ($post[mailchimp_active]) {
+    $xml =<<< EOF
+    <mailchimp>
+      <active>{$active}</active>
+      <api_key>{$api_key}</api_key>
+      <list_id>{$list_id}</list_id>
+    </mailchimp>
 EOF;
-    }
+    // }
     return $xml;
   }
 
@@ -482,15 +484,7 @@ function get_publisher_info() {
     if ($xml->success->message) {
       foreach ($xml->publisher->children() as $x) {
         $name = $x->getName();
-        // only two dimensions of nesting allowed for now
-        if ($x->count() > 0) {
-          foreach ($x->children() as $y) {
-            $namey = $y->getName();
-            $return["$name"]["$namey"] = "$y";
-          }
-        } else {
-          $return["$name"] = "$x";
-        }
+        $return["$name"] = "$x";
       }
     }
     else {

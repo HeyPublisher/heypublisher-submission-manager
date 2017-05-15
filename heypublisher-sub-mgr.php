@@ -362,7 +362,9 @@ function heypub_init(){
     }
     // ensure 2.3.0 versons have base config for mailchimp, even if not used
     if ($opts['version_current'] < 64) {  // upgrade to 2.3.0 options
-      $hp_xml->set_config_option('mailchimp', array('active' => false, 'api_key' => null, 'list_id' => null));
+      $hp_xml->set_config_option('mailchimp_active', false);
+      $hp_xml->set_config_option('mailchimp_api_key', null);
+      $hp_xml->set_config_option('mailchimp_list_id', null);
     }
     // For future reference, just keep adding new hash keys that are version specific by following same logic
     // if ($opts['version_current'] < 50) {  // upgrade to 1.4.x options
