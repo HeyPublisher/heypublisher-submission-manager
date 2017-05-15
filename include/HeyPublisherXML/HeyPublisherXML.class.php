@@ -112,7 +112,7 @@ class HeyPublisherXML {
   private function config_options_definition() {
     $hash = array(
       'categories' => array(),
-      'mailchimp' => array('prompt' => false, 'api_key' => null, 'list_id' => null),
+      'mailchimp' => array('active' => false, 'api_key' => null, 'list_id' => null),
       'name'  => null,
       'url'   => null,
       'circulation' => null,
@@ -277,13 +277,13 @@ class HeyPublisherXML {
 
   function update_publisher_mailchimp($post) {
     $xml = null;
-    $prompt = htmlentities(stripslashes($post[mailchimp][prompt]));
+    $active = htmlentities(stripslashes($post[mailchimp][active]));
     $api_key = htmlentities(stripslashes($post[mailchimp][api_key]));
     $list_id =htmlentities(stripslashes($post[mailchimp][list_id]));
     if ($post[mailchimp]) {
       $xml =<<< EOF
       <mailchimp>
-        <active>{$prompt}</active>
+        <active>{$active}</active>
         <api_key>{$api_key}</api_key>
         <list_id>{$list_id}</list_id>
       </mailchimp>
@@ -445,7 +445,7 @@ EOF;
     }
     else {
       $xml = new SimpleXMLElement($ret);
-      $this->log(sprintf("XML results \n%s",print_r($xml,1)));
+      $this->log(sprintf("XML results from update_publisher() \n%s",print_r($xml,1)));
       // printf( "<pre>XML = %s</pre>",print_r($xml,1));
       # this is an object, convert to string
       if ($xml->success->message) {
@@ -471,7 +471,7 @@ function get_publisher_info() {
   $post = '';
   $return = array();
   $ret = $this->send(HEYPUB_SVC_URL_GET_PUBLISHER,$this->prepare_request_xml($post));
-  $this->log(sprintf("get_publisher_info params = \n%s\n RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
+  $this->log(sprintf("get_publisher_info() params = \n%s\nget_publisher_info() RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
   if (FALSE == $ret) {
     $this->print_webservice_errors();
   }
@@ -796,7 +796,9 @@ EOF;
       error_log(sprintf("%s\n",$msg),3,HEYPUB_PLUGIN_FULLPATH . '/error.log');
     }
   }
-  // Sync the local store of publisher metadata with the remote store.
+  // Called after calling HeyPublisher.  This will ensure whatever data is on
+  // remote server is synced locally 'after' a save with remote server.
+  // only select fields are synced this way
   public function sync_publisher_info() {
     $p = $this->get_publisher_info();
     if ($p) {

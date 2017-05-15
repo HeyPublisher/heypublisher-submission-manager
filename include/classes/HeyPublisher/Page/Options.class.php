@@ -432,7 +432,7 @@ EOF;
   }
 
   private function experimental_options($opts) {
-    $hidden = ($opts['mailchimp']['prompt']) ? null : "style='display:none;' ";
+    $hidden = ($opts['mailchimp'] && $opts['mailchimp']['active']) ? null : "style='display:none;' ";
     $html = <<<EOF
       <!-- MailChimp -->
       <h3>MailChimp Mailing List Subscriptions</h3>
@@ -441,9 +441,9 @@ EOF;
       </p>
       <ul>
         <li>
-          <label class='heypub' for='hp_mailchimp_prompt'>Prompt to Subscribe?</label>
-          <select name="heypub_opt[mailchimp][prompt]" id="hp_mailchimp_prompt" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
-            {$this->boolean_options('prompt',$opts['mailchimp'])}
+          <label class='heypub' for='hp_mailchimp_active'>Prompt to Subscribe?</label>
+          <select name="heypub_opt[mailchimp][active]" id="hp_mailchimp_active" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
+            {$this->boolean_options('active',$opts['mailchimp'])}
           </select>
         </li>
       </ul>
@@ -478,6 +478,8 @@ EOF;
 
   private function validated_form() {
     $opts = $this->xml->config;
+    $this->log(sprintf("Options::validated_form() $opts = %s",print_r($opts,1)));
+    $this->log(" => dislaying Options page");
     $html = <<<EOF
       <input type="hidden" name="heypub_opt[isvalidated]" value="1" />
       <input type="hidden" name="save_settings" value="0" />
@@ -559,8 +561,10 @@ EOF;
     return $message;
   }
 
-  // normal processing of options
+  // After form POST - sync all options into local WP database as well as push
+  // to the remote server.  This keeps the two databases in sync
   private function update_options($post) {
+    $this->log(sprintf("IN update_options(): $post = %s",print_r($post,1)));
     $message = null;
     // Processing a form post of Option Updates
     // Get options from the post
