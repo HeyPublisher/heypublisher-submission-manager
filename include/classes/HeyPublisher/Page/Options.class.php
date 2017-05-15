@@ -478,8 +478,8 @@ EOF;
 
   private function validated_form() {
     $opts = $this->xml->config;
-    $this->log(sprintf("Options::validated_form() $opts = %s",print_r($opts,1)));
-    $this->log(" => dislaying Options page");
+    // $this->log(sprintf("Options::validated_form() $opts = %s",print_r($opts,1)));
+    // $this->log(" => dislaying Options page");
     $html = <<<EOF
       <input type="hidden" name="heypub_opt[isvalidated]" value="1" />
       <input type="hidden" name="save_settings" value="0" />
@@ -564,7 +564,7 @@ EOF;
   // After form POST - sync all options into local WP database as well as push
   // to the remote server.  This keeps the two databases in sync
   private function update_options($post) {
-    $this->log(sprintf("IN update_options(): $post = %s",print_r($post,1)));
+    // $this->log(sprintf("IN update_options(): $post = %s",print_r($post,1)));
     $message = null;
     // Processing a form post of Option Updates
     // Get options from the post

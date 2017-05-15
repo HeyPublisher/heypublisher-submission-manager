@@ -447,7 +447,7 @@ EOF;
     }
     else {
       $xml = new SimpleXMLElement($ret);
-      $this->log(sprintf("XML results from update_publisher() \n%s",print_r($xml,1)));
+      // $this->log(sprintf("XML results from update_publisher() \n%s",print_r($xml,1)));
       // printf( "<pre>XML = %s</pre>",print_r($xml,1));
       # this is an object, convert to string
       if ($xml->success->message) {
@@ -473,7 +473,7 @@ function get_publisher_info() {
   $post = '';
   $return = array();
   $ret = $this->send(HEYPUB_SVC_URL_GET_PUBLISHER,$this->prepare_request_xml($post));
-  $this->log(sprintf("get_publisher_info() params = \n%s\nget_publisher_info() RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
+  // $this->log(sprintf("get_publisher_info() params = \n%s\nget_publisher_info() RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
   if (FALSE == $ret) {
     $this->print_webservice_errors();
   }

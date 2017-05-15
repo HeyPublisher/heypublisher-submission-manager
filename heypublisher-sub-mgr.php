@@ -257,7 +257,6 @@ Initialize / Upgrade
 */
 function heypub_init(){
   global $hp_xml;
-  $hp_xml->log("heypub_init");
 
   // we're referencing the old key names here directly - as we no longer need the defines in the system
   // and this is simply for backwards upgrade compatibility
@@ -320,7 +319,6 @@ function heypub_init(){
     $hp_xml->set_is_validated();
   }
   elseif (get_option(HEYPUB_PLUGIN_OPT_INSTALL) == false) {
-    $hp_xml->log("NEW INSTALL PATH");
     // NEW Install Path
     $hp_xml->initialize_plugin();
     if (function_exists('get_bloginfo')) {
