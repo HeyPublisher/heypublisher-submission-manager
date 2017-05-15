@@ -3,6 +3,7 @@
 ### 2.3.0
 + Released: 2017-05-30
 + [[#53](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/53)] : Released experimental feature that prompts writers to subscribe to your mailing list when submitting work.  This feature requires you already have a MailChimp account.  (You alreay have a MailChimp account, don't you??)
++ Changed various text on Options page to be less pedantic and more readable.
 
 
 ### 2.2.0

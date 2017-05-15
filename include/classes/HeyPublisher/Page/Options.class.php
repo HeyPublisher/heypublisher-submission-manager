@@ -275,7 +275,7 @@ EOF;
         Just <a href="{$link_url}">CLICK HERE &raquo; </a> to create the page now.
         You can change the content and title of this page at any time.
       </p>
-      <p {$yespage} id='heypub-yes-guidelines'>This is the page where writers will submit their work.</p>
+      <p {$yespage} id='heypub-yes-guidelines'>This is the Page where the submission form will be displayed.</p>
 EOF;
     $select = '';
     $pages = get_pages();
@@ -292,9 +292,9 @@ EOF;
           </select>
         </li>
       </ul>
-      <p class='heypub-subtext'>Ensure that the following code is contained somewhere within this page.</p>
+      <p class='heypub-subtext'>Ensure that the following shortcode is contained somewhere within this page.</p>
       <blockquote class='heypub'><b>{$replacer}</b></blockquote>
-      <p class='heypub-subtext'>This code will be replaced by the submission form when writers visit this page.</p>
+      <p class='heypub-subtext'>This code will be replaced by the actual submission form when writers visit this page.</p>
 EOF;
     return $html;
   }
@@ -399,13 +399,13 @@ EOF;
     $html = <<<EOF
       <h3>Writer Notifications</h3>
       <p>
-        This plugin will send an email to the author when their submission transitions through each of the
+        Automatically send an email to the author when their submission transitions into any one of the
         <a href='{$sub_states}' target='_blank'>states in the submission cycle</a>.
       </p>
       <p>
-        You can turn off sending each of these notifications by setting the value to <code>No</code> below.</p>
+        Disable sending of email by setting the value to <code>No</code> below.</p>
       <p>
-        You can also customize the emails sent to the author on the
+        Customize the emails sent to the author through the
         <a href='admin.php?page=heypublisher_email' target=_top>Email Templates</a>
         screen.
       </p>
