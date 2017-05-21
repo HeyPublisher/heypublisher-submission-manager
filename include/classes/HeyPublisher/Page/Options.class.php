@@ -431,17 +431,41 @@ EOF;
     return $html;
   }
 
-  private function misc_options($opts) {
+  private function experimental_options($opts) {
+    $hidden = ($opts['mailchimp']['prompt']) ? null : "style='display:none;' ";
     $html = <<<EOF
-      <!-- MISC -->
-      <h3>Miscellaneous</h3>
+      <!-- MailChimp -->
+      <h3>MailChimp Mailing List Subscriptions</h3>
       <p>
-        Turn off HTML clean-up in submissions?
+        If you use <a href='https://mailchimp.com/' target='_blank'>MailChimp</a> to manage a mailing list, you can prompt new writers to subscribe to your mailing list at the time they are submitting their work.
       </p>
+      <ul>
+        <li>
+          <label class='heypub' for='hp_mailchimp_prompt'>Prompt to Subscribe?</label>
+          <select name="heypub_opt[mailchimp][prompt]" id="hp_mailchimp_prompt" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
+            {$this->boolean_options('prompt',$opts['mailchimp'])}
+          </select>
+        </li>
+      </ul>
+      <div id='heypub_show_mailchimp_list' {$hidden}>
+        <!-- Content Specific for the MailChimp Config -->
+        <p>Read more on how to <a href='http://kb.mailchimp.com/integrations/api-integrations/about-api-keys' target='_blank'>Find or Generate Your API Key</a> and how to <a href='http://kb.mailchimp.com/lists/manage-contacts/find-your-list-id' target="_blank">Find Your List ID</a> before continuing.
+        </p>
+        <ul>
+          <li>
+            <label class='heypub' for='hp_mailchimp_apikey'>API Key</label>
+            <input type="text" name="heypub_opt[mailchimp][api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip($opts['mailchimp']['api_key'])}" />
+          </li>
+          <li>
+            <label class='heypub' for='hp_mailchimp_listid'>List ID</label>
+            <input type="text" name="heypub_opt[mailchimp][list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip($opts['mailchimp']['list_id'])}" />
+          </li>
+        </ul>
+      </div>
+      <!-- Experimental Options -->
+      <h3>Disable HTML Clean-Up</h3>
       <p>
-        In most cases you will want to leave this set to <code>No</code>.
-        <br/>
-         Set to <code>YES</code> if you accept submissions from writers that use a different character set than your own.
+        Set to <code>YES</code> if you accept submissions from writers that use a different character set than your own.  Otherwise leave set to <code>No</code>.
       </p>
       <ul>
         <li>
@@ -464,7 +488,7 @@ EOF;
       {$this->submission_page($opts)}
       {$this->submission_criteria($opts)}
       {$this->writer_notifications($opts)}
-      {$this->misc_options($opts)}
+      {$this->experimental_options($opts)}
 
 EOF;
 

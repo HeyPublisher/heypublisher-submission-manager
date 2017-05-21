@@ -112,6 +112,7 @@ class HeyPublisherXML {
   private function config_options_definition() {
     $hash = array(
       'categories' => array(),
+      'mailchimp' => array('prompt' => false, 'api_key' => null, 'list_id' => null),
       'name'  => null,
       'url'   => null,
       'circulation' => null,
@@ -274,6 +275,20 @@ class HeyPublisherXML {
     return $return;
   }
 
+  function update_publisher_mailchimp($post) {
+    $xml = null;
+    if ($post[mailchimp]) {
+      $xml =<<< EOF
+      <mailchimp>
+        <active>{$post[mailchimp][prompt]}</active>
+        <api_key>{$post[mailchimp][api_key]}</api_key>
+        <list_id>{$post[mailchimp][list_id]}</list_id>
+      </mailchimp>
+EOF;
+    }
+    return $xml;
+  }
+
   function update_publisher_categories($post) {
     $ret = null;
     if ($post[accepting_subs] && $post[genres_list]) {
@@ -352,6 +367,7 @@ EOF;
   // When uninstalling plugin we also supress errors.
   function update_publisher($post,$uninstall_plugin=false) {
     $categories = $this->update_publisher_categories($post);
+    $mailchimp = $this->update_publisher_mailchimp($post);
     $reading = $this->update_publisher_reading_period($post);
     $simulsubs = $this->boolean($post[simu_subs]);
     $multisubs = $this->boolean($post[multi_subs]);
@@ -411,11 +427,11 @@ EOF;
     <notify_published>$post[notify_published]</notify_published>
     <notify_accepted>$post[notify_accepted]</notify_accepted>
     <notify_under_consideration>$post[notify_under_consideration]</notify_under_consideration>
-
-    $categories
-    $reading
-    $paying
-    $uninstall
+    {$categories}
+    {$reading}
+    {$paying}
+    {$uninstall}
+    {$mailchimp}
 </publisher>
 EOF;
 
