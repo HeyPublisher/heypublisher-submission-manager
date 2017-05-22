@@ -150,7 +150,10 @@ class HeyPublisherXML {
       'notify_under_consideration' => true,
       'turn_off_tidy' => false,
       'link_sub_to_edit' => true,           # don't think we're using this one??
-      'display_download_link' => false      # this is a local-only config
+      'display_download_link' => false,      # this is a local-only config
+      'mailchimp_active' => false,
+      'mailchimp_api_key' => null,
+      'mailchimp_list_id' => null
     );
     return $hash;
   }
@@ -274,6 +277,23 @@ class HeyPublisherXML {
     return $return;
   }
 
+  function update_publisher_mailchimp($post) {
+    $xml = null;
+    $active =   htmlentities(stripslashes($post[mailchimp_active]));
+    $api_key =  htmlentities(stripslashes($post[mailchimp_api_key]));
+    $list_id =  htmlentities(stripslashes($post[mailchimp_list_id]));
+    // if ($post[mailchimp_active]) {
+    $xml =<<< EOF
+    <mailchimp>
+      <active>{$active}</active>
+      <api_key>{$api_key}</api_key>
+      <list_id>{$list_id}</list_id>
+    </mailchimp>
+EOF;
+    // }
+    return $xml;
+  }
+
   function update_publisher_categories($post) {
     $ret = null;
     if ($post[accepting_subs] && $post[genres_list]) {
@@ -352,6 +372,7 @@ EOF;
   // When uninstalling plugin we also supress errors.
   function update_publisher($post,$uninstall_plugin=false) {
     $categories = $this->update_publisher_categories($post);
+    $mailchimp = $this->update_publisher_mailchimp($post);
     $reading = $this->update_publisher_reading_period($post);
     $simulsubs = $this->boolean($post[simu_subs]);
     $multisubs = $this->boolean($post[multi_subs]);
@@ -411,11 +432,11 @@ EOF;
     <notify_published>$post[notify_published]</notify_published>
     <notify_accepted>$post[notify_accepted]</notify_accepted>
     <notify_under_consideration>$post[notify_under_consideration]</notify_under_consideration>
-
-    $categories
-    $reading
-    $paying
-    $uninstall
+    {$categories}
+    {$reading}
+    {$paying}
+    {$uninstall}
+    {$mailchimp}
 </publisher>
 EOF;
 
@@ -426,7 +447,7 @@ EOF;
     }
     else {
       $xml = new SimpleXMLElement($ret);
-      $this->log(sprintf("XML results \n%s",print_r($xml,1)));
+      // $this->log(sprintf("XML results from update_publisher() \n%s",print_r($xml,1)));
       // printf( "<pre>XML = %s</pre>",print_r($xml,1));
       # this is an object, convert to string
       if ($xml->success->message) {
@@ -452,7 +473,7 @@ function get_publisher_info() {
   $post = '';
   $return = array();
   $ret = $this->send(HEYPUB_SVC_URL_GET_PUBLISHER,$this->prepare_request_xml($post));
-  $this->log(sprintf("get_publisher_info params = \n%s\n RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
+  // $this->log(sprintf("get_publisher_info() params = \n%s\nget_publisher_info() RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
   if (FALSE == $ret) {
     $this->print_webservice_errors();
   }
@@ -777,7 +798,9 @@ EOF;
       error_log(sprintf("%s\n",$msg),3,HEYPUB_PLUGIN_FULLPATH . '/error.log');
     }
   }
-  // Sync the local store of publisher metadata with the remote store.
+  // Called after calling HeyPublisher.  This will ensure whatever data is on
+  // remote server is synced locally 'after' a save with remote server.
+  // only select fields are synced this way
   public function sync_publisher_info() {
     $p = $this->get_publisher_info();
     if ($p) {

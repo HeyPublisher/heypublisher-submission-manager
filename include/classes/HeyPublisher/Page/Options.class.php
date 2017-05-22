@@ -275,7 +275,7 @@ EOF;
         Just <a href="{$link_url}">CLICK HERE &raquo; </a> to create the page now.
         You can change the content and title of this page at any time.
       </p>
-      <p {$yespage} id='heypub-yes-guidelines'>This is the page where writers will submit their work.</p>
+      <p {$yespage} id='heypub-yes-guidelines'>This is the Page where the submission form will be displayed.</p>
 EOF;
     $select = '';
     $pages = get_pages();
@@ -292,9 +292,9 @@ EOF;
           </select>
         </li>
       </ul>
-      <p class='heypub-subtext'>Ensure that the following code is contained somewhere within this page.</p>
+      <p class='heypub-subtext'>Ensure that the following shortcode is contained somewhere within this page.</p>
       <blockquote class='heypub'><b>{$replacer}</b></blockquote>
-      <p class='heypub-subtext'>This code will be replaced by the submission form when writers visit this page.</p>
+      <p class='heypub-subtext'>This code will be replaced by the actual submission form when writers visit this page.</p>
 EOF;
     return $html;
   }
@@ -399,13 +399,13 @@ EOF;
     $html = <<<EOF
       <h3>Writer Notifications</h3>
       <p>
-        This plugin will send an email to the author when their submission transitions through each of the
+        Automatically send an email to the author when their submission transitions into any one of the
         <a href='{$sub_states}' target='_blank'>states in the submission cycle</a>.
       </p>
       <p>
-        You can turn off sending each of these notifications by setting the value to <code>No</code> below.</p>
+        Disable sending of email by setting the value to <code>No</code> below.</p>
       <p>
-        You can also customize the emails sent to the author on the
+        Customize the emails sent to the author through the
         <a href='admin.php?page=heypublisher_email' target=_top>Email Templates</a>
         screen.
       </p>
@@ -431,17 +431,41 @@ EOF;
     return $html;
   }
 
-  private function misc_options($opts) {
+  private function experimental_options($opts) {
+    $hidden = ($opts['mailchimp_active']) ? null : "style='display:none;' ";
     $html = <<<EOF
-      <!-- MISC -->
-      <h3>Miscellaneous</h3>
+      <!-- MailChimp -->
+      <h3>MailChimp Mailing List Subscriptions</h3>
       <p>
-        Turn off HTML clean-up in submissions?
+        If you use <a href='https://mailchimp.com/' target='_blank'>MailChimp</a> to manage your mailing list, setting to <code>Yes</code> will prompt new writers to subscribe to your mailing list when they submit their work.
       </p>
+      <ul>
+        <li>
+          <label class='heypub' for='hp_mailchimp_active'>Prompt to Subscribe?</label>
+          <select name="heypub_opt[mailchimp_active]" id="hp_mailchimp_active" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
+            {$this->boolean_options('mailchimp_active',$opts)}
+          </select>
+        </li>
+      </ul>
+      <div id='heypub_show_mailchimp_list' {$hidden}>
+        <!-- Content Specific for the MailChimp Config -->
+        <p>Read more on how to <a href='http://kb.mailchimp.com/integrations/api-integrations/about-api-keys' target='_blank'>Find or Generate Your API Key</a> and how to <a href='http://kb.mailchimp.com/lists/manage-contacts/find-your-list-id' target="_blank">Find Your List ID</a> before continuing.
+        </p>
+        <ul>
+          <li>
+            <label class='heypub' for='hp_mailchimp_apikey'>API Key</label>
+            <input type="text" name="heypub_opt[mailchimp_api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip($opts['mailchimp_api_key'])}" />
+          </li>
+          <li>
+            <label class='heypub' for='hp_mailchimp_listid'>List ID</label>
+            <input type="text" name="heypub_opt[mailchimp_list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip($opts['mailchimp_list_id'])}" />
+          </li>
+        </ul>
+      </div>
+      <!-- Experimental Options -->
+      <h3>Disable HTML Clean-Up</h3>
       <p>
-        In most cases you will want to leave this set to <code>No</code>.
-        <br/>
-         Set to <code>YES</code> if you accept submissions from writers that use a different character set than your own.
+        Set to <code>YES</code> if you accept submissions from writers that use a different character set than your own.  Otherwise leave set to <code>No</code>.
       </p>
       <ul>
         <li>
@@ -454,6 +478,8 @@ EOF;
 
   private function validated_form() {
     $opts = $this->xml->config;
+    // $this->log(sprintf("Options::validated_form() $opts = %s",print_r($opts,1)));
+    // $this->log(" => dislaying Options page");
     $html = <<<EOF
       <input type="hidden" name="heypub_opt[isvalidated]" value="1" />
       <input type="hidden" name="save_settings" value="0" />
@@ -464,7 +490,7 @@ EOF;
       {$this->submission_page($opts)}
       {$this->submission_criteria($opts)}
       {$this->writer_notifications($opts)}
-      {$this->misc_options($opts)}
+      {$this->experimental_options($opts)}
 
 EOF;
 
@@ -535,8 +561,10 @@ EOF;
     return $message;
   }
 
-  // normal processing of options
+  // After form POST - sync all options into local WP database as well as push
+  // to the remote server.  This keeps the two databases in sync
   private function update_options($post) {
+    // $this->log(sprintf("IN update_options(): $post = %s",print_r($post,1)));
     $message = null;
     // Processing a form post of Option Updates
     // Get options from the post
@@ -566,8 +594,6 @@ EOF;
     $this->xml->sync_publisher_info();
     if ($success) {
       $message = 'Your changes have been saved and syncronized with HeyPublisher.';
-    } else {
-      $message = 'Your changes have been saved locally.';
     }
     return $message;
   }
