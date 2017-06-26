@@ -2,7 +2,7 @@
 
 ### 2.4.0
 + Released: 2017-07-09
-+ [[#68](https://github.com/aguywithanidea/heypublisher-submission-manager/pull/68)] : Allows publisher to mark a submission as "withdrawn".  Previously, if writer emailed publisher to withdraw submission (instead of withdrawing via HeyPublisher.com), the publisher could only "reject" the submission.  This introduces as softer way of getting the submission out of the system.
++ [[#66](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/66)] : Allows publisher to mark a submission as "withdrawn".  Previously, if writer emailed publisher to withdraw submission (instead of withdrawing via HeyPublisher.com), the publisher could only "reject" the submission.  This introduces as softer way of getting the submission out of the system.
 + When an "accepted" submission is moved to trash or deleted from the Posts screen, it will now be marked as "withdrawn" instead of "rejected".
 
 ### 2.3.0
