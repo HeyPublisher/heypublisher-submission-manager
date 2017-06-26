@@ -105,6 +105,6 @@ HeyPublisher builds tools for writers and publishers.  Find out more by visiting
 ## About This Plugin
 
 + WordPress minimum version: 4.0
-+ WordPress version tested up to: 4.7.3
-+ Current Stable Tag: 2.2.0
++ WordPress version tested up to: 4.7.5
++ Current Stable Tag: 2.4.0
 + License: GPLv2

@@ -3,8 +3,8 @@ Contributors: heypublisher, aguywithanidea, loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
 Requires at least: 4.0
-Tested up to: 4.7.3
-Stable Tag: 2.3.0
+Tested up to: 4.7.5
+Stable Tag: 2.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,11 @@ Yes - you can define custom response templates that contain whatever message you
 11. Reimport.  If a writer modifies a submission you have already 'Accepted' - you can re-import the submission into WordPress by selecting the "Reimport Into WordPress" value from the drop-down and clicking the "Update Submission" button.
 
 == Changelog ==
+
+= 2.4.0 =
+* Released: 2017-07-09
+* Allows publisher to mark a submission as "withdrawn".  Previously, if writer emailed publisher to withdraw submission (instead of withdrawing via HeyPublisher.com), the publisher could only "reject" the submission.  This introduces as softer way of getting the submission out of the system.
+* When an "accepted" submission is moved to trash or deleted from the Posts screen, it will now be marked as "withdrawn" instead of "rejected".
 
 = 2.3.0 =
 * Released: 2017-05-30
