@@ -5,7 +5,7 @@ Plugin URI: https://www.heypublisher.com
 Description: HeyPublisher is a better way of managing unsolicited submissions directly within WordPress.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 2.3.0
+Version: 2.4.0
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
   Copyright 2014-2017 Richard Luck (https://github.com/aguywithanidea/)
@@ -66,16 +66,17 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.1.0 => 62
   2.2.0 => 63
   2.3.0 => 64
+  2.4.0 => 65
 ---------------------------------------------------------------------------------
 */
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2017-05-22");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2017-07-08");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "64");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "2.3.0");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "65");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "2.4.0");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
@@ -183,9 +184,9 @@ add_action('admin_menu', 'RegisterHeyPublisherAdminMenu');
 add_action('publish_post',array($hp_subs,'publish_post'));
 // Marks a previously accepted submission as 'rejected' in HeyPublisher and removes it from your Submission Summary screen:
 // this one executes when the submission is moved to 'trash'
-add_action('trash_post',array($hp_subs,'reject_post'));
+add_action('trash_post',array($hp_subs,'delete_post_cleanup'));
 // this one executes when you skip the trash an simply 'delete' the submission
-add_action('delete_post',array($hp_subs,'reject_post'));
+add_action('delete_post',array($hp_subs,'delete_post_cleanup'));
 
 // Ensure we go through the upgrade path even if the user simply installs
 // a new version of the plugin over top of the old plugin.
@@ -364,6 +365,10 @@ function heypub_init(){
       $hp_xml->set_config_option('mailchimp_api_key', null);
       $hp_xml->set_config_option('mailchimp_list_id', null);
     }
+    if ($opts['version_current'] < 65) {  // upgrade to 2.4.0 options
+      $hp_xml->set_config_option('notify_withdrawn','1');
+    }
+
     // For future reference, just keep adding new hash keys that are version specific by following same logic
     // if ($opts['version_current'] < 50) {  // upgrade to 1.4.x options
     //    ... do something here

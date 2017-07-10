@@ -426,6 +426,9 @@ EOF;
         <li>
           {$this->boolean_select('Published?','notify_published',$opts,'Sent when a submission is Published, or on the actual publication date if Scheduled.')}
         </li>
+        <li>
+          {$this->boolean_select('Withdrawn?','notify_withdrawn',$opts,'Confirmation sent when a submission is marked as Withdrawn.')}
+        </li>
       </ul>
 EOF;
     return $html;

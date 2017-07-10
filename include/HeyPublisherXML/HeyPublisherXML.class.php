@@ -20,7 +20,8 @@ class HeyPublisherXML {
     'rejected' => 'Rejected',
     'published' => 'Published',
     'publisher_revision_requested' => 'Revision Req.',
-    'writer_revision_provided' => 'Revised by Author'
+    'writer_revision_provided' => 'Revised by Author',
+    'publisher_withdrew' => 'Withdrawn by Author',
     );
   var $is_validated = false;
 
@@ -148,6 +149,7 @@ class HeyPublisherXML {
       'notify_published' => true,
       'notify_accepted' => true,
       'notify_under_consideration' => true,
+      'notify_withdrawn' => true,
       'turn_off_tidy' => false,
       'link_sub_to_edit' => true,           # don't think we're using this one??
       'display_download_link' => false,      # this is a local-only config
@@ -432,6 +434,7 @@ EOF;
     <notify_published>$post[notify_published]</notify_published>
     <notify_accepted>$post[notify_accepted]</notify_accepted>
     <notify_under_consideration>$post[notify_under_consideration]</notify_under_consideration>
+    <notify_withdrawn>$post[notify_withdrawn]</notify_withdrawn>
     {$categories}
     {$reading}
     {$paying}

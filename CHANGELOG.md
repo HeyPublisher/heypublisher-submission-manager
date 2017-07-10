@@ -1,5 +1,10 @@
 ## Changelog
 
+### 2.4.0
++ Released: 2017-07-09
++ [[#66](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/66)] : Allows publisher to mark a submission as "withdrawn".  Previously, if writer emailed publisher to withdraw submission (instead of withdrawing via HeyPublisher.com), the publisher could only "reject" the submission.  This introduces as softer way of getting the submission out of the system.
++ When an "accepted" submission is moved to trash or deleted from the Posts screen, it will now be marked as "withdrawn" instead of "rejected".
+
 ### 2.3.0
 + Released: 2017-05-30
 + [[#53](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/53)] : Released experimental feature that prompts writers to subscribe to your mailing list when submitting work.  This feature requires you already have a MailChimp account.  (You alreay have a MailChimp account, don't you??)

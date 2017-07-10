@@ -40,6 +40,9 @@ class Submissions extends \HeyPublisher\Page {
       if ($_REQUEST[action] == 'reject') {
         $this->message = $this->reject_submission($_REQUEST);
       }
+      elseif ($_REQUEST[action] == 'withdraw') {
+        $this->message = $this->withdraw_submission($_REQUEST);
+      }
       elseif ($_REQUEST[action] == 'review') {
         $this->message = $this->consider_submission($_REQUEST);
       }
@@ -429,6 +432,7 @@ EOF;
     }
     $html .= <<<EOF
       <option {$this->sub_class->select_selected('reject',$sel)} value="reject">Reject Submission</option>
+      <option {$this->sub_class->select_selected('withdrawn',$sel)} value="withdraw">Withdrawn by Writer</option>
     </select>
     <br/>
     <input type="submit" class="heypub-button button-primary" value="Update Submission" name="doaction" id="doaction" />
@@ -691,13 +695,15 @@ EOF;
     }
     return false;
   }
-  // This function is called by the post-processor hook that detects when accepted works are 'trashed'
-  public function reject_post($post_id) {
+  // This function is called by the post-processor hook that detects when accepted works are 'trashed' or 'deleted'
+  // Mark as withdrawn by writer as that is less 'rejecty'
+  public function delete_post_cleanup($post_id) {
     if ($hp_id = $this->get_submission_id_by_post_id($post_id)) {
-      $this->xml->submission_action($hp_id,'rejected');
+      $this->xml->submission_action($hp_id,'publisher_withdrew');
     }
     return true;
   }
+
   // Rejection Handler - these posts may or may not be in the db
   private function reject_submission($req) {
     check_admin_referer('heypub-bulk-submit');
@@ -716,6 +722,26 @@ EOF;
     }
 
     $message = sprintf('%s successfully rejected',$this->pluralize_submission_message($cnt));
+    return $message;
+  }
+  // Withdraw Handler - these posts may or may not be in the db
+  private function withdraw_submission($req) {
+    check_admin_referer('heypub-bulk-submit');
+    $post = $req[post];
+    $notes = $req[notes];
+    $cnt = 0;
+    foreach ($post as $key) {
+      if ($this->xml->submission_action($key,'publisher_withdrew',$notes)) {
+        $cnt++;
+        // need to see if this post has been previously 'accepted'
+        if ($post_id = $this->get_post_id_by_submission_id($key)) {
+          // we force deletes
+          wp_delete_post( $post_id, true );
+        }
+      }
+    }
+
+    $message = sprintf('%s successfully marked as withdrawn',$this->pluralize_submission_message($cnt));
     return $message;
   }
   // Request a revision from the writer
