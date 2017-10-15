@@ -21,6 +21,8 @@ class Email extends \HeyPublisher\Page {
   public function action_handler() {
     parent::page('Email Templates', '', array($this,'list_emails'));
   }
+
+  // generate the Help menu
   public function help_menu() {
     $screen = get_current_screen();
 
@@ -38,8 +40,34 @@ class Email extends \HeyPublisher\Page {
         'content' => $this->help_example()
       )
     );
+    $screen->add_help_tab(
+      array(
+        'id'	    => $this->slug .= '_help_sub_states',
+        'title'	  => __('Submission States'),
+        'content' => $this->help_submission_states()
+      )
+    );
 
   }
+  public function help_submission_states() {
+    $img = sprintf('<img src="%s/images/submission_states.gif">',HEY_BASE_URL);
+    $html = <<<EOF
+    <h2>
+      The Submission States
+    </h2>
+    <p>
+      Submissions generally flow through these submission states within HeyPublisher.
+      You can create custom email responses for almost all of these.
+    </p>
+    <p>
+      {$img}
+    </p>
+
+
+EOF;
+    return $html;
+  }
+
   public function help_example() {
     $html = <<<EOF
     <h2>
@@ -104,6 +132,10 @@ EOF;
         <tr>
           <td><b>[SubmissionTitle]</b></td>
           <td>The title of the submission.</td>
+        </tr>
+        <tr>
+          <td><b>[SubmissionURL]</b></td>
+          <td>The URL to access the submission on HeyPublisher.com.  This URL is used by writers to update their submission, if requested.</td>
         </tr>
         <tr>
           <td><b>[WriterFirstName]</b></td>
