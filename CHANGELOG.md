@@ -1,5 +1,10 @@
 ## Changelog
 
+### 2.5.0
++ Released: 2017-10-15
++ [[#73](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/73)] : You can now manage the email responses for the 'submitted' state.  This is the email that writers receive whenever they submit their writing to your publication.
+
+
 ### 2.4.0
 + Released: 2017-07-09
 + [[#66](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/66)] : Allows publisher to mark a submission as "withdrawn".  Previously, if writer emailed publisher to withdraw submission (instead of withdrawing via HeyPublisher.com), the publisher could only "reject" the submission.  This introduces as softer way of getting the submission out of the system.
@@ -7,7 +12,7 @@
 
 ### 2.3.0
 + Released: 2017-05-30
-+ [[#53](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/53)] : Released experimental feature that prompts writers to subscribe to your mailing list when submitting work.  This feature requires you already have a MailChimp account.  (You alreay have a MailChimp account, don't you??)
++ [[#53](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/53)] : Released experimental feature that prompts writers to subscribe to your mailing list when submitting work.  This feature requires you already have a MailChimp account.  (You already have a MailChimp account, don't you??)
 + Changed various text on Options page to be less pedantic and more readable.
 
 

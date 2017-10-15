@@ -7,7 +7,7 @@ HeyPublisher gives you a better way of managing submissions directly within Word
 
 This plugin allows you as to accept submissions from writers.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.  And there is no need to create user accounts for writers just so they can submit content to your publication.
 
-**How HeyPublisher Submission Manager Helps**
+#### How HeyPublisher Submission Manager Helps
 
 Normally if you wanted to allow readers to submit their writing to your publication you would need to create an account in WordPress for each writer, then educate them on how to write and edit Posts within the publishing tool.
 
@@ -105,6 +105,6 @@ HeyPublisher builds tools for writers and publishers.  Find out more by visiting
 ## About This Plugin
 
 + WordPress minimum version: 4.0
-+ WordPress version tested up to: 4.7.5
-+ Current Stable Tag: 2.4.0
++ WordPress version tested up to: 4.8.2
++ Current Stable Tag: 2.5.0
 + License: GPLv2
