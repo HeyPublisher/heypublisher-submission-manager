@@ -10,13 +10,18 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/HeyPublisher/HeyPublisherSubmission.class.php');
 // Load the class files and associated scoped functionality
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
+require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Submission.class.php');
+
 class Submissions extends \HeyPublisher\Page {
 
   var $disallowed_states = array('withdrawn','published','rejected');
   var $sub_class = null;
+  var $api = null;
+
   public function __construct() {
   	parent::__construct();
     $this->sub_class = new \HeyPublisherSubmission;
+    $this->api = new \HeyPublisher\API\Submission;
     $this->slug .= '_submissions';
   }
 
@@ -222,6 +227,7 @@ EOF;
     $html = '';
     // Reading a submission marks it as 'read' in HeyPublisher
     if ($this->xml->submission_action($id,'read')) {
+      $history = $this->api->get_submission_history($id);
       $sub = $this->xml->get_submission_by_id($id);
       if ($sub) {
         $this->log(sprintf("ID  %s\ndisplay_submission \n%s",$sub->id,print_r($sub,1)));
@@ -234,17 +240,38 @@ EOF;
         else {
           $email = sprintf('<a href="mailto:%s?subject=Your%%20submission%%20to%%20%s" target="_blank">%s</a>',$sub->author->email,get_bloginfo('name'),$sub->author->email);
         }
-
+        $hblock = $this->submission_history_block($history['history']);
         $html .= <<<EOF
-          <h2>
+          <h2 class='heypub'>
             "{$sub->title}" :
             {$sub->category} by {$sub->author->first_name} {$sub->author->last_name}
             <small>({$email})</small>
           </h2>
+          <div>
+            <h3>Summary
+              <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub_summary');" title="View summary" style="float:right;border:0;">
+                <span class="heypub-icons dashicons dashicons-plus-alt"></span>
+              </a>
+            </h3>
+            <div id='heypub_summary' style='display:none;'>
+              {$this->summary_block($sub)}
+            </div>
+          </div>
           <div><!--  id="hey-content" -->
-            {$this->summary_block($sub)}
+            <h3>Submission</h3>
             {$this->submission_block($sub)}
           </div>
+          <div>
+            <h3>History
+              <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub_history');" title="View history" style="float:right;border:0;">
+                <span class="heypub-icons dashicons dashicons-plus-alt"></span>
+              </a>
+            </h3>
+            <div id='heypub_history' style='display:none;'>
+              {$hblock}
+            </div>
+          </div>
+
 EOF;
         // this needs to go after all uses of $sub as it mucks with the var
         $this->additional_side_nav = $this->submission_side_nav($sub);
@@ -370,18 +397,39 @@ EOF;
     }
     return $html;
   }
+
+  private function submission_history_block($history) {
+    $block = '';
+    foreach ($history as $item) {
+      //  match the date format of 'Revisions' in post page
+      $editor = get_user_by( 'ID', $item[editor_id] );
+      $date = date('F jS, Y @ H:i:s',strtotime($item[date]));
+      $block .= <<<EOF
+        <dt>{$editor->first_name} {$editor->last_name}</dt>
+        <dd>{$date} : {$item[status]}</dd>
+EOF;
+    }
+    return $this->toggle_block($block);
+  }
+
   private function summary_block($sub) {
+    $block = <<<EOF
+      {$this->submission_summary($sub)}
+      {$this->word_count($sub)}
+      {$this->author_bio($sub)}
+EOF;
+    return $this->toggle_block($block);
+  }
+
+  private function toggle_block($block){
     $html = <<<EOF
       <blockquote class='heypub_summary'>
-        <dl>
-          {$this->submission_summary($sub)}
-          {$this->word_count($sub)}
-          {$this->author_bio($sub)}
-        </dl>
+        <dl>{$block}</dl>
       </blockquote>
 EOF;
     return $html;
   }
+
   private function submission_block($sub) {
     // Is this a valid state??
     if (in_array($sub->status,$this->disallowed_states)) {
