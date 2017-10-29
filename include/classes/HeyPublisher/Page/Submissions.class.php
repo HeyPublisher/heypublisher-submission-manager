@@ -268,6 +268,7 @@ EOF;
               </a>
             </h3>
             <div id='heypub_history' style='display:none;'>
+              <p>The following editors have taken the following actions on this submission:</p>
               {$hblock}
             </div>
           </div>
@@ -405,8 +406,8 @@ EOF;
       $editor = get_user_by( 'ID', $item[editor_id] );
       $date = date('F jS, Y @ H:i:s',strtotime($item[date]));
       $block .= <<<EOF
-        <dt>{$editor->first_name} {$editor->last_name}</dt>
-        <dd>{$date} : {$item[status]}</dd>
+        <dt class='heypub-history'>{$editor->first_name} {$editor->last_name}</dt>
+        <dd class='heypub-history'>{$item[status]} submssion on {$date}</dd>
 EOF;
     }
     return $this->toggle_block($block);

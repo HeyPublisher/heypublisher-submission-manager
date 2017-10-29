@@ -68,6 +68,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.3.0 => 64
   2.4.0 => 65
   2.5.0 => 66
+  2.6.0 => 67
 ---------------------------------------------------------------------------------
 */
 
@@ -97,6 +98,7 @@ define('HEYPUB_FEEDBACK_GETSATISFACTION','mailto:support@heypublisher.com?Subjec
 // define('HEYPUB_SVC_URL_STYLE_GUIDE','http://blog.heypublisher.com/docs/plugins/wordpress/style_guide/');     # designates the URL of the style guide
 # designates the base URL and version of API
 define('HEYPUB_SVC_URL_BASE', $domain . '/api/v1');
+define('HEYPUB_API', $domain . '/api/v2');
 # Stylesheet for plugin resides on HP server now
 define('HEYPUB_SVC_STYLESHEET_URL',$domain . '/stylesheets/wordpress/plugin.css?' . HEYPUB_PLUGIN_VERSION);
 

@@ -323,8 +323,17 @@ DL DT {
   text-align:right;
   padding-right: 1em;
 }
+DL DT.heypub-history {
+  width: 180px;
+}
+DL DT.heypub-history:after {
+  content: ' : ';
+}
 DL DD {
   padding-left: 60px;
+}
+DL DD.heypub-history {
+  padding-left: 140px;
 }
 DL.heypub-sub-status {
   margin-bottom: 20px;
