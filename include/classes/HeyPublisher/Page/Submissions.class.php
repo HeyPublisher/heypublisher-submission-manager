@@ -407,7 +407,7 @@ EOF;
       $date = date('F jS, Y @ H:i:s',strtotime($item[date]));
       $block .= <<<EOF
         <dt class='heypub-history'>{$editor->first_name} {$editor->last_name}</dt>
-        <dd class='heypub-history'>{$item[status]} submssion on {$date}</dd>
+        <dd class='heypub-history'>{$item[status]} on {$date}</dd>
 EOF;
     }
     return $this->toggle_block($block);

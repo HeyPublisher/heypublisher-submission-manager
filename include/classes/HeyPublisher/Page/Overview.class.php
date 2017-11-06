@@ -10,11 +10,13 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
 
 // Load the class files and associated scoped functionality
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
+require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Submission.class.php');
 class Overview extends \HeyPublisher\Page {
-
+  var $api = null;
 
   public function __construct() {
   	parent::__construct();
+    $this->api = new \HeyPublisher\API\Submission;
     // $this->slug .= '_main';
   }
 
@@ -80,6 +82,7 @@ EOF;
     if ($this->xml->is_validated) {
       $args = array('role__in' => array('Editor', 'Administrator'), 'orderby' => 'display_name');
       $editors = get_users( $args );
+      $history = $this->api->get_editor_history();
       $this->log(sprintf("EDITORS: %s", print_r($editors,1)));
 
       $html .= <<<EOF
@@ -100,13 +103,14 @@ EOF;
         if ($idx & 1) {
           $class= ' class="alternate"';
         }
+        $data = $this->get_editor_stats($history,$editor->ID);
         $html .= <<<EOF
           <tr {$class}>
             <td>{$editor->display_name}</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
+            <td>{$data['read']}</td>
+            <td>{$data['under_consideration']}</td>
+            <td>{$data['rejected']}</td>
+            <td>{$data['accepted']}</td>
           </tr>
 EOF;
       }
@@ -116,6 +120,19 @@ EOF;
 EOF;
     }
     return $html;
+  }
+
+  private function get_editor_stats($history,$id){
+    $data = array('read' => 0, 'under_consideration' => 0, 'rejected' => 0, 'accepted' => 0);
+    if (in_array($id,$history['editors'])) {
+      foreach($history['history'] as $set) {
+        if ($set['editor_id'] == $id) {
+          $data = $set;
+          break;
+        }
+      }
+    }
+    return $data;
   }
 
   protected function content() {
