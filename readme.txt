@@ -3,7 +3,7 @@ Contributors: heypublisher, aguywithanidea, loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
 Requires at least: 4.0
-Tested up to: 4.8.2
+Tested up to: 4.8.3
 Stable Tag: 2.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -112,9 +112,9 @@ Yes - you can define custom response templates that contain whatever message you
 == Changelog ==
 
 = 2.6.0 =
-* Released: ??
+* Released: 2017-11-15
 * Knowing which editor read or accepted a submission is now crystal clear.  A submission 'history' section has been added to the bottom of the submission detail page.
-* Started adoption of HeyPublisher v2 API, which is faster and JSON based (and gets rid of this krunk XML).
+* Started adoption of HeyPublisher v2 API, which is faster and JSON based (and gets rid of all this krunk XML).
 
 = 2.5.0 =
 * Released: 2017-10-15

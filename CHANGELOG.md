@@ -1,5 +1,10 @@
 ## Changelog
 
+### 2.6.0
++ Released: 2017-11-15
++ [[#75](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/75)] : Knowing which editor read or accepted a submission is now crystal clear.  A submission 'history' section has been added to the bottom of the submission detail page.
+* Started adoption of HeyPublisher v2 API, which is faster and JSON based (and gets rid of all this krunk XML).
+
 ### 2.5.0
 + Released: 2017-10-15
 + [[#73](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/73)] : You can now manage the email responses for the 'submitted' state.  This is the email that writers receive whenever they submit their writing to your publication.
