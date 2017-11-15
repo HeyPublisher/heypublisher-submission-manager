@@ -55,6 +55,7 @@ class HeyPublisherXML {
     }
   }
 
+  // TODO: Can this be deprecated?
   protected function clean_local_vars($array) {
     $tmp = array();
     foreach ($array as $key=>$val) {
@@ -754,11 +755,13 @@ EOF;
       } else {
         $notify = '<notify_author>false</notify_author>';
       }
+      $editor_id = get_current_user_id();
       $post = <<<EOF
 <submission>
     <id>$id</id>
     <action>$action</action>
     $notify
+    <editor_id>{$editor_id}</editor_id>
 </submission>
 EOF;
 

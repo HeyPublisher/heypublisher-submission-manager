@@ -5,7 +5,7 @@ Plugin URI: https://www.heypublisher.com
 Description: HeyPublisher is a better way of managing unsolicited submissions directly within WordPress.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 2.5.0
+Version: 2.6.0
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
   Copyright 2014-2017 Richard Luck (https://github.com/aguywithanidea/)
@@ -68,16 +68,17 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.3.0 => 64
   2.4.0 => 65
   2.5.0 => 66
+  2.6.0 => 67
 ---------------------------------------------------------------------------------
 */
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2017-10-15");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2017-11-15");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "66");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "2.5.0");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "67");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "2.6.0");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
@@ -97,6 +98,7 @@ define('HEYPUB_FEEDBACK_GETSATISFACTION','mailto:support@heypublisher.com?Subjec
 // define('HEYPUB_SVC_URL_STYLE_GUIDE','http://blog.heypublisher.com/docs/plugins/wordpress/style_guide/');     # designates the URL of the style guide
 # designates the base URL and version of API
 define('HEYPUB_SVC_URL_BASE', $domain . '/api/v1');
+define('HEYPUB_API', $domain . '/api/v2');
 # Stylesheet for plugin resides on HP server now
 define('HEYPUB_SVC_STYLESHEET_URL',$domain . '/stylesheets/wordpress/plugin.css?' . HEYPUB_PLUGIN_VERSION);
 

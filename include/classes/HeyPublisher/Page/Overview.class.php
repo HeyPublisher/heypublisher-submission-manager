@@ -10,11 +10,13 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
 
 // Load the class files and associated scoped functionality
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
+require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Submission.class.php');
 class Overview extends \HeyPublisher\Page {
-
+  var $api = null;
 
   public function __construct() {
   	parent::__construct();
+    $this->api = new \HeyPublisher\API\Submission;
     // $this->slug .= '_main';
   }
 
@@ -75,21 +77,83 @@ EOF;
     }
   }
 
+  protected function get_editor_history() {
+    $html = '';
+    if ($this->xml->is_validated) {
+      $args = array('role__in' => array('Editor', 'Administrator'), 'orderby' => 'display_name');
+      $editors = get_users( $args );
+      $history = $this->api->get_editor_history();
+      $this->log(sprintf("EDITORS: %s", print_r($editors,1)));
+
+      $html .= <<<EOF
+      <h3>Editor Statistics</h3>
+      <p>The number of submissions each Editor / Administrator has taken action on in the last 30 days</p>
+      <table class="widefat post fixed ll-plugin">
+        <tbody id='the-list'>
+          <tr class='header alternate'>
+            <td>Name</td>
+            <td>Read</td>
+            <td>Considered</td>
+            <td>Rejected</td>
+            <td>Accepted</td>
+          </tr>
+EOF;
+      foreach($editors as $idx=>$editor) {
+        $class = '';
+        if ($idx & 1) {
+          $class= ' class="alternate"';
+        }
+        $data = $this->get_editor_stats($history,$editor->ID);
+        $html .= <<<EOF
+          <tr {$class}>
+            <td>{$editor->display_name}</td>
+            <td>{$data['read']}</td>
+            <td>{$data['under_consideration']}</td>
+            <td>{$data['rejected']}</td>
+            <td>{$data['accepted']}</td>
+          </tr>
+EOF;
+      }
+      $html .= <<<EOF
+        </tbody>
+      </table>
+EOF;
+    }
+    return $html;
+  }
+
+  private function get_editor_stats($history,$id){
+    $data = array('read' => 0, 'under_consideration' => 0, 'rejected' => 0, 'accepted' => 0);
+    if (in_array($id,$history['editors'])) {
+      foreach($history['history'] as $set) {
+        if ($set['editor_id'] == $id) {
+          $data = $set;
+          break;
+        }
+      }
+    }
+    return $data;
+  }
+
   protected function content() {
     global $hp_base;
     if (!$this->xml->is_validated) {
       $val = "<a href='". heypub_get_authentication_url() . "'>CLICK HERE to VALIDATE</a>";
     } else {
-      $val = $this->xml->is_validated;
+      $val = date('F jS, Y',strtotime($this->xml->is_validated));
     }
     $ver = HEYPUB_PLUGIN_VERSION;
     $blog = get_bloginfo('name');
+    $verdate = date('F jS, Y',strtotime($this->xml->get_install_option('version_current_date')));
+    $editors = ''; // $this->get_editor_history(); // this can only be launched after 1.6.0 has been live 30 days
+
     $html = <<<EOF
       <p>With HeyPublisher you can accept unsolicited submissions from writers without
       having to create user accounts for them in your blog, magazine, or Wordpress-powered site.
 
       You control the submissions you receive and all communications with your writers are handled automatically.  </p>
-      <h3>Statistics</h3>
+      {$editors}
+      <h3>Plugin Statistics</h3>
       <table class="widefat post fixed ll-plugin">
         <tbody id='the-list'>
           <tr class='header alternate'>
@@ -101,36 +165,28 @@ EOF;
           <tr>
             <td>{$ver}</td>
             <td>{$this->xml->get_install_option('version_current')}</td>
-            <td>{$this->xml->get_install_option('version_current_date')}</td>
+            <td>{$verdate}</td>
             <td>{$val}</td>
           </tr>
+        </tbody>
+      </table>
+
 EOF;
 
       if ($this->xml->is_validated) {
-
-                  // $pf = "<td>%s &nbsp;&nbsp; [ %s %% ]</td>";
-                  // if ($p[total_published_subs] && $p[total_published_subs] > 0) {
-                  //   printf( $pf, $p[total_published_subs], $p[published_rate]);
-                  // } else {
-                  //   printf($pf,0,0);
-                  // }
-                  // if ($p[total_rejected_subs] && $p[total_rejected_subs] > 0) {
-                  //   printf( $pf, $p[total_rejected_subs], $p[rejected_rate]);
-                  // } else {
-                  //   printf($pf,0,0);
-                  // }
-
-
         // fetch the publisher info and update the local db with latest stats
         $p = $this->xml->sync_publisher_info();
         $home_last = $this->xml->get_config_option('homepage_last_validated_at');
         $guide_last = $this->xml->get_config_option('guide_last_validated_at');
-        $hl = (!empty($home_last)) ? $home_last : '--';
-        $gl = (!empty($guide_last)) ? $guide_last : '--';
+        $hl = (!empty($home_last)) ? date('F jS, Y',strtotime($home_last)) : '--';
+        $gl = (!empty($guide_last)) ? date('F jS, Y',strtotime($guide_last)) : '--';
         $html .= <<<EOF
+        <h3>Publication Statistics</h3>
+        <table class="widefat post fixed ll-plugin">
+          <tbody id='the-list'>
           <tr class='header alternate'>
-            <td>Homepage Last Indexed</td>
-            <td>Guidelines Last Indexed</td>
+            <td>Homepage Indexed</td>
+            <td>Guidelines Indexed</td>
             <td># Comments</td>
             <td># Favorites</td>
           </tr>
@@ -143,14 +199,14 @@ EOF;
           <tr class='header alternate'>
             <td>Submissions Received</td>
             <td>Pending Review</td>
-            <td>Submissions Published [%]</td>
-            <td>Submissions Rejected [%]</td>
+            <td>Publish %</td>
+            <td>Rejection %</td>
           </tr>
           <tr>
             <td>{$p['total_subs']}</td>
             <td>{$hp_base->submission_summary_link($p['total_open_subs'])}</td>
-            <td>{$p['published_rate']}</td>
-            <td>{$p['rejected_rate']}</td>
+            <td>{$p['published_rate']} %</td>
+            <td>{$p['rejected_rate']} %</td>
           </tr>
           <tr class='header alternate'>
             <td>Avg. Response Time</td>
@@ -164,13 +220,14 @@ EOF;
             <td class='waiting'>{$p['total_sixty_late']}</td>
             <td class='spam'>{$p['total_ninety_late']}</td>
           </tr>
+        </tbody>
+      </table>
+
 EOF;
     } // end of the if validated block
     $uninstall = $this->nonced_url(['action' => 'uninstall_plugin']);
 
     $html .= <<<EOF
-        </tbody>
-      </table>
     <!--
     <h3>How to Control the Style of the Submission Form</h3>
     <p>This plugin uses your current theme stylesheet to control the layout of the submission form.</p>

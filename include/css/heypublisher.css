@@ -13,8 +13,10 @@ HeyPublisher Plugin Stylesheet
 .wrap.heypub {
  margin: 0;
 }
-H2 {
+h2, h2.heypub {
   color:#464646;
+  font-size: 23px !important;
+  padding: 0 !important;
 }
 H3,TABLE CAPTION {
   color:#333333;
@@ -321,8 +323,17 @@ DL DT {
   text-align:right;
   padding-right: 1em;
 }
+DL DT.heypub-history {
+  width: 180px;
+}
+DL DT.heypub-history:after {
+  content: ' : ';
+}
 DL DD {
   padding-left: 60px;
+}
+DL DD.heypub-history {
+  padding-left: 140px;
 }
 DL.heypub-sub-status {
   margin-bottom: 20px;
