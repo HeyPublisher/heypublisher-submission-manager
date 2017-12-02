@@ -145,7 +145,7 @@ EOF;
     $ver = HEYPUB_PLUGIN_VERSION;
     $blog = get_bloginfo('name');
     $verdate = date('F jS, Y',strtotime($this->xml->get_install_option('version_current_date')));
-    $editors = ''; // $this->get_editor_history(); // this can only be launched after 1.6.0 has been live 30 days
+    $editors = $this->get_editor_history(); // this can only be launched after 1.6.0 has been live 30 days
 
     $html = <<<EOF
       <p>With HeyPublisher you can accept unsolicited submissions from writers without

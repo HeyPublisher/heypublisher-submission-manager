@@ -113,6 +113,7 @@ Yes - you can define custom response templates that contain whatever message you
 
 = 2.6.1 =
 * Released: 2017-12-15
+* Snitch screen added to main plugin overview page, tracking editors/admins and submissions they've touched.
 
 = 2.6.0 =
 * Released: 2017-11-15

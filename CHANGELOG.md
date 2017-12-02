@@ -2,6 +2,7 @@
 
 ### 2.6.1
 + Released: 2017-12-15
++ [[#78](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/78)] : Snitch screen added to main plugin overview page, tracking editors/admins and submissions they've touched.
 
 ### 2.6.0
 + Released: 2017-11-15
