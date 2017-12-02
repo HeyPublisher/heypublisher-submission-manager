@@ -1,5 +1,8 @@
 ## Changelog
 
+### 2.6.1
++ Released: 2017-12-15
+
 ### 2.6.0
 + Released: 2017-11-15
 + [[#75](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/75)] : Knowing which editor read or accepted a submission is now crystal clear.  A submission 'history' section has been added to the bottom of the submission detail page.
