@@ -192,6 +192,9 @@ add_action('trash_post',array($hp_subs,'delete_post_cleanup'));
 // this one executes when you skip the trash an simply 'delete' the submission
 add_action('delete_post',array($hp_subs,'delete_post_cleanup'));
 
+// Ensure the post edit screen shows pre-acceptance actions in the 'revisions' metabox
+add_action( 'do_meta_boxes', array($hp_subs,'revisions_meta_box'));
+
 // Ensure we go through the upgrade path even if the user simply installs
 // a new version of the plugin over top of the old plugin.
 if ($hp_xml->install['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {

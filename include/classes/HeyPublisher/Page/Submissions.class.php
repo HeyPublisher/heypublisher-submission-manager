@@ -227,7 +227,6 @@ EOF;
     $html = '';
     // Reading a submission marks it as 'read' in HeyPublisher
     if ($this->xml->submission_action($id,'read')) {
-      $history = $this->api->get_submission_history($id);
       $sub = $this->xml->get_submission_by_id($id);
       if ($sub) {
         $this->log(sprintf("ID  %s\ndisplay_submission \n%s",$sub->id,print_r($sub,1)));
@@ -240,7 +239,7 @@ EOF;
         else {
           $email = sprintf('<a href="mailto:%s?subject=Your%%20submission%%20to%%20%s" target="_blank">%s</a>',$sub->author->email,get_bloginfo('name'),$sub->author->email);
         }
-        $hblock = $this->submission_history_block($history['history']);
+        $hblock = $this->submission_history_block($id);
         $html .= <<<EOF
           <h2 class='heypub'>
             "{$sub->title}" :
@@ -398,21 +397,52 @@ EOF;
     }
     return $html;
   }
-
-  private function submission_history_block($history) {
-    $block = '';
-    foreach ($history as $item) {
-      //  match the date format of 'Revisions' in post page
-      $editor = get_user_by( 'ID', $item[editor_id] );
-      $date = date('F jS, Y @ H:i:s',strtotime($item[date]));
-      $block .= <<<EOF
-        <dt class='heypub-history'>{$editor->first_name} {$editor->last_name}</dt>
-        <dd class='heypub-history'>{$item[status]} on {$date}</dd>
-EOF;
-    }
+  // Take in a submission id and return a formatted submission block as string
+  private function submission_history_block($sid) {
+    $block = $this->submission_history_content($sid,'desc');
     return $this->toggle_block($block);
   }
+  private function submission_history_content($sid,$order) {
+    $this->xml->log("submission_history_content() SID: {$sid}");
+    $history = $this->api->get_submission_history($sid,$order);
+    $this->xml->log(sprintf(" => history:\n%s",print_r($history,1)));
+    $rows = '';
+    foreach ($history['history'] as $item) {
+      $rows .= "\t<li>" . $this->format_submission_history($item) . "</li>\n";
+      // $this->xml->log(" => ROW: {$row}");
+    }
+    $block = <<<EOF
+      <ul class='post-revisions hide-if-no-js submission-history'>
+        {$rows}
+      </ul>
+EOF;
+    return $block;
+  }
+  // Follows the same format as wp_post_revision_title_expanded()
+  // https://developer.wordpress.org/reference/functions/wp_post_revision_title_expanded/
+  private function format_submission_history($item){
+    $author = get_the_author_meta( 'display_name', $item[editor_id] );
+    if (!$author) {
+      if ($item['name'] == 'submitted') {
+        $author = 'Author';
+      } else {
+        $author = 'Editor';
+      }
+    }
 
+    $gravatar = get_avatar( $item[editor_id], 24 );
+    $date = date_i18n('F j, Y @ H:i:s',strtotime($item[date]));
+    $data = sprintf(
+         /* translators: post revision title: 1: author avatar, 2: author name, 3: time ago, 4: date */
+         __( '%1$s %2$s: %3$s %4$s ago (%5$s)' ),
+         $gravatar,
+         $author,
+         strtolower($item[status]),
+         human_time_diff( strtotime( $item[date] ), current_time( 'timestamp' ) ),
+         $date
+     );
+     return $data;
+  }
   private function summary_block($sub) {
     $block = <<<EOF
       {$this->submission_summary($sub)}
@@ -822,6 +852,24 @@ EOF;
     return true;
   }
 
+  /**
+  * Manage the content of the revisions box
+  */
+  public function revisions_meta_box() {
+    remove_meta_box( 'revisionsdiv', 'post', 'normal' );
+    add_meta_box( 'revisionsdiv', 'Revision History', array($this,'revisions_meta_box_content'), 'post', 'normal', 'high' );
+  }
+  public function revisions_meta_box_content($post) {
+    $sub_id = $this->get_submission_id_by_post_id($post->ID);
 
+    if ($sub_id) {
+      $hblock = $this->submission_history_content($sub_id,'asc');
+      echo "<h4>Submission:</h4>";
+      echo "<p>{$hblock}</p>";
+      echo "<h4>Revisions:</h4>";
+    }
+    wp_list_post_revisions( $post );
+
+  }
 }
 ?>
