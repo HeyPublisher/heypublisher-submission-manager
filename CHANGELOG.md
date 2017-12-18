@@ -1,5 +1,10 @@
 ## Changelog
 
+### 2.6.1
++ Released: 2017-12-17
++ [[#78](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/78)] : Snitch screen added to main plugin overview page, tracking editors/admins and submissions they've touched.
++ [[#72](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/72)] : the edit post screen now shows the actions taken by an editor prior to acceptacnce so you don't lose track after publication.
+
 ### 2.6.0
 + Released: 2017-11-15
 + [[#75](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/75)] : Knowing which editor read or accepted a submission is now crystal clear.  A submission 'history' section has been added to the bottom of the submission detail page.

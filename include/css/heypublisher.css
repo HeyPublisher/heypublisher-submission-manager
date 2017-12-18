@@ -89,6 +89,9 @@ UL.heypub-list {
   list-style-position: inside;
   margin: 2px 10px;
 }
+UL.submission-history {
+  margin: 2px 10px;
+}
 LABEL.heypub, LABEL.heypub_skinny {
     float: left;
     font-weight: 500;

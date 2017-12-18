@@ -26,10 +26,11 @@ class Submission extends \HeyPublisher\API {
     return $result;
   }
 
-  public function get_submission_history($id){
+  public function get_submission_history($id,$order){
     $path = sprintf('submissions/%s/history',$id);
     $this->logger->debug("calling get()");
-    $result = $this->get($path);
+    $opts = array('order'=>$order);
+    $result = $this->get($path,$opts);
     $this->logger->debug(sprintf("get_submission_history():\n\tResults: %s",print_r($result,1)));
     return $result;
   }
