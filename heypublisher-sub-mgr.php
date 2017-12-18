@@ -76,7 +76,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2017-12-15");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2017-12-17");
 // Version Number (can be text)
 define("HEYPUB_PLUGIN_BUILD_NUMBER", "68");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_VERSION", "2.6.1");

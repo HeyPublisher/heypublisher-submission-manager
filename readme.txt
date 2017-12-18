@@ -112,8 +112,9 @@ Yes - you can define custom response templates that contain whatever message you
 == Changelog ==
 
 = 2.6.1 =
-* Released: 2017-12-15
+* Released: 2017-12-17
 * Snitch screen added to main plugin overview page, tracking editors/admins and submissions they've touched.
+* The edit post screen now shows the actions taken by an editor prior to acceptacnce so you don't lose track after publication.
 
 = 2.6.0 =
 * Released: 2017-11-15
