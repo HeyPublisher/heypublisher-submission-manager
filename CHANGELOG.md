@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.6.2
++ Released: 2017-12-19
++ Verified WordPress 4.9.1
+
 ### 2.6.1
 + Released: 2017-12-17
 + [[#78](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/78)] : Snitch screen added to main plugin overview page, tracking editors/admins and submissions they've touched.
