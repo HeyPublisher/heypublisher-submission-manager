@@ -9,6 +9,7 @@ load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Overv
 $hp_main = new \HeyPublisher\Page\Overview;
 // $hp_main = new Main();
 
+// TODO: deprecate this file
 /**
 * Helper to consistently get the page title and logo displayed.
 * This function prints to the screen.
@@ -48,11 +49,6 @@ function heypub_display_page_logo() {
 <?php
 
 }
-// Show the page
-function heypub_menu_main()  {
-	global $hp_main;
-  $hp_main->page();
-}
 
 // TODO: I think this is a duplicate of other logic.  Research
 function heypub_not_authenticated($page) {
@@ -60,12 +56,12 @@ function heypub_not_authenticated($page) {
   <div class="wrap">
     <?php heypub_display_page_title('Not Authenticated!'); ?>
     <div id="hey-content">
-      It appears you have not yet authenticated.  Please <a href='<?php heypub_get_authentication_url($page);?>'>CLICK HERE</a> to authenticate.</p>
+      It appears you are not yet authenticated.  Please <a href='<?php heypub_get_authentication_url($page);?>'>CLICK HERE</a> to authenticate.</p>
     </div>
   </div>
 <?php
 }
-// TODO: I know this is a duplicate of logic in the Options class
+// TODO: Move logic to Overview class
 function heypub_get_authentication_url($page=false) {
   global $hp_opt;
   if ($page == FALSE) {
@@ -75,19 +71,5 @@ function heypub_get_authentication_url($page=false) {
   return $url;
 }
 
-
-/**
-* Initialize the upgrade of the plugin
-*/
-function heypub_upgrade_notice() {
-  global $hp_xml, $hp_subs;
-    $ver_cur = $hp_xml->get_install_option('version_current');
-    if($ver_cur != false && $ver_cur != HEYPUB_PLUGIN_BUILD_NUMBER) {
-      $html = <<<EOF
-        <div id="message" class="updated" ><p>You've recently upgraded HeyPublisher Submission Manager. To finalise the upgrade process, <a href="admin.php?page={$hp_subs->slug}">please visit the plugin configuration page</a>.</p></div>
-EOF;
-      print($html);
-    }
-}
 
 ?>

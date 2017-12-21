@@ -39,7 +39,7 @@ class Page extends \Loudlever\Loudlever {
   }
 
   // Page wrapper
-  protected function page($title, $subtitle, callable $content, $args=null) {
+  public function page($title, $subtitle, callable $content, $args=null) {
     $body = $content($args);  // this way side-nav var can be set
     echo $this->page_header($title);
     echo $this->two_column_header();

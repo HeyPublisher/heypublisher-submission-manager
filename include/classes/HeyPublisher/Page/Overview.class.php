@@ -66,7 +66,7 @@ EOF;
     return $html;
   }
 
-  public function page()  {
+  public function page_prep()  {
     if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'uninstall_plugin') {
       parent::page('Uninstall HeyPublisher', 'Before you continue...', array($this,'uninstall_prompt'));
     } elseif (isset($_REQUEST['action']) && $_REQUEST['action'] == 'delete_options') {
