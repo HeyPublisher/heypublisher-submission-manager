@@ -30,6 +30,8 @@ class Submissions extends \HeyPublisher\Page {
   }
 
   public function action_handler() {
+    // This is not possible as this sub-menu is not accessible if not validated
+    // TODO: clean up this logic
     if (!$this->xml->is_validated) {
       // parent::page('Submissions', 'Submissions', 'heypub_list_submissions' );
       heypub_not_authenticated();
@@ -169,7 +171,7 @@ EOF;
         }
         $word_count = '?';
         if (FALSE != $hash->word_count) {
-          $word_count = number_format("$hash->word_count");
+          $word_count = number_format((float)"$hash->word_count");
         }
         $status = $this->xml->normalize_submission_status($hash->status);
         $link = $status; // default

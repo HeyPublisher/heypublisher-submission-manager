@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.6.3
++ Released: 2017-12-20
++ Fixed bug which prevented rendering in PHP 7.x
+
 ### 2.6.2
 + Released: 2017-12-19
 + Verified WordPress 4.9.1

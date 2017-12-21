@@ -5,7 +5,7 @@ Plugin URI: https://www.heypublisher.com
 Description: HeyPublisher is a better way of managing unsolicited submissions directly within WordPress.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 2.6.2
+Version: 2.6.3
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
   Copyright 2014-2017 Richard Luck (https://github.com/aguywithanidea/)
@@ -71,16 +71,17 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.6.0 => 67
   2.6.1 => 68
   2.6.2 => 69
+  2.6.3 => 70
 ---------------------------------------------------------------------------------
 */
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2017-12-19");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2017-12-20");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "69");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "2.6.2");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "70");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "2.6.3");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
@@ -153,8 +154,11 @@ $hp_xml->log("Loading plugin::");
 require_once(HEYPUB_PLUGIN_FULLPATH.'/include/heypub-template-functions.php');
 
 // Load the classes
-// Mail page
+// Main page
 require_once(HEYPUB_PLUGIN_FULLPATH . '/admin/heypub-main.php');
+// load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Overview.class.php');
+// $hp_main = new \HeyPublisher\Page\Overview;
+
 // Plugin configuration options
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Options.class.php');
 $hp_opt = new \HeyPublisher\Page\Options;
@@ -214,7 +218,7 @@ function RegisterHeyPublisherAdminStyle() {
 function RegisterHeyPublisherAdminMenu(){
   global $hp_xml, $hp_opt, $hp_subs, $hp_main, $hp_email;
   // Initilise the plugin for the first time here. This gets called when you click the HeyPublisher link.
-  $admin_menu = add_menu_page('HeyPublisher Stats','HeyPublisher', 8, HEY_DIR, 'heypub_menu_main', 'dashicons-book-alt');
+  $admin_menu = add_menu_page('HeyPublisher Stats','HeyPublisher', 8, HEY_DIR, array($hp_main,'page_prep'), 'dashicons-book-alt');
   add_action("admin_print_styles-$admin_menu", 'HeyPublisherAdminHeader' );
 
   // Configure Options

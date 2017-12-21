@@ -33,10 +33,10 @@ class Options extends \HeyPublisher\Page {
     if ($message) {
       printf('<div id="message" class="updated fade"><p>%s</p></div>',$message);
     }
-    $this->page();
+    $this->page_prep();
   }
 
-  public function page()  {
+  public function page_prep()  {
     parent::page('Plugin Options', '', array($this,'content'));
   }
   private function form_action() {
