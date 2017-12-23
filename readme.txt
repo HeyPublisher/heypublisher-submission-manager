@@ -2,7 +2,7 @@
 Contributors: heypublisher, aguywithanidea, loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
-Requires at least: 5.0
+Requires at least: 4.0
 Tested up to: 4.9.1
 Stable Tag: 2.6.3
 License: GPLv2 or later
