@@ -51,15 +51,6 @@ EOF;
     return $ret;
   }
 
-  public function page_layout($content) {
-    $ret = <<<EOF
-<div class="wrap">
-    $content
-</div>
-EOF;
-    return $ret;
-  }
-
   // This is a non-printing function.  Output will be returned as a string
   // Two input params :
   // - the contextual publisher object
