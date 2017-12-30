@@ -23,6 +23,18 @@ TABLE {
         }
       }
     }
+    // Treat TDs as headers in some cases in some cases
+    TBODY {
+      TR {
+        &.header {
+          background-color: $th-background-color;
+          TD {
+            font-size: $th-fontsize;
+            font-weight:bold;
+          }
+        }
+      }
+    }
   }
 }
 

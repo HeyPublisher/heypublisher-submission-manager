@@ -189,7 +189,7 @@ EOF;
         <h3>Publication Statistics</h3>
         <table class="widefat post fixed ll-plugin">
           <tbody id='the-list'>
-          <tr class='header alternate'>
+          <tr class='header'>
             <td>Homepage Indexed</td>
             <td>Guidelines Indexed</td>
             <td># Comments</td>
