@@ -243,7 +243,7 @@ EOF;
         }
         $hblock = $this->submission_history_block($id);
         $html .= <<<EOF
-          <h2 class='heypub'>
+          <h2 class='heypub-sub-title'>
             "{$sub->title}" :
             {$sub->category} by {$sub->author->first_name} {$sub->author->last_name}
             <small>({$email})</small>
@@ -269,7 +269,7 @@ EOF;
               {$this->summary_block($sub)}
             </div>
           </div>
-          <div><!--  id="hey-content" -->
+          <div>
             <h3>Submission</h3>
             {$this->submission_block($sub)}
           </div>

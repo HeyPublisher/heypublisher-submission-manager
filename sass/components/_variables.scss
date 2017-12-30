@@ -6,13 +6,15 @@
 //
 //  1. Colors
 //  2. Typography
-// 3. Tables
+//  3. Borders
 // ==========================================================================
 
 // 1. Colors
 // ==========================================================================
 $table-border-color: color("silver", "base") !default;
 $th-background-color: color("silver", "lighten-2") !default;
+$h3-border-color: color("silver", "lighten-2") !default;
+$header-fontcolor: color("silver", "darken-4") !default;
 
 
 //  2. Typography
@@ -22,6 +24,7 @@ $h3-fontsize: 1.2em !default;
 $h4-fontsize: 1.1em !default;
 $th-fontsize: 1.1em !default;
 
-// 3. Tables
+// 3. Borders
 // ==========================================================================
 $table-border: 1px solid $table-border-color !default;
+$h3-border: 1px solid $h3-border-color !default;

@@ -1,0 +1,139 @@
+// TODO: Convert all ids to classes - these are all specific to the submissions page
+#heypub_submissions {
+  // clear:both;
+  TH {
+    padding: 5px;
+    font-weight: bolder;
+
+    &.checkbox {
+      width:50px;
+    }
+  }
+  TD {
+    padding: 5px;
+    &.heypub_list_title {
+      font-weight: bolder;
+    }
+    &.heypub_no_subs {
+      text-align:center;
+      font-size: 18px;
+      font-weight: bolder;
+      font-style:italic;
+      padding: 15px;
+    }
+  }
+}
+#heypub_submission_body {
+  padding-left: 20px;
+  width: 90%;
+  H2 {
+    &#content_missing {
+      font-size: 1.3em;
+      color: #E66F00;
+    }
+  }
+}
+.heypub_author_bio_preview {
+  padding: 1.2em;
+  line-height: 1.3em;
+  margin: 5px;
+  background-color: #EDEDED;
+  border-style:solid;
+  border-width:1px;
+  border-color: #DDD #FFF #FFF #DDD;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  background: #EDEDED; // for non-css3 browsers
+  padding: 10px;
+  font-size: 12px;
+}
+.heypub_author_bio_show {
+  padding: 1.2em;
+  font-size: 0.85em;
+  line-height: 1.3em;
+  width: 80%;
+}
+blockquote {
+  &.heypub_summary {
+    margin: 5px;
+    background-color: #EDEDED;
+    border-style:solid;
+    border-width:1px;
+    border-color: #DDD #FFF #FFF #DDD;
+    padding: 1px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    background: #EDEDED; // for non-css3 browsers
+  }
+}
+#heypub_submission {
+  width:80%;
+  vertical-align:top;
+}
+.days_pending_warn {
+  color: orange;
+  font-weight: bold;
+}
+#heypub_ed_note {
+  height: 80px;
+  font-size: 11px;
+  width: 100%;
+  margin: 0;
+}
+#heypub_vote_buttons {
+  margin: 0px auto;
+  text-align:center;
+  width: 60%;
+}
+#heypub_vote_yes {
+  float: left;
+}
+#heypub_vote_no {
+float: right;
+}
+.revised {
+  background-color: #FFF6BF !important;
+  border-color: #FFD324;
+  color:#514721 !important;
+}
+.requested {
+  background-color: #E6EFC2 !important;
+  border-color: #C6D880;
+  color:#264409 !important;
+}
+#heypub_ed_note_close {
+  -moz-border-radius: 6px 6px 0 0 ;
+  background-color: #EEEEEE;
+  border-color: -moz-use-text-color silver silver;
+  border: 1px solid silver;
+  border-bottom: 0;
+  color: gray;
+  display: block;
+  float: right;
+  font-size: 11px;
+  margin-top: 0;
+  padding: 0 8px;
+  text-align: right;
+  text-decoration: none;
+}
+#editor_notes_off,
+#editor_notes_on {
+  margin-bottom: 10px;
+}
+#return_to_summary {
+  font-size: 11px;
+  margin-top: 10px;
+  text-align: center;
+}
+.heypub-icons {
+  text-decoration: none !important;
+  margin-left: 5px;
+  &:hover {
+    color: orange;
+  }
+}
+.numeric { // wordcount in table view
+  text-align:right;
+}

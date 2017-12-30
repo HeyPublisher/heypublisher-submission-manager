@@ -14,5 +14,7 @@
 // Reset
 @import "components/normalize";
 @import "components/loudlever";
-// Then import the styles for the sections
 @import "components/global";
+// Then import the styles for the sections
+@import "pages/options";
+@import "pages/submissions";

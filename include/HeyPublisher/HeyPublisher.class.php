@@ -14,11 +14,11 @@ class HeyPublisher {
 
   }
 
-  public function page_title_with_logo($title) {
-    $ret = $this->page_title($title);
-    $ret .= $this->page_logo();
-    return $ret;
-  }
+  // public function page_title_with_logo($title) {
+  //   $ret = $this->page_title($title);
+  //   $ret .= $this->page_logo();
+  //   return $ret;
+  // }
 
   public function page_title($title) {
     return "<h2>$title</h2>";
@@ -29,27 +29,27 @@ class HeyPublisher {
     return $url;
   }
 
-  public function page_logo() {
-    global $hp_xml;
-    $format = "<div id='heypub_logo'>%s</div>";
-    $content = <<<EOF
-  <a href='http://heypublisher.com' target='_blank' title='Visit HeyPublisher.com'>
-    <img src='{$_CONSTANTS['HEY_BASE_URL']}/images/logo.jpg' border='0'>
-    <br/>Visit HeyPublisher.com</a>
-    <br/>
-    <a href='mailto:{$_CONSTANTS['HEY_BASE_URL']}'>Email Us</a>
-EOF;
-    // $seo = 'foo';
-    // $seo = $hp_xml->get_config_option('seo_url');
-//     if ($seo) {
-//       $content .= <<<EOF
-// <hr>
-// <b><a target='_blank' href="$seo">See Your Site in Our Database</a></b>
+//   public function page_logo() {
+//     global $hp_xml;
+//     $format = "<div id='heypub_logo'>%s</div>";
+//     $content = <<<EOF
+//   <a href='http://heypublisher.com' target='_blank' title='Visit HeyPublisher.com'>
+//     <img src='{$_CONSTANTS['HEY_BASE_URL']}/images/logo.jpg' border='0'>
+//     <br/>Visit HeyPublisher.com</a>
+//     <br/>
+//     <a href='mailto:{$_CONSTANTS['HEY_BASE_URL']}'>Email Us</a>
 // EOF;
-//     }
-    $ret = sprintf($format,$content);
-    return $ret;
-  }
+//     // $seo = 'foo';
+//     // $seo = $hp_xml->get_config_option('seo_url');
+// //     if ($seo) {
+// //       $content .= <<<EOF
+// // <hr>
+// // <b><a target='_blank' href="$seo">See Your Site in Our Database</a></b>
+// // EOF;
+// //     }
+//     $ret = sprintf($format,$content);
+//     return $ret;
+//   }
 
   // This is a non-printing function.  Output will be returned as a string
   // Two input params :

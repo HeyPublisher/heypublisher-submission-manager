@@ -4,587 +4,155 @@
 
 
 /* Class based settings */
-DIV {
-  &.wrap {
-    /* wrapper for all HeyPublisher styles */
-    &.heypub-page {
+// .wrap{}
+.heypub-page {
+  h2 {
+    &.heypub-sub-title { // Submisison detail -
+      color: $header-fontcolor;
+      font-size: $h2-fontsize !important;
+      padding: 0 !important;
+    }
+    // &.error{} // inhereting from WP??
+  }
 
-
-
-
-
+  h3 {
+    font-size: $h3-fontsize;
+    color: $header-fontcolor;
+    border-top: $h3-border;
+    margin:1em 0 0.5em;
+    padding-top:0.5em;
+    &.first {
+      border-top: none;
     }
   }
 }
 
-// .wrap {
-//   &.heypub {
-//    margin: 0;
-//   }
-// }
-//
-// DL {
-//   font-size: 0.9em;
-//   DT {
-//     font-weight: bolder;
-//     width: 90px;
-//     float:left;
-//     text-align:right;
-//     padding-right: 1em;
-//
-//     &.heypub-history {
-//       width: 180px;
-//       &::after {
-//         content: ' : ';
-//       }
-//     }
-//   }
-//   DD {
-//     padding-left: 60px;
-//     &.heypub-history {
-//       padding-left: 140px;
-//     }
-//     &.heypub-sub-status {
-//       margin-bottom: 20px;
-//       text-transform: capitalize;
-//     }
-//     DT {
-//       &::after {
-//         content: ':';
-//       }
-//     }
-//   }
-//   &.heypub-sub-status DD {
-//     margin-bottom: 0px;
-//   }
-// }
-// h2 {
-//   &.heypub {
-//     color:#464646;
-//     font-size: 23px !important;
-//     padding: 0 !important;
-//   }
-// }
-//
-//
-// H3,
-// TABLE CAPTION {
-//   color:#333333;
-//   border-top:1px solid silver;
-//   margin:1em 0 0.5em;
-//   padding-top:0.5em;
-//   &.first {
-//     border-top: none;
-//   }
-// }
-// UL {
-//   display: block;
-//   &.heypub-list {
-//     list-style-type:disc;
-//     list-style-position: inside;
-//     margin: 2px 10px;
-//   }
-//   &.submission-history {
-//     margin: 2px 10px;
-//   }
-// }
-// LI {
-//   margin-bottom: 8px;
-//   display: list-item;
-//   text-align: -webkit-match-parent;
-// }
-// TABLE CAPTION {
-//   text-align: left;
-// }
-//
-// // ID based settings
-// #heypub_plugin_page {
-// 	padding: 10px;
-// }
-//
-// #heypub_logo {
-//   float: right;
-//   padding: 10px;
-//   margin-bottom:10px;
-//   background-color: #FFFFFF;
-//   border: 1px solid silver;
-//   text-align:center;
-//   color:gray;
-//   font-size: 11px;
-//   margin-left: 20px;
-//   right:10px;
-//   width: 180px;
-//   min-width: 180px;
-//   display:inline-block;
-// /*  position:absolute;*/
-//   z-index: 999;
-//
-//   img {
-//     padding-bottom:5px;
-//   }
-//
-//   a {
-//     text-decoration: none;
-//   	font-size: 10px;
-//   }
-// }
-//
-// #hey-content {
-//   H3 {
-//     padding-top:0.5em;
-//     margin: 1em 0 0.5em;
-//   }
-// }
-//
-// LABEL {
-//   &.heypub {
-//     float: left;
-//     font-weight: 500;
-//     width: 220px;
-//     text-align: right;
-//     padding-right: 10px;
-//     padding-top: 5px;
-//     font-size: 1em;
-//   }
-// }
-//
-// INPUT[type=text],
-// INPUT[type=password],
-// SELECT {
-//   &.heypub {
-//     width: 350px;
-//   }
-// }
-// TEXTAREA {
-//   &.heypub {
-//     width: 400px;
-//     height: 300px;
-//   }
-// }
-// /*  Uninstall Styles */
-// .uninstall {
-//     font-style: italic;
-//     font-size: 14px;
-// }
-// .ok {
-//     color: green;
-//     font-weight: bold;
-// }
-// .fail {
-//     color: red;
-//     font-weight: bold;
-// }
-// .flash {
-// 	padding: 5px 15px;
-// 	width: 88%;
-//   margin: 2px auto;
-// 	border-radius: 5px !important;
-//   -webkit-border-radius: 5px !important;
-//   -moz-border-radius: 5px !important;
-//
-//   &.notice {
-//   	background-color: #CF9;
-//   	border: thin solid green;
-//   	color: green;
-//   }
-//   &.error {
-//   	background-color: #FFCFCF;
-//     border: thin solid red;
-//   }
-// }
-//
-// #heypub_error P {
-//     font-size: 14px;
-// }
-// #heypub_show_genres_list {
-//     margin-left: 50px;
-//     width: 600px;
-// }
-// #heypub_show_genres_list H2 {
-//     font-size: 16px;
-// }
-// #heypub_category_list {
-//   background-color:white;
-//   width: 100%;
-//   border-left: 1px solid silver;
-//   border-bottom: 1px solid silver;
-//
-//   TH {
-//     background-color: silver;
-//     border: 1px solid gray;
-//     font-weight: bolder;
-//   }
-//   TD {
-//     padding: 4px;
-//     text-align: right;
-//     border-top: 1px solid silver;
-//     border-right: 1px solid silver;
-//     width: 25%;
-//     white-space:nowrap;
-//   }
-// }
-// #heypub_submissions {
-//   // clear:both;
-//   TH {
-//     padding: 5px;
-//     font-weight: bolder;
-//
-//     &.checkbox {
-//       width:50px;
-//     }
-//   }
-//   TD {
-//     padding: 5px;
-//     &.heypub_list_title {
-//       font-weight: bolder;
-//     }
-//     &.heypub_no_subs {
-//       text-align:center;
-//       font-size: 18px;
-//       font-weight: bolder;
-//       font-style:italic;
-//       padding: 15px;
-//     }
-//   }
-// }
+/*  Uninstall Styles */
+.uninstall {
+  font-style: italic;
+  font-size: 14px; // TODO: Move to variable
+}
+
+/* Definition List Styles - only used on Submission detail page */
+DL {
+  font-size: 0.9em;
+  DT {
+    font-weight: bolder;
+    width: 90px;
+    float:left;
+    text-align:right;
+    padding-right: 1em;
+
+    &::after {
+      content: ':';
+    }
+
+    &.heypub-history {
+      width: 180px;
+      &::after {
+        content: ' : ';
+      }
+    }
+  }
+  DD {
+    padding-left: 60px;
+    &.heypub-history {
+      padding-left: 140px;
+    }
+    &.heypub-sub-status {
+      margin-bottom: 20px;
+      text-transform: capitalize;
+    }
+  }
+  &.heypub-sub-status {
+    DD {
+      margin-bottom: 0px;
+    }
+  }
+}
+
+UL {
+  display: block;
+  &.heypub-list {
+    list-style-type:disc;
+    list-style-position: inside;
+    margin: 2px 10px;
+  }
+  &.submission-history {
+    margin: 2px 10px;
+  }
+}
+LI {
+  margin-bottom: 8px;
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+// ID based settings
+#heypub_plugin_page {
+	padding: 10px;
+}
+
+
+
+LABEL {
+  &.heypub {
+    float: left;
+    font-weight: 500;
+    width: 220px;
+    text-align: right;
+    padding-right: 10px;
+    padding-top: 5px;
+    font-size: 1em;
+  }
+}
+
+INPUT[type=text],
+INPUT[type=password],
+SELECT {
+  &.heypub {
+    width: 350px;
+  }
+}
+TEXTAREA {
+  &.heypub {
+    width: 400px;
+    height: 300px;
+  }
+}
+
 // #heypub TH {
 //   padding: 5px;
 //   font-weight: bolder;
 // }
-// #heypub_instructions {
-//   border: 1px solid silver;
-//   -moz-border-radius: 10px;
-//   border-radius: 10px;
-//   -webkit-border-radius: 10px;
-//   width: 60%;
-//   margin-left: 50px;
-//   padding: 10px;
-// }
-// #heypub_instructions_list {
-//   margin: 5px auto;
-//
-//   TD {
-//     font-weight: bold;
-//     white-space: nowrap;
-//     vertical-align: top;
-//     padding: 5px;
-//     font-size: 13px;
-//
-//     &:nth_child(2) {
-//       font-weight: normal;
-//       white-space: normal;
-//       font-size: 12px;
-//     }
-//   }
-// #heypub_submission_body {
-//   padding-left: 20px;
-//   width: 90%;
-//   H2 {
-//     &#content_missing {
-//       font-size: 1.3em;
-//       color: #E66F00;
-//     }
-//   }
-// }
-// DIV {
-//   // TODO: Remove this duplication
-//   &.heypub_author_bio_preview {}
-//     padding: 1.2em;
-//     line-height: 1.3em;
-//     margin: 5px;
-//     background-color: #EDEDED;
-//     border-style:solid;
-//     border-width:1px;
-//     border-color: #DDD #FFF #FFF #DDD;
-//     border-radius: 5px;
-//     -webkit-border-radius: 5px;
-//     -moz-border-radius: 5px;
-//     background: #EDEDED; // for non-css3 browsers
-//     padding: 10px;
-//     font-size: 12px;
-//   }
-//   &.heypub_author_bio_show {
-//     padding: 1.2em;
-//     font-size: 0.85em;
-//     line-height: 1.3em;
-//     width: 80%;
-//   }
-// }
-//
-// #heypub_submission_iframe {
-//   width: 98%;
-//   height: 500px;
-//   border: 1px solid silver;
-// }
-// BLOCKQUOTE {
-//   margin: 10px;
-//   background-color: #EFEFEF;
-//   border: 1px solid silver;
-//   padding: 10px;
-//   &.heypub_summary {
-//     margin: 5px;
-//     background-color: #EDEDED;
-//     border-style:solid;
-//     border-width:1px;
-//     border-color: #DDD #FFF #FFF #DDD;
-//     padding: 1px;
-//     border-radius: 5px;
-//     -webkit-border-radius: 5px;
-//     -moz-border-radius: 5px;
-//     background: #EDEDED; // for non-css3 browsers
-//   }
-// }
-// #heypub_submission {
-//   width:80%;
-//   vertical-align:top;
-// }
-//
-// #heypub_submission_nav {
-//   border: 1px solid silver;
-//   width:200px;
-//   padding: 1em;
-//   background-color: #FFF;
-//
-//   FORM {
-//   	display:block;
-//   }
-//
-//   H4 {
-//     clear:both;
-//     margin-top:15px;
-//     padding-top:4px;
-//     border-top: 1px solid gray;
-//     font-size: 0.9em;
-//   }
-//   UL {
-//     LI {
-//       SPAN {
-//         display: block;
-//         padding-left: 2em;
-//         font-size: 0.7em;
-//       }
-//     }
-//   }
-//   #heypub_logo {
-//     clear:both;
-//     margin: 0px auto 10px auto;
-//   }
-// }
-// .heypub_bio_expand {
-//   height: 10px;
-//   width: 10px;
-//   border: 10px;
-//   padding-left: 5px;
-// }
-// .days_pending_late {
-//   color: red;
-//   font-weight: bold;
-// }
-// .days_pending_warn {
-//   color: orange;
-//   font-weight: bold;
-// }
-// .days_pending_ok {
-// /*  color: green;*/
-// }
-// #heypub_donate {
-//   padding-top: 2px;
-// }
-// #heypub_ed_note {
-//   height: 80px;
-//   font-size: 11px;
-//   width: 100%;
-//   margin: 0;
-// }
-// #heypub_vote_buttons {
-//   margin: 0px auto;
-//   text-align:center;
-//   width: 60%;
-// }
-// #heypub_vote_yes {
-//   float: left;
-// }
-// #heypub_vote_no {
-// float: right;
-// }
-// /*  Highlight revised works    */
-// .revised {
-//   background-color: #FFF6BF !important;
-//   border-color: #FFD324;
-//   color:#514721 !important;
-// }
-// .requested {
-//   background-color: #E6EFC2 !important;
-//   border-color: #C6D880;
-//   color:#264409 !important;
-// }
-// /*p.heypub-subtext {
-//   margin-left: 230px;
-//   padding-left: 0px !important;
-// }*/
-// BLOCKQUOTE.heypub {
-//  color: #D54E21;
-//  /*margin-left: 230px;*/
-// }
-// A.heypub_smart_button {
-//   margin: 3px 0px;
-//   display: block;
-//   cursor: pointer;
-//   padding: 2px;
-//   /*    border: none;*/
-//   /*    border-top: 1px solid #eee;*/
-//   border: 1px solid #bbb;
-//   /*    border-bottom:none;*/
-//   border-radius: 5px;
-//   -webkit-border-radius: 5px;
-//   -moz-border-radius: 5px;
-//   background: #EEE; /* for non-css3 browsers */
-//   filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffcccccc'); /* for IE */
-//   background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#ccc)); /* for webkit browsers */
-//   background: -moz-linear-gradient(top,  #FFF,  #ccc); /* for firefox 3.6+ */
-//   color: #444;
-//   -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
-//   -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
-//   box-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
-//   text-shadow: 1px 1px 0 rgba(255, 255, 255, .8);
-//   font-size:11px;
-//   /*    font-size:20px;*/
-// /*  width:170px;*/
-//   clear:both;
-//   text-align:center;
-//   text-decoration:none;
-// }
-//
-// A.heypub_smart_button:hover {
-//   border: 1px solid #AAA;
-//   background: #CCC; /* for non-css3 browsers */
-//   filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffbbbbbb', endColorstr='#ffffffff'); /* for IE */
-//   background: -webkit-gradient(linear, left top, left bottom, from(#bbb), to(#fff)); /* for webkit browsers */
-//   background: -moz-linear-gradient(top,  #bbb,  #fff); /* for firefox 3.6+ */
-//   color: #000;
-//   text-shadow: 0 1px 0 rgba(255, 255, 255, .65);
-// }
-//
-// A.green {
-//  background: #7cad20;
-//  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#98D130', endColorstr='#7cad20'); /* for IE */
-//  background: -webkit-gradient(linear, left top, left bottom, from(#98D130), to(#7cad20)); /* for webkit browsers */
-//  background: -moz-linear-gradient(top,  #98D130,  #7cad20); /* for firefox 3.6+ */
-//  color: #FFF;
-//  text-shadow: 0 1px 0 rgba(0, 0, 0, .65);
-//  border: 1px solid #658E18;
-//  font-size: 16px;
-// }
-// A.green:hover {
-//   background: #7cad20;
-//   filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#7cad20', endColorstr='#98D130'); /* for IE */
-//   background: -webkit-gradient(linear, left top, left bottom, from(#7cad20), to(#98D130)); /* for webkit browsers */
-//   background: -moz-linear-gradient(top,  #7cad20,  #98D130); /* for firefox 3.6+ */
-//   color: #FFF;
-//   text-shadow: 0 1px 0 rgba(0, 0, 0, .65);
-//   border: 1px solid #658E18;
-// }
-// SPAN.heypub_empty {
-//   color: #888;
-//   font-size: 0.8em;
-//   text-transform: lowercase;
-// }
-// /* Navigation Tabs */
-// .heypub-nav-tabs {
-//     overflow: visible;
-//     padding-bottom: 0 !important;
-// }
-// .roundy {
-//   border-radius: 6px 6px 0 0;
-//   -moz-border-radius: 6px 6px 0 0;
-// 	-webkit-border-radius: 6px 6px 0 0;
-// 	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#EEEEEE', endColorstr='#CCCCCC'); /* for IE */
-//   background: -moz-linear-gradient(center bottom , #CCCCCC 0%, #EEEEEE 80%) repeat scroll 0 0 transparent;
-// 	background: -webkit-gradient(linear, left top, left bottom, from(#CCCCCC), to(#EEEEEE)); /* for webkit browsers */
-// 	border: 1px solid #BBBBBB;
-// 	border-bottom: 0px;
-// 	display: block;
-// 	padding: 10px;
-// 	width: 600px;
-// 	min-width:600px;
-// 	overflow:hidden;
-// }
-// .tabs-container {
-// /*    margin-bottom: -1px;*/
-//     overflow: hidden;
-// }
-// .heypub-tab {
-//   border-radius: 6px 6px 0 0;
-//   -moz-border-radius: 6px 6px 0 0;
-// 	-webkit-border-radius: 6px 6px 0 0;
-// 	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#F0F0F0', endColorstr='#D4D4D4'); /* for IE */
-//   background: -moz-linear-gradient(center bottom , #D4D4D4 0%, #F0F0F0 80%) repeat scroll 0 0 transparent;
-// 	background: -webkit-gradient(linear, left top, left bottom, from(#D4D4D4), to(#F0F0F0)); /* for webkit browsers */
-//   border: 1px solid #C4C4C4;
-// 	border-bottom: 0;
-//   color: #555555;
-//   cursor: pointer;
-//   float: left;
-//   font-family: Helvetica,Arial,"Helvetica Neue","Nimbus Sans L",Verdana,sans-serif;
-//   font-size: 13px;
-//   font-weight: bold;
-//   margin: 0 2px 0 0;
-//   padding: 7px 18px 7px 18px;
-//   text-align: center;
-//   text-decoration: none;
-//   text-shadow: 0 1px 0 #FFFFFF;
-// }
-// .heypub-tab.heypub-tab-pressed {
-// 	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#F9F9F9', endColorstr='#F9F9F9'); /* for IE */
-//    background: none repeat scroll 0 0 #F9F9F9 !important;
-//    border-bottom: 1px solid #F9F9F9;
-//    color: #444444;
-// }
-// .tabs-container {
-//   white-space: nowrap;
-// /*  min-width: 780px;*/
-// }
-// #heypub_content {
-// /*  width: 90%;*/
-// /*  display:inline-block;*/
-// }
-// #heypub_ed_note_close {
-//     -moz-border-radius: 6px 6px 0 0 ;
-//     background-color: #EEEEEE;
-//     border-color: -moz-use-text-color silver silver;
-//     border: 1px solid silver;
-//     border-bottom: 0;
-//     color: gray;
-//     display: block;
-//     float: right;
-//     font-size: 11px;
-//     margin-top: 0;
-//     padding: 0 8px;
-//     text-align: right;
-//     text-decoration: none;
-// }
-// #editor_notes_off, #editor_notes_on {
-//   margin-bottom: 10px;
-// }
-// #return_to_summary {
-//   font-size: 11px;
-//   margin-top: 10px;
-//   text-align: center;
-// }
-// .heypub-icons {
-//   text-decoration: none !important;
-//   margin-left: 5px;
-// }
-// .heypub-icons:hover {
-//   color: orange;
-// }
-// .heypub-button {
-//   margin-left:2px !important;
-//   margin-top:5px !important;
-// }
-// .numeric {
-//   text-align:right;
-// }
+
+// TODO: Move this to separate css that gets loaded ONLY on this page - as this is public facing.
+#heypub_submission_iframe {
+  width: 98%;
+  height: 500px;
+  border: 1px solid silver;
+}
+blockquote {
+  margin: 10px;
+  background-color: #EFEFEF;
+  border: 1px solid silver;
+  padding: 10px;
+}
+
+// TODO: Remove this calling function - used when value is null
+SPAN {
+  &.heypub_empty {
+    color: #888;
+    font-size: 0.8em;
+    text-transform: lowercase;
+  }
+}
+// TODO : this is primary button on Options / Submission page
+.heypub-button {
+  margin-left:2px !important;
+  margin-top:5px !important;
+}
+
 // #message.heypub {
 //   margin:0;
 //   opacity: 1;
