@@ -1,8 +1,11 @@
 // Utility Color Classes
+// http://coloreminder.com/c0c0c0
 $silver: (
+  "darken-2":   #808080,
+  "darken-1":   #999999,
   "base":       #C0C0C0,
-  "lighten-1":  #D3D3D3,
-  "darken-1":   #A9A9A9
+  "lighten-1":  #CCCCCC,
+  "lighten-2":  #E6E6E6
 );
 $colors: (
   "silver": $silver

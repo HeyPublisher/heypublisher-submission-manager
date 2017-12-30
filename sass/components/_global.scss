@@ -1,10 +1,22 @@
 /*  Override some of the Wordpress Admin stylesheet settings */
-/*BODY {
-  margin: 0;
-  padding: 0;
-}*/
 
-// Class based settings
+
+
+
+/* Class based settings */
+DIV {
+  &.wrap {
+    /* wrapper for all HeyPublisher styles */
+    &.heypub-page {
+
+
+
+
+
+    }
+  }
+}
+
 // .wrap {
 //   &.heypub {
 //    margin: 0;
@@ -83,17 +95,6 @@
 // }
 // TABLE CAPTION {
 //   text-align: left;
-// }
-//
-// TABLE {
-//   &.list {
-//     TD {
-//       background-color: #EEE;
-//       border: 1px solid silver;
-//       padding: 3px;
-//       text-align:center;
-//     }
-//   }
 // }
 //
 // // ID based settings

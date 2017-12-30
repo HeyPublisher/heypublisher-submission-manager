@@ -249,6 +249,17 @@ EOF;
             <small>({$email})</small>
           </h2>
           <div>
+            <!-- Editor Voiting -->
+            <a href="#" onclick="alert('no vote')" title="No :(">
+              <span class="heypub-icons dashicons dashicons-thumbs-down vote"></span>
+            </a>
+            <a href="#" onclick="alert('yes vote')" title="Yes!">
+              <span class="heypub-icons dashicons dashicons-thumbs-up vote"></span>
+            </a>
+
+            Vote for this submission
+          </div>
+          <div>
             <h3>Summary
               <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub_summary');" title="View summary" style="float:right;border:0;">
                 <span class="heypub-icons dashicons dashicons-plus-alt"></span>

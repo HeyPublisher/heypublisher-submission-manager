@@ -1,28 +1,41 @@
 /* Loudlever Common Styles */
 
-#poststuff { // this to match the WP default style
+/* Page Header */
+#poststuff {
   H3 {
     &.hndle { // default header
       font-size: $h2-fontsize;
     }
   }
 }
+/* Default Table Styling */
 TABLE {
   &.ll-plugin {
     border-collapse:collapse;
     border: $table-border;
     clear: none;
-    TR {
-      &.header {
-        font-size: $th-fontsize;
-        border-bottom: $table-border;
-        padding: 3px;
-        font-weight:bold;
+    THEAD {
+      TR {
+        background-color: $th-background-color;
+        TH {
+          font-size: $th-fontsize;
+          font-weight:bold;
+        }
       }
     }
   }
 }
 
+/* Primary Content Body */
+.has-right-sidebar {
+  #post-body-content {
+    &.ll-plugin {
+      margin-right: 240px;
+    }
+  }
+}
+
+/* Side Bar */
 .inner-sidebar {
   &.ll-plugin {
     width: 220px;
@@ -35,15 +48,6 @@ TABLE {
     }
   }
 }
-
-.has-right-sidebar {
-  #post-body-content {
-    &.ll-plugin {
-      margin-right: 240px;
-    }
-  }
-}
-
 .ll-inside {
   P {
     padding-left: 12px;
