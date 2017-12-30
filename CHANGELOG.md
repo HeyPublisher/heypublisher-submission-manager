@@ -1,5 +1,12 @@
 ## Changelog
 
+### 2.7.0
++ Released: ???
++ Fixed some styling issues on the Submissions page
++ Removed code that's no longer used
++ Migrated all stylesheet generation to sass
++ Fixed javascript error that was preventing editor notes input field from displaying.  You can now send notes to writers again!!
+
 ### 2.6.3
 + Released: 2017-12-20
 + Fixed bug which prevented rendering in PHP 7.x

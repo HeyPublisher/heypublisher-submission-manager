@@ -61,6 +61,7 @@
     }
   };
   // Toggle the editor notes in side-bar
+  // TODO : consolidate all of our toggle functions
   HeyPublisher.toggleEditorNotes = function(ex) {
     event.preventDefault();
     if (ex == 'show') {
@@ -75,5 +76,40 @@
     }
     return false;
   };
+
+  var domain = null;
+  var editor_id = null;
+  var token = null;
+  var submission_id = null;
+
+  HeyPublisher.ajax_init = function(d,e,t,s) {
+    domain    = d;
+    editor_id = e;
+    token     = t;
+    submission_id = s;
+    return true;
+  };
+
+  HeyPublisher.vote = function(vote) {
+    console.log('editor ', editor_id, ' is voting: ',vote);
+    var url = domain + '/submissions/' + submission_id + '/votes'
+    var data = {'vote': vote, 'editor_id': editor_id};
+    // TODO: Add timeout if server is down
+    $.ajax (
+      {
+        type: "POST",
+        url: url,
+        dataType: 'json',
+        headers: {
+          "Authorization": "Basic " + token
+        },
+        data: data,
+        success: function (){
+          alert('Thanks for your vote!');
+        }
+      }
+    );
+    return false;
+  }
 
 }( window.HeyPublisher = window.HeyPublisher || {}, jQuery ));

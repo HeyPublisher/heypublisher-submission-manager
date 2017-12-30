@@ -242,18 +242,26 @@ EOF;
           $email = sprintf('<a href="mailto:%s?subject=Your%%20submission%%20to%%20%s" target="_blank">%s</a>',$sub->author->email,get_bloginfo('name'),$sub->author->email);
         }
         $hblock = $this->submission_history_block($id);
+        $editor_id = get_current_user_id();
+        $token = $this->api->authentication_token();
+        $domain = HEYPUB_API;
         $html .= <<<EOF
+          <script type='text/javascript'>
+            jQuery(function() {
+              HeyPublisher.ajax_init('{$domain}','{$editor_id}','{$token}','{$id}');
+            });
+          </script>
           <h2 class='heypub-sub-title'>
             "{$sub->title}" :
             {$sub->category} by {$sub->author->first_name} {$sub->author->last_name}
             <small>({$email})</small>
           </h2>
           <div>
-            <!-- Editor Voiting -->
-            <a href="#" onclick="alert('no vote')" title="No :(">
+            <!-- Editor Voting -->
+            <a href="#" onclick="HeyPublisher.vote('down')" title="No :(">
               <span class="heypub-icons dashicons dashicons-thumbs-down vote"></span>
             </a>
-            <a href="#" onclick="alert('yes vote')" title="Yes!">
+            <a href="#" onclick="HeyPublisher.vote('up')" title="Yes!">
               <span class="heypub-icons dashicons dashicons-thumbs-up vote"></span>
             </a>
 
