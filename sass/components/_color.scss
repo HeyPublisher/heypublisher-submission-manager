@@ -1,0 +1,20 @@
+// Utility Color Classes
+$silver: (
+  "base":       #C0C0C0,
+  "lighten-1":  #D3D3D3,
+  "darken-1":   #A9A9A9
+);
+$colors: (
+  "silver": $silver
+);
+
+@function color($color, $type) {
+  @if map-has-key($colors, $color) {
+    $curr_color: map-get($colors, $color);
+    @if map-has-key($curr_color, $type) {
+      @return map-get($curr_color, $type);
+    }
+  }
+  @warn "Unknown `#{name}` in $colors.";
+  @return null;
+}
