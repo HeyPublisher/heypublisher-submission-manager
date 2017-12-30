@@ -1,7 +1,7 @@
 // Javascript library for HeyPublisher Wordpress plugin
 //
 // Copyright (c) 2010-2014 Loudlever, Inc.
-// Copyright (c) 2014-2017 Richard Luck
+// Copyright (c) 2014-2017 Richard Luck, HeyPublisher
 // Author - Richard Luck <richard@heypublisher.com>
 (function( HeyPublisher, $, undefined ) {
 
@@ -59,6 +59,21 @@
       $('#post_bio_' + id).show();
       $(span).removeClass('dashicons-plus-alt').addClass('dashicons-dismiss');
     }
+  };
+  // Toggle the editor notes in side-bar
+  HeyPublisher.toggleEditorNotes = function(ex) {
+    event.preventDefault();
+    if (ex == 'show') {
+      // hide it
+      $('#editor_notes_off').hide();
+      $('#editor_notes_on').show();
+    } else {
+      // default is to hide
+      $('#editor_notes_on').hide();
+      $('#heypub_ed_note').value = '';
+      $('#editor_notes_off').show();
+    }
+    return false;
   };
 
 }( window.HeyPublisher = window.HeyPublisher || {}, jQuery ));

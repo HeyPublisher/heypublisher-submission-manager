@@ -67,13 +67,10 @@ EOF;
   public function editor_note_text_area() {
     $base = HEY_BASE_URL;
     $str = <<<EOF
-<div id='editor_notes_off'><a href='#' onclick="
-  $('editor_notes_off').hide();
-  $('editor_notes_on').show();
-  return false;">+ Include a Note to Writer</a>
+<div id='editor_notes_off'><a href='#' onclick="HeyPublisher.toggleEditorNotes('show')">+ Include a Note to Writer</a>
 </div>
 <div id='editor_notes_on' style='display:none;'>
-  <a id='heypub_ed_note_close' href='#' onclick="$('editor_notes_on').hide();$('heypub_ed_note').value = '';$('editor_notes_off').show();return false;">- remove note</a>
+  <a id='heypub_ed_note_close' href='#' onclick="HeyPublisher.toggleEditorNotes('hide')">- remove note</a>
   <textarea id='heypub_ed_note' name='notes'> </textarea>
 </div>
 EOF;
