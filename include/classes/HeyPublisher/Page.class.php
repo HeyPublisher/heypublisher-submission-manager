@@ -58,7 +58,7 @@ class Page extends \Loudlever\Loudlever {
   // Consistent wrapper for classes that extend Page
   protected function page_header($title) {
     $html = <<<EOF
-    <div class="wrap">
+    <div class="wrap heypub-page">
       <h2>{$title}</h2>
 EOF;
     return $html;
