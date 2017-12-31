@@ -588,7 +588,7 @@ blockquote.heypub_summary {
   vertical-align: top; }
 
 .days_pending_warn {
-  color: orange;
+  color: #ffa500;
   font-weight: bold; }
 
 #heypub_ed_note {
@@ -646,9 +646,53 @@ blockquote.heypub_summary {
   text-decoration: none !important;
   margin-left: 5px; }
   .heypub-icons:hover {
-    color: orange; }
+    color: #ffa500; }
 
 .numeric {
   text-align: right; }
+
+.heypub-voting {
+  margin-top: 10px; }
+  .heypub-voting a {
+    vertical-align: top;
+    font-size: 36px;
+    padding: 0.3em;
+    margin: 3px;
+    border-radius: 50%;
+    border: 1px solid #CCCCCC;
+    display: inline-block;
+    color: #CCCCCC; }
+    .heypub-voting a:hover {
+      border-color: #ffa500; }
+    .heypub-voting a.vote-no.on {
+      border-color: #cc0000;
+      border-width: 2px; }
+    .heypub-voting a.vote-yes.on {
+      border-color: #009900;
+      border-width: 2px; }
+  .heypub-voting .heypub-icons {
+    font-size: 80%;
+    margin: 0; }
+    .heypub-voting .heypub-icons.vote-no {
+      position: relative;
+      left: -4px;
+      top: -2px; }
+      .heypub-voting .heypub-icons.vote-no.on {
+        color: #cc0000; }
+    .heypub-voting .heypub-icons.vote-yes {
+      position: relative;
+      top: -5px;
+      left: -4px; }
+      .heypub-voting .heypub-icons.vote-yes.on {
+        color: #009900; }
+  .heypub-voting div {
+    display: inline-block;
+    width: 85%; }
+    .heypub-voting div textarea {
+      width: 80%;
+      height: 45px;
+      border-radius: 5px; }
+    .heypub-voting div input[type=submit] {
+      vertical-align: top; }
 
 /*# sourceMappingURL=heypublisher.css.map */

@@ -91,21 +91,32 @@
   };
 
   HeyPublisher.vote = function(vote) {
-    console.log('editor ', editor_id, ' is voting: ',vote);
+    event.preventDefault();
     var url = domain + '/submissions/' + submission_id + '/votes'
     var data = {'vote': vote, 'editor_id': editor_id};
-    // TODO: Add timeout if server is down
     $.ajax (
       {
         type: "POST",
         url: url,
+        timeout: 8000,
         dataType: 'json',
         headers: {
           "Authorization": "Basic " + token
         },
         data: data,
         success: function (){
-          alert('Thanks for your vote!');
+          // ensure the notes are visible
+          $('#heypub-notes').show();
+          if (vote == 'up') {
+            $('.vote-yes').addClass('on');
+            $('.vote-no').removeClass('on');
+          } else {
+            $('.vote-no').addClass('on');
+            $('.vote-yes').removeClass('on');
+          }
+        },
+        error: function() {
+          alert('Unable to process your vote.  Please try again.');
         }
       }
     );

@@ -73,7 +73,7 @@ blockquote {
   vertical-align:top;
 }
 .days_pending_warn {
-  color: orange;
+  color: $highlight;
   font-weight: bold;
 }
 #heypub_ed_note {
@@ -131,9 +131,71 @@ float: right;
   text-decoration: none !important;
   margin-left: 5px;
   &:hover {
-    color: orange;
+    color: $highlight;
   }
 }
 .numeric { // wordcount in table view
   text-align:right;
+}
+.heypub-voting {
+  margin-top: 10px;
+
+  a {
+    vertical-align: top;
+    font-size: $vote-button-fontsize;
+    padding: 0.3em;
+    margin: 3px;
+    border-radius: 50%;
+    border: $vote-button;
+    display: inline-block;
+    color: $vote-button-color;
+    &:hover {
+      border-color: $highlight;
+    }
+    &.vote-no {
+      &.on {
+        border-color: $vote-no-color;
+        border-width: 2px;
+      }
+    }
+    &.vote-yes {
+      &.on {
+        border-color: $vote-yes-color;
+        border-width: 2px;
+      }
+    }
+  }
+  .heypub-icons {
+    font-size: 80%;
+    margin: 0;
+
+    &.vote-no {
+      position: relative;
+      left: -4px;
+      top: -2px;
+      &.on {
+        color: $vote-no-color;
+      }
+    }
+    &.vote-yes {
+      position: relative;
+      top: -5px;
+      left: -4px;
+      &.on {
+        color: $vote-yes-color;
+      }
+    }
+  }
+  div {
+    display: inline-block;
+    width: 85%;
+    textarea {
+      width: 80%;
+      height: 45px;
+      border-radius: 5px;
+    }
+    input[type=submit] {
+      vertical-align:top;
+    }
+  }
 }

@@ -15,7 +15,10 @@ $table-border-color: color("silver", "base") !default;
 $th-background-color: color("silver", "lighten-2") !default;
 $h3-border-color: color("silver", "lighten-2") !default;
 $header-fontcolor: color("silver", "darken-4") !default;
-
+$vote-button-color: color("silver", "lighten-1") !default;
+$highlight:  color("orange", "base") !default;
+$vote-yes-color: color("green", "base") !default;
+$vote-no-color: color("red", "base") !default;
 
 //  2. Typography
 // ==========================================================================
@@ -23,8 +26,10 @@ $h2-fontsize: 1.6em !default;
 $h3-fontsize: 1.2em !default;
 $h4-fontsize: 1.1em !default;
 $th-fontsize: 1.1em !default;
+$vote-button-fontsize: 36px !default;
 
 // 3. Borders
 // ==========================================================================
 $table-border: 1px solid $table-border-color !default;
 $h3-border: 1px solid $h3-border-color !default;
+$vote-button: 1px solid $vote-button-color !default;

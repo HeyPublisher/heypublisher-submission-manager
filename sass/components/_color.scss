@@ -9,8 +9,26 @@ $silver: (
   "lighten-1":  #CCCCCC,
   "lighten-2":  #E6E6E6
 );
+// http://coloreminder.com/009900
+$green: (
+  'darken-1':   #006600,
+  'base':       #009900
+);
+// http://coloreminder.com/cc0000
+$red: (
+  'darken-1':   990000,
+  'base':       #cc0000,
+  'lighten-1':  #ff0000
+);
+$orange: (
+  'base':       #ffa500
+);
+
 $colors: (
-  "silver": $silver
+  'green'   : $green,
+  'orange'  : $orange,
+  'red'     : $red,
+  'silver'  : $silver,
 );
 
 @function color($color, $type) {

@@ -256,17 +256,32 @@ EOF;
             {$sub->category} by {$sub->author->first_name} {$sub->author->last_name}
             <small>({$email})</small>
           </h2>
-          <div>
-            <!-- Editor Voting -->
-            <a href="#" onclick="HeyPublisher.vote('down')" title="No :(">
-              <span class="heypub-icons dashicons dashicons-thumbs-down vote"></span>
+          <!-- Notes and Votes setter -->
+          <div class='heypub-voting'>
+            <a href="#" onclick="HeyPublisher.vote('down')" title="No :(" class='vote-no'>
+              <span class="heypub-icons dashicons dashicons-thumbs-down vote-no"></span>
             </a>
-            <a href="#" onclick="HeyPublisher.vote('up')" title="Yes!">
-              <span class="heypub-icons dashicons dashicons-thumbs-up vote"></span>
+            <a href="#" onclick="HeyPublisher.vote('up')" title="Yes!" class='vote-yes'>
+              <span class="heypub-icons dashicons dashicons-thumbs-up vote-yes"></span>
             </a>
-
-            Vote for this submission
+            <div>
+              <textarea id='heypub_editor_note' placeholder="Share your thoughts on this submission..."></textarea>
+              <button class="heypub-button button-primary" onclick="alert('foo')">Save Note</button>
+            </div>
           </div>
+          <!-- Notes and Votes Display - only shown after editor votes -->
+          <div id='heypub-notes' style='display:none;'>
+            <h3>Notes and Votes
+              <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub-notes-detail');" title="View all Notes" style="float:right;border:0;">
+                <span class="heypub-icons dashicons dashicons-plus-alt"></span>
+              </a>
+            </h3>
+            <div id='heypub-notes-detail' style='display:none;'>
+              Notes go here
+            </div>
+          </div>
+
+          <!-- Summary -->
           <div>
             <h3>Summary
               <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub_summary');" title="View summary" style="float:right;border:0;">
@@ -400,7 +415,7 @@ EOF;
     } else {
       $bio = '<i>None provided</i>';
     }
-    $html = sprintf('<dt>Author Bio:</dt><dd>%s</dd>',$bio);
+    $html = sprintf('<dt>Author Bio:</dt><dd>%s &nbsp;</dd>',$bio);
     return $html;
   }
   private function submission_summary($sub) {
