@@ -692,7 +692,10 @@ blockquote.heypub_summary {
       width: 80%;
       height: 45px;
       border-radius: 5px; }
-    .heypub-voting div input[type=submit] {
-      vertical-align: top; }
+
+#heypub_note_submit {
+  vertical-align: top; }
+  #heypub_note_submit:active {
+    vertical-align: top; }
 
 /*# sourceMappingURL=heypublisher.css.map */

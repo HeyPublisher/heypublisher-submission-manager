@@ -194,8 +194,11 @@ float: right;
       height: 45px;
       border-radius: 5px;
     }
-    input[type=submit] {
-      vertical-align:top;
-    }
+  }
+}
+#heypub_note_submit {
+  vertical-align:top;
+  &:active {
+    vertical-align:top;
   }
 }

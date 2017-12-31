@@ -266,7 +266,7 @@ EOF;
             </a>
             <div>
               <textarea id='heypub_editor_note' placeholder="Share your thoughts on this submission..."></textarea>
-              <button class="heypub-button button-primary" onclick="alert('foo')">Save Note</button>
+              <button id='heypub_note_submit' class="heypub-button button-primary">Save Note</button>
             </div>
           </div>
           <!-- Notes and Votes Display - only shown after editor votes -->

@@ -87,6 +87,13 @@
     editor_id = e;
     token     = t;
     submission_id = s;
+    console.log('in ajax_init');
+
+    $('#heypub_note_submit').on('click', function() {
+      console.log('i have been clicked');
+      HeyPublisher.note();
+    });
+
     return true;
   };
 
@@ -122,5 +129,40 @@
     );
     return false;
   }
+
+  HeyPublisher.note = function() {
+    event.preventDefault();
+    alert('I have been clicked');
+    var note = $('#heypub_editor_note').val();
+    if (note == '') {
+      alert('Please provide a note and try again.');
+      return false;
+    }
+    var url = domain + '/submissions/' + submission_id + '/notes'
+    var data = {'note': note, 'editor_id': editor_id};
+    $.ajax (
+      {
+        type: "POST",
+        url: url,
+        timeout: 8000,
+        dataType: 'json',
+        headers: {
+          "Authorization": "Basic " + token
+        },
+        data: data,
+        success: function (){
+          // TODO: add the note to the top of the list of notes
+          // Clean out the existing note:
+          $('#heypub_editor_note').val('');
+          alert('Your note has been saved.')
+        },
+        error: function() {
+          alert('Unable to save your note.  Please try again later.');
+        }
+      }
+    );
+    return false;
+  }
+
 
 }( window.HeyPublisher = window.HeyPublisher || {}, jQuery ));
