@@ -34,5 +34,28 @@ class Submission extends \HeyPublisher\API {
     $this->logger->debug(sprintf("get_submission_history():\n\tResults: %s",print_r($result,1)));
     return $result;
   }
+
+  // Get the votes for this editor - which will inform whether to pre-style vote buttons and display block
+  // @since 2.7.0
+  public function get_submission_votes($id,$ed_id){
+    $path = sprintf('submissions/%s/votes',$id);
+    $this->logger->debug("calling get()");
+    $opts = array('editor_id'=>$ed_id);
+    $result = $this->get($path,$opts);
+    $this->logger->debug(sprintf("get_submission_votes():\n\tResults: %s",print_r($result,1)));
+    return $result;
+  }
+
+  // Get the notes for this submission
+  // @since 2.7.0
+  public function get_submission_notes($id){
+    $path = sprintf('submissions/%s/notes',$id);
+    $this->logger->debug("calling get()");
+    $opts = array('order'=>'desc');
+    $result = $this->get($path,$opts);
+    $this->logger->debug(sprintf("get_submission_notes():\n\tResults: %s",print_r($result,1)));
+    return $result;
+  }
+
 }
 ?>

@@ -89,9 +89,16 @@
     submission_id = s;
     console.log('in ajax_init');
 
-    $('#heypub_note_submit').on('click', function() {
-      console.log('i have been clicked');
+    $('#heypub-note-submit').on('click', function() {
       HeyPublisher.note();
+    });
+
+    $('#vote-yes').on('click', function() {
+      HeyPublisher.vote('up');
+    });
+
+    $('#vote-no').on('click', function() {
+      HeyPublisher.vote('down');
     });
 
     return true;
@@ -132,7 +139,6 @@
 
   HeyPublisher.note = function() {
     event.preventDefault();
-    alert('I have been clicked');
     var note = $('#heypub_editor_note').val();
     if (note == '') {
       alert('Please provide a note and try again.');
@@ -154,7 +160,7 @@
           // TODO: add the note to the top of the list of notes
           // Clean out the existing note:
           $('#heypub_editor_note').val('');
-          alert('Your note has been saved.')
+          alert('Your note has been saved.');
         },
         error: function() {
           alert('Unable to save your note.  Please try again later.');

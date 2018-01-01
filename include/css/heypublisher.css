@@ -693,9 +693,9 @@ blockquote.heypub_summary {
       height: 45px;
       border-radius: 5px; }
 
-#heypub_note_submit {
+#heypub-note-submit {
   vertical-align: top; }
-  #heypub_note_submit:active {
+  #heypub-note-submit:active {
     vertical-align: top; }
 
 /*# sourceMappingURL=heypublisher.css.map */

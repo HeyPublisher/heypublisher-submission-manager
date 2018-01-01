@@ -17,6 +17,7 @@ class Submissions extends \HeyPublisher\Page {
   var $disallowed_states = array('withdrawn','published','rejected');
   var $sub_class = null;
   var $api = null;
+  var $has_voted = false;
 
   public function __construct() {
   	parent::__construct();
@@ -245,6 +246,12 @@ EOF;
         $editor_id = get_current_user_id();
         $token = $this->api->authentication_token();
         $domain = HEYPUB_API;
+        $votes = $this->get_votes($id,$editor_id);
+        $vote_buttons = $this->vote_buttons_block($votes);
+        $note_vote = 'display:none;';
+        if ($this->has_voted) { $note_vote = ''; }
+        $notes_block = $this->get_notes($id,$editor_id);
+
         $html .= <<<EOF
           <script type='text/javascript'>
             jQuery(function() {
@@ -258,26 +265,21 @@ EOF;
           </h2>
           <!-- Notes and Votes setter -->
           <div class='heypub-voting'>
-            <a href="#" onclick="HeyPublisher.vote('down')" title="No :(" class='vote-no'>
-              <span class="heypub-icons dashicons dashicons-thumbs-down vote-no"></span>
-            </a>
-            <a href="#" onclick="HeyPublisher.vote('up')" title="Yes!" class='vote-yes'>
-              <span class="heypub-icons dashicons dashicons-thumbs-up vote-yes"></span>
-            </a>
+            {$vote_buttons}
             <div>
               <textarea id='heypub_editor_note' placeholder="Share your thoughts on this submission..."></textarea>
-              <button id='heypub_note_submit' class="heypub-button button-primary">Save Note</button>
+              <button id='heypub-note-submit' class="heypub-button button-primary">Save Note</button>
             </div>
           </div>
           <!-- Notes and Votes Display - only shown after editor votes -->
-          <div id='heypub-notes' style='display:none;'>
+          <div id='heypub-notes' style='{$note_vote}'>
             <h3>Notes and Votes
               <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub-notes-detail');" title="View all Notes" style="float:right;border:0;">
                 <span class="heypub-icons dashicons dashicons-plus-alt"></span>
               </a>
             </h3>
             <div id='heypub-notes-detail' style='display:none;'>
-              Notes go here
+              {$notes_block}
             </div>
           </div>
 
@@ -407,7 +409,65 @@ EOF;
     return $html;
 
   }
+  // Get the notes for this submission
+  //  @since 2.7.0
+  private function get_notes($id,$editor_id) {
+    $notes = $this->api->get_submission_notes($id);
+    if ($notes['meta']['total'] == 0) {
+      $html = "<p class='heypub-notes not-found'>No notes found for this submission.</p>";
+    } else {
+      $html = "<dl class='heypub-notes'>";
+      foreach($notes['notes'] as $note) {
+        $class = '';
+        if ($note['editor_id'] == $editor_id) {
+          $class = "class='requested'"; // TODO: Change this!
+        }
+        $html .= <<<EOF
+          <dt {$class}>Editor : Date</dt>
+          <dd {$class}>{$note['note']}</dd>
+EOF;
+      }
+      $html .= "</dl>";
+    }
+    return $html;
+  }
 
+  // Fetch the votes and register the vote as a class var for later reference.
+  // @since  2.7.0
+  private function get_votes($id,$editor_id){
+    $votes = $this->api->get_submission_votes($id,$editor_id);
+    if ($votes['meta']['returned'] == 1) {
+      $this->has_voted = $votes['votes'][0]['vote'];
+    }
+    // $this->xml->log("Vote is registerd as: {$this->has_voted}");
+    return $votes;
+  }
+
+  // Formats the voting button block
+  // @since  2.7.0
+  private function vote_buttons_block($votes) {
+    $vote_yes = '';
+    $vote_no = '';
+    if ($this->has_voted) {
+      $this->xml->log("setting vote button as: {$this->has_voted}");
+      // need to figure out which vote this editor made
+      if ($this->has_voted == 'up') {
+        $vote_yes = 'on';
+      } else {
+        $vote_no = 'on';
+      }
+    }
+    $this->xml->log("vote vars: '{$vote_yes}' : '{$vote_no}' ");
+    $html .= <<<EOF
+      <a id='vote-no' href="#" title="No :(" class='vote-no {$vote_no}'>
+        <span class="heypub-icons dashicons dashicons-thumbs-down vote-no {$vote_no}"></span>
+      </a>
+      <a  id='vote-yes' href="#" title="Yes!" class='vote-yes {$vote_yes}'>
+        <span class="heypub-icons dashicons dashicons-thumbs-up vote-yes {$vote_yes}"></span>
+      </a>
+EOF;
+    return $html;
+  }
 
   private function author_bio($sub) {
     if (FALSE != $sub->author->bio) {
