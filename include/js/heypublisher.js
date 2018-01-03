@@ -120,14 +120,10 @@
         data: data,
         success: function (){
           // ensure the notes are visible
-          $('#heypub-notes').show();
-          if (vote == 'up') {
-            $('.vote-yes').addClass('on');
-            $('.vote-no').removeClass('on');
-          } else {
-            $('.vote-no').addClass('on');
-            $('.vote-yes').removeClass('on');
-          }
+          // TODO: conver this to promise chain
+          $('#heypub_vote_sumary').show();
+          styleVotes(vote);
+          updateVotesDisplay(vote);
         },
         error: function() {
           alert('Unable to process your vote.  Please try again.');
@@ -135,7 +131,50 @@
       }
     );
     return false;
-  }
+  };
+  function styleVotes(vote) {
+    if (vote == 'up') {
+      $('.vote-yes').addClass('on');
+      $('.vote-no').removeClass('on');
+    } else {
+      $('.vote-no').addClass('on');
+      $('.vote-yes').removeClass('on');
+    }
+    return true;
+  };
+
+  function updateVotesDisplay(vote) {
+    console.log('in updateVotesDisplay');
+    var url = domain + '/submissions/' + submission_id + '/votes'
+    var data = {'editor_id': editor_id};
+    $.ajax (
+      {
+        type: "GET",
+        url: url,
+        timeout: 8000,
+        dataType: 'json',
+        headers: {
+          "Authorization": "Basic " + token
+        },
+        data: data,
+        success: function(data){
+          console.log("we have response from query, data:", data);
+          var $up = data.meta.up;
+          var $down = data.meta.down;
+          var $votesUp =  $up + (($up == 1) ? ' vote' : ' votes');
+          var $votesDown =  $down + (($down == 1) ? ' vote' : ' votes');
+
+          $('#votes-up-total').text($votesUp);
+          $('#votes-down-total').text($votesDown);
+        },
+        error: function() {
+          alert('Unable to fetch the latest votes.  Try reloading the page.');
+        }
+      }
+    );
+    return true;
+  };
+
 
   HeyPublisher.note = function() {
     event.preventDefault();

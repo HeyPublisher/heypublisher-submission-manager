@@ -501,6 +501,9 @@ SPAN.heypub_empty {
   margin-left: 2px !important;
   margin-top: 5px !important; }
 
+a:focus {
+  box-shadow: none; }
+
 #heypub_show_genres_list {
   margin-left: 50px;
   width: 600px; }
@@ -664,10 +667,10 @@ blockquote.heypub_summary {
     color: #CCCCCC; }
     .heypub-voting a:hover {
       border-color: #ffa500; }
-    .heypub-voting a.vote-no.on {
+    .heypub-voting a.vote-no.always-on, .heypub-voting a.vote-no.on {
       border-color: #cc0000;
       border-width: 2px; }
-    .heypub-voting a.vote-yes.on {
+    .heypub-voting a.vote-yes.always-on, .heypub-voting a.vote-yes.on {
       border-color: #009900;
       border-width: 2px; }
   .heypub-voting .heypub-icons {
@@ -677,13 +680,13 @@ blockquote.heypub_summary {
       position: relative;
       left: -4px;
       top: -2px; }
-      .heypub-voting .heypub-icons.vote-no.on {
+      .heypub-voting .heypub-icons.vote-no.always-on, .heypub-voting .heypub-icons.vote-no.on {
         color: #cc0000; }
     .heypub-voting .heypub-icons.vote-yes {
       position: relative;
       top: -5px;
       left: -4px; }
-      .heypub-voting .heypub-icons.vote-yes.on {
+      .heypub-voting .heypub-icons.vote-yes.always-on, .heypub-voting .heypub-icons.vote-yes.on {
         color: #009900; }
   .heypub-voting div {
     display: inline-block;
@@ -692,10 +695,22 @@ blockquote.heypub_summary {
       width: 80%;
       height: 45px;
       border-radius: 5px; }
+  .heypub-voting.heypub-vote_summary {
+    margin: 0 auto;
+    text-align: center; }
+    .heypub-voting.heypub-vote_summary a {
+      vertical-align: middle; }
 
 #heypub-note-submit {
   vertical-align: top; }
   #heypub-note-submit:active {
     vertical-align: top; }
+
+.heypub-notes th:first-child {
+  width: 15%; }
+.heypub-notes th:nth-child(2) {
+  width: 25%; }
+.heypub-notes tr.mine td {
+  font-weight: bold; }
 
 /*# sourceMappingURL=heypublisher.css.map */

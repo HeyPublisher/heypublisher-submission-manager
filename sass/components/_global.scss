@@ -153,6 +153,11 @@ SPAN {
   margin-top:5px !important;
 }
 
+a {
+  &:focus {
+    box-shadow: none;
+  }
+}
 // #message.heypub {
 //   margin:0;
 //   opacity: 1;

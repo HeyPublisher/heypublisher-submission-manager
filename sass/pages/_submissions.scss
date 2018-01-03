@@ -153,12 +153,14 @@ float: right;
       border-color: $highlight;
     }
     &.vote-no {
+      &.always-on,
       &.on {
         border-color: $vote-no-color;
         border-width: 2px;
       }
     }
     &.vote-yes {
+      &.always-on,
       &.on {
         border-color: $vote-yes-color;
         border-width: 2px;
@@ -173,6 +175,7 @@ float: right;
       position: relative;
       left: -4px;
       top: -2px;
+      &.always-on,
       &.on {
         color: $vote-no-color;
       }
@@ -181,6 +184,7 @@ float: right;
       position: relative;
       top: -5px;
       left: -4px;
+      &.always-on,
       &.on {
         color: $vote-yes-color;
       }
@@ -195,10 +199,43 @@ float: right;
       border-radius: 5px;
     }
   }
+
+  // Vote summary override
+  &.heypub-vote_summary {
+    margin: 0 auto;
+    // width: 50%;
+    text-align: center;
+    a {
+      vertical-align:middle;
+
+    }
+  }
+
 }
 #heypub-note-submit {
   vertical-align:top;
   &:active {
     vertical-align:top;
+  }
+}
+
+.heypub-notes {
+  th {
+    &:first-child {
+      width:15%;
+    }
+    &:nth-child(2) {
+      width:25%;
+    }
+  }
+  tr {
+    &.mine {
+      // background-color: #FFF6BF !important;
+      // border-color: #FFD324;
+      // color:#514721 !important;
+      td {
+        font-weight: bold;
+      }
+    }
   }
 }
