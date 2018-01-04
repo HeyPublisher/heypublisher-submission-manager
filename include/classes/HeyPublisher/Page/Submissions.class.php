@@ -255,7 +255,7 @@ EOF;
         $html .= <<<EOF
           <script type='text/javascript'>
             jQuery(function() {
-              HeyPublisher.ajax_init('{$domain}','{$editor_id}','{$token}','{$id}');
+              HeyPublisher.ajax_init('{$domain}','{$editor_id}','{$token}','{$id}','{$this->xml->debug}');
             });
           </script>
           <h2 class='heypub-sub-title'>
@@ -414,27 +414,27 @@ EOF;
   //  @since 2.7.0
   private function get_notes($id,$editor_id) {
     $notes = $this->api->get_submission_notes($id);
-    if ($notes['meta']['total'] == 0) {
-      $html = "<p class='heypub-notes not-found'>No notes found for this submission.</p>";
-    } else {
-      // TODO: Display this as tabular data:
-      $html =<<<EOF
-      <table class="widefat post fixed ll-plugin heypub-notes" cellspacing="0">
-        <thead>
-          <tr>
-            <th>Editor</th>
-            <th>Date</th>
-            <th>Note</th>
-          </tr>
-        </thead>
-        <tbody>
+    $html =<<<EOF
+    <table id='heypub-notes-list' class="widefat post fixed ll-plugin heypub-notes" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Editor</th>
+          <th>Date</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
 EOF;
+    if ($notes['meta']['total'] == 0) {
+      $html .= "<tr><td colspan='3' class='heypub-notes not-found'>No notes found for this submission.</td></tr>";
+    } else {
       foreach($notes['notes'] as $note) {
         $class = '';
+        $editor = $this->get_editor_object($note['editor_id']);
         if ($note['editor_id'] == $editor_id) {
           $class = "class='mine'";
+          $editor = 'You';
         }
-        $editor = $this->get_editor_object($note['editor_id']);
         $date = $this->get_formatted_date($note['date']);
         $html .= <<<EOF
           <tr {$class}>
@@ -444,8 +444,8 @@ EOF;
           </tr>
 EOF;
       }
-      $html .= "</tbody></table>";
     }
+    $html .= "</tbody></table>";
     return $html;
   }
 

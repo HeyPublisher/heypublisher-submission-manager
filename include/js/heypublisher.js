@@ -5,6 +5,15 @@
 // Author - Richard Luck <richard@heypublisher.com>
 (function( HeyPublisher, $, undefined ) {
 
+
+  function init_console(d) {
+    if (d != 1) {
+      var console = {};
+      console.log = function(){};
+      window.console = console;
+    }
+  };
+
   HeyPublisher.clickCheck = function(src,dest) {
     var elem = $('#' + dest);
     console.log("src: ", $(src).attr('checked'), ": dest: ", dest);
@@ -81,12 +90,14 @@
   var editor_id = null;
   var token = null;
   var submission_id = null;
+  // var debug = false;
 
-  HeyPublisher.ajax_init = function(d,e,t,s) {
+  HeyPublisher.ajax_init = function(d,e,t,s,b) {
     domain    = d;
     editor_id = e;
     token     = t;
     submission_id = s;
+    init_console(b);
     console.log('in ajax_init');
 
     $('#heypub-note-submit').on('click', function() {
@@ -199,6 +210,10 @@
           // TODO: add the note to the top of the list of notes
           // Clean out the existing note:
           $('#heypub_editor_note').val('');
+          var row = $('<tr></tr>');
+          row.addClass('mine');
+          var cols = $('<td>You</td><td>Just now</td><td>'+note+'</td>');
+          row.append(cols).prependTo('#heypub-notes-list');
           alert('Your note has been saved.');
         },
         error: function() {
