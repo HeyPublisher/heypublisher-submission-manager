@@ -42,7 +42,7 @@
     return false;
   };
   HeyPublisher.clickToggle  = function(elem,div) {
-    event.preventDefault();
+    div = '#'+div;
     var span = $(elem).find('span')[0];
     if ($(div).is(":visible")) {
       // hide it
@@ -92,31 +92,43 @@
   var submission_id = null;
   // var debug = false;
 
-  HeyPublisher.ajax_init = function(d,e,t,s,b) {
+  HeyPublisher.ajaxInit = function(d,e,t,s,b) {
     domain    = d;
     editor_id = e;
     token     = t;
     submission_id = s;
     init_console(b);
-    console.log('in ajax_init');
-
-    $('#heypub-note-submit').on('click', function() {
-      HeyPublisher.note();
-    });
-
-    $('#vote-yes').on('click', function() {
-      HeyPublisher.vote('up');
-    });
-
-    $('#vote-no').on('click', function() {
-      HeyPublisher.vote('down');
-    });
-
+    console.log('in ajaxInit');
+    bindButtons();
     return true;
   };
 
+  // Bind our listening events
+  function bindButtons() {
+    console.log("binding buttons...");
+
+    $('#heypub-note-submit').click(function(event) {
+      event.preventDefault();
+      HeyPublisher.note();
+    });
+
+    $.each($('[data-vote]'), function(idx,val) {
+      $(val).click(function(event) {
+        event.preventDefault();
+        HeyPublisher.vote($(val).data('vote'));
+      })
+    });
+
+    $.each($('[data-toggle]'), function(idx,val) {
+      $(val).click(function(event) {
+        event.preventDefault();
+        HeyPublisher.clickToggle(this,$(val).data('toggle'));
+      })
+    });
+  };
+
   HeyPublisher.vote = function(vote) {
-    event.preventDefault();
+    console.log("vote = " + vote);
     var url = domain + '/submissions/' + submission_id + '/votes'
     var data = {'vote': vote, 'editor_id': editor_id};
     $.ajax (
@@ -188,7 +200,6 @@
 
 
   HeyPublisher.note = function() {
-    event.preventDefault();
     var note = $('#heypub_editor_note').val();
     if (note == '') {
       alert('Please provide a note and try again.');

@@ -255,7 +255,7 @@ EOF;
         $html .= <<<EOF
           <script type='text/javascript'>
             jQuery(function() {
-              HeyPublisher.ajax_init('{$domain}','{$editor_id}','{$token}','{$id}','{$this->xml->debug}');
+              HeyPublisher.ajaxInit('{$domain}','{$editor_id}','{$token}','{$id}','{$this->xml->debug}');
             });
           </script>
           <h2 class='heypub-sub-title'>
@@ -274,7 +274,7 @@ EOF;
           <!-- Notes and Votes Display - only shown after editor votes -->
           <div id='heypub-notes' style=''>
             <h3>Notes and Votes
-              <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub-notes-detail');" title="View all Notes" style="float:right;border:0;">
+              <a data-toggle='heypub-notes-detail' href="#" title="View all Notes" style="float:right;border:0;">
                 <span class="heypub-icons dashicons dashicons-plus-alt"></span>
               </a>
             </h3>
@@ -287,7 +287,7 @@ EOF;
           <!-- Summary -->
           <div>
             <h3>Summary
-              <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub_summary');" title="View summary" style="float:right;border:0;">
+              <a data-toggle='heypub_summary' href="#" title="View summary" style="float:right;border:0;">
                 <span class="heypub-icons dashicons dashicons-plus-alt"></span>
               </a>
             </h3>
@@ -301,7 +301,7 @@ EOF;
           </div>
           <div>
             <h3>History
-              <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub_history');" title="View history" style="float:right;border:0;">
+              <a data-toggle='heypub_history' href="#" title="View history" style="float:right;border:0;">
                 <span class="heypub-icons dashicons dashicons-plus-alt"></span>
               </a>
             </h3>
@@ -469,10 +469,10 @@ EOF;
     if ($this->has_voted) { $display_votes = ''; }
     $html .= <<<EOF
       <div id='heypub_vote_sumary' class='heypub-voting heypub-vote_summary' style='{$display_votes}'>
-        <a id='vote-no' href="#" title="No :(" class='vote-no always-on'>
+        <a href="#" title="No :(" class='vote-no always-on'>
           <span class="heypub-icons dashicons dashicons-thumbs-down vote-no always-on"></span>
         </a> <span id='votes-down-total'>{$votes['meta']['down']} {$down}</span>
-        <a id='vote-yes' href="#" title="Yes!" class='vote-yes always-on'>
+        <a href="#" title="Yes!" class='vote-yes always-on'>
           <span class="heypub-icons dashicons dashicons-thumbs-up vote-yes always-on"></span>
         </a> <span id='votes-up-total'> {$votes['meta']['up']} {$up}</span>
       </div>
@@ -496,10 +496,10 @@ EOF;
     }
     $this->xml->log("vote vars: '{$vote_yes}' : '{$vote_no}' ");
     $html .= <<<EOF
-      <a id='vote-no' href="#" title="No :(" class='vote-no {$vote_no}'>
+      <a data-vote='down' href="#" title="No :(" class='vote-no {$vote_no}'>
         <span class="heypub-icons dashicons dashicons-thumbs-down vote-no {$vote_no}"></span>
       </a>
-      <a  id='vote-yes' href="#" title="Yes!" class='vote-yes {$vote_yes}'>
+      <a data-vote='up' href="#" title="Yes!" class='vote-yes {$vote_yes}'>
         <span class="heypub-icons dashicons dashicons-thumbs-up vote-yes {$vote_yes}"></span>
       </a>
 EOF;
