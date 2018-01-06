@@ -91,6 +91,11 @@ class Submissions extends \HeyPublisher\Page {
     $cats = $this->xml->get_my_categories_as_hash();
     $publication = get_bloginfo('name');
     $html .= <<<EOF
+      <script type='text/javascript'>
+        jQuery(function() {
+          HeyPublisher.submissionListInit();
+        });
+      </script>
       <p>Below are the most recent <b><i>{$publication}</i></b> submissions sent in by your writers.</p>
       <p>Click on the title to read the submission.</p>
       <p>Click on the plus button to see the author's bio.  If they did not provide one, this will will not be avaialable.</p>
@@ -141,14 +146,14 @@ EOF;
         $toggle = '';
         if ($hash->author->bio != '') {
           $toggle = <<<EOF
-          <a href="#" onclick="HeyPublisher.toggleDetails(this)" title="View details">
+          <a data-sid='{$x}' href="#" title="View details">
             <span class="heypub-icons dashicons dashicons-plus-alt"></span>
           </a>
 EOF;
         }
 
         $html .= <<<EOF
-          <tr data-sid='{$x}' class='{$class}' valign="top">
+          <tr class='{$class}' valign="top">
             <th scope="row">{$toggle}</th>
             <td class="heypub_list_title">
               <a href="{$url}" title="Review {$hash->title}">{$hp_base->truncate($hash->title,30)}</a>
@@ -158,14 +163,14 @@ EOF;
             </td>
 EOF;
         if ($hash->author->bio != '') {
-          $authorName = sprintf("%s", $hash->author->full_name,HEY_BASE_URL);
+          $authorName = sprintf("%s", $hash->author->full_name);
           $html .= <<< EOF
             <td class="heypub_list_title">
               {$authorName}
             </td>
 EOF;
         } else {
-          $html .= sprintf("<td>%s %s</td>", $hash->author->first_name, $hash->author->last_name);
+          $html .= sprintf("<td>%s</td>", $hash->author->full_name);
         }
         $contact = $hp_base->blank();
         if (FALSE != $hash->author->email) {
@@ -392,10 +397,6 @@ EOF;
         echo $hp_base->other_publisher_link($sub->published->publisher,$sub);
         }
     ?>
-
-    <!-- Editor Voting -->
-        <br/>
-    <?php echo $this->sub_class->editor_vote_box(); ?>
 
     <?php  }  // end of conditional testing whether submission is in allowed state or not
      ?>

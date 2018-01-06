@@ -1,10 +1,9 @@
 // Javascript library for HeyPublisher Wordpress plugin
 //
 // Copyright (c) 2010-2014 Loudlever, Inc.
-// Copyright (c) 2014-2017 Richard Luck, HeyPublisher
+// Copyright (c) 2014-2018 Richard Luck, HeyPublisher
 // Author - Richard Luck <richard@heypublisher.com>
 (function( HeyPublisher, $, undefined ) {
-
 
   function init_console(d) {
     if (d != 1) {
@@ -41,6 +40,7 @@
     }
     return false;
   };
+
   HeyPublisher.clickToggle  = function(elem,div) {
     div = '#'+div;
     var span = $(elem).find('span')[0];
@@ -55,9 +55,9 @@
     return false;
   };
 
-  HeyPublisher.toggleDetails = function(elem) {
-    event.preventDefault();
-    var id = $(elem).closest('tr').data('sid');
+  function toggleBioDetails(elem) {
+    var id = $(elem).data('sid');
+    console.log('=>toggleBioDetails => id: ', id);
     var span = $(elem).find('span')[0];
     if ($('#post_bio_' + id).is(":visible")) {
       // hide it
@@ -71,16 +71,15 @@
   };
   // Toggle the editor notes in side-bar
   // TODO : consolidate all of our toggle functions
-  HeyPublisher.toggleEditorNotes = function(ex) {
-    event.preventDefault();
-    if (ex == 'show') {
+  function toggleEditorNotes(val) {
+    if (val == 'on') {
       // hide it
       $('#editor_notes_off').hide();
       $('#editor_notes_on').show();
     } else {
       // default is to hide
       $('#editor_notes_on').hide();
-      $('#heypub_ed_note').value = '';
+      $('#editor_notes_on').find('textarea')[0].value = '';
       $('#editor_notes_off').show();
     }
     return false;
@@ -92,6 +91,7 @@
   var submission_id = null;
   // var debug = false;
 
+  // External facing - initializes the JS on the Submission Details Page
   HeyPublisher.ajaxInit = function(d,e,t,s,b) {
     domain    = d;
     editor_id = e;
@@ -101,6 +101,18 @@
     console.log('in ajaxInit');
     bindButtons();
     return true;
+  };
+
+  // External facing - initializes the JS on the Submission List Page
+  HeyPublisher.submissionListInit = function() {
+    console.log('submissionListInit() => ');
+    // bind the buttons on this page
+    $.each($('[data-sid]'), function(idx,val) {
+      $(val).click(function(event) {
+        event.preventDefault();
+        toggleBioDetails($(val));
+      })
+    });
   };
 
   // Bind our listening events
@@ -125,6 +137,14 @@
         HeyPublisher.clickToggle(this,$(val).data('toggle'));
       })
     });
+
+    $.each($('[data-notes]'), function(idx,val) {
+      $(val).click(function(event) {
+        event.preventDefault();
+        toggleEditorNotes($(val).data('notes'));
+      })
+    });
+
   };
 
   HeyPublisher.vote = function(vote) {

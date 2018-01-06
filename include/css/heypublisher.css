@@ -594,12 +594,6 @@ blockquote.heypub_summary {
   color: #ffa500;
   font-weight: bold; }
 
-#heypub_ed_note {
-  height: 80px;
-  font-size: 11px;
-  width: 100%;
-  margin: 0; }
-
 #heypub_vote_buttons {
   margin: 0px auto;
   text-align: center;
@@ -621,8 +615,8 @@ blockquote.heypub_summary {
   border-color: #C6D880;
   color: #264409 !important; }
 
-#heypub_ed_note_close {
-  -moz-border-radius: 6px 6px 0 0;
+.hepub_editor_note a {
+  border-radius: 6px 6px 0 0;
   background-color: #EEEEEE;
   border-color: -moz-use-text-color silver silver;
   border: 1px solid silver;
@@ -630,14 +624,17 @@ blockquote.heypub_summary {
   color: gray;
   display: block;
   float: right;
-  font-size: 11px;
   margin-top: 0;
   padding: 0 8px;
   text-align: right;
   text-decoration: none; }
+.hepub_editor_note textarea {
+  height: 80px;
+  font-size: 11px;
+  width: 100%;
+  margin: 0; }
 
-#editor_notes_off,
-#editor_notes_on {
+.editor-note-to-author {
   margin-bottom: 10px; }
 
 #return_to_summary {
