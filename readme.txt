@@ -2,9 +2,9 @@
 Contributors: heypublisher, aguywithanidea, loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
-Requires at least: 5.0
+Requires at least: 4.0
 Tested up to: 4.9.1
-Stable Tag: 2.6.3
+Stable Tag: 2.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,16 @@ Yes - you can define custom response templates that contain whatever message you
 11. Reimport.  If a writer modifies a submission you have already 'Accepted' - you can re-import the submission into WordPress by selecting the "Reimport Into WordPress" value from the drop-down and clicking the "Update Submission" button.
 
 == Changelog ==
+
+= 2.7.0 =
+* Released: 2018-01-07
+* Fixed some styling issues on the Submissions page
+* Removed code that's no longer used
+* Fixed javascript error that was preventing editor notes input field from displaying.  You can now send notes to writers again!!
+* Fixed errors with javascript that were preventing summary and author bio expand buttons from working in some versions of Firefox.
+* Added ability for editors to store notes on submissions they're reviewing
+* Added ability for editors to vote for submissions.
+
 
 = 2.6.3 =
 * Released: 2017-12-20

@@ -1,0 +1,168 @@
+/*  Override some of the Wordpress Admin stylesheet settings */
+
+
+
+
+/* Class based settings */
+// .wrap{}
+.heypub-page {
+  h2 {
+    &.heypub-sub-title { // Submisison detail -
+      color: $header-fontcolor;
+      font-size: $h2-fontsize !important;
+      padding: 0 !important;
+    }
+    // &.error{} // inhereting from WP??
+  }
+
+  h3 {
+    font-size: $h3-fontsize;
+    color: $header-fontcolor;
+    border-top: $h3-border;
+    margin:1em 0 0.5em;
+    padding-top:0.5em;
+    &.first {
+      border-top: none;
+    }
+  }
+}
+
+/*  Uninstall Styles */
+.uninstall {
+  font-style: italic;
+  font-size: 14px; // TODO: Move to variable
+}
+
+/* Definition List Styles - only used on Submission detail page */
+DL {
+  font-size: 0.9em;
+  DT {
+    font-weight: bolder;
+    width: 90px;
+    float:left;
+    text-align:right;
+    padding-right: 1em;
+
+    &::after {
+      content: ':';
+    }
+
+    &.heypub-history {
+      width: 180px;
+      &::after {
+        content: ' : ';
+      }
+    }
+  }
+  DD {
+    padding-left: 60px;
+    &.heypub-history {
+      padding-left: 140px;
+    }
+    &.heypub-sub-status {
+      margin-bottom: 20px;
+      text-transform: capitalize;
+    }
+  }
+  &.heypub-sub-status {
+    DD {
+      margin-bottom: 0px;
+    }
+  }
+}
+
+UL {
+  display: block;
+  &.heypub-list {
+    list-style-type:disc;
+    list-style-position: inside;
+    margin: 2px 10px;
+  }
+  &.submission-history {
+    margin: 2px 10px;
+  }
+}
+LI {
+  margin-bottom: 8px;
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+// ID based settings
+#heypub_plugin_page {
+	padding: 10px;
+}
+
+
+
+LABEL {
+  &.heypub {
+    float: left;
+    font-weight: 500;
+    width: 220px;
+    text-align: right;
+    padding-right: 10px;
+    padding-top: 5px;
+    font-size: 1em;
+  }
+}
+
+INPUT[type=text],
+INPUT[type=password],
+SELECT {
+  &.heypub {
+    width: 350px;
+  }
+}
+TEXTAREA {
+  &.heypub {
+    width: 400px;
+    height: 300px;
+  }
+}
+
+// #heypub TH {
+//   padding: 5px;
+//   font-weight: bolder;
+// }
+
+// TODO: Move this to separate css that gets loaded ONLY on this page - as this is public facing.
+#heypub_submission_iframe {
+  width: 98%;
+  height: 500px;
+  border: 1px solid silver;
+}
+blockquote {
+  margin: 10px;
+  background-color: #EFEFEF;
+  border: 1px solid silver;
+  padding: 10px;
+}
+
+// TODO: Remove this calling function - used when value is null
+SPAN {
+  &.heypub_empty {
+    color: #888;
+    font-size: 0.8em;
+    text-transform: lowercase;
+  }
+}
+// TODO : this is primary button on Options / Submission page
+.heypub-button {
+  margin-left:2px !important;
+  margin-top:5px !important;
+}
+
+a {
+  &:focus {
+    box-shadow: none;
+  }
+}
+// #message.heypub {
+//   margin:0;
+//   opacity: 1;
+// }
+// .postbox.heypub {
+//   border:0;
+//   margin:0;
+// }

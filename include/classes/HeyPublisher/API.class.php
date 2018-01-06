@@ -120,5 +120,12 @@ class API {
     $this->logger->debug("\treturning from send: {$status}");
     return $return;
   }
+
+  public function authentication_token() {
+    $pass = "{$this->uoid}:{$this->poid}";
+    $token = base64_encode($pass);
+    return $token;
+  }
+
 }
 ?>

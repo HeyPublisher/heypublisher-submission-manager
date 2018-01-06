@@ -89,14 +89,17 @@ EOF;
       <h3>Editor Statistics</h3>
       <p>The number of submissions each Editor / Administrator has taken action on in the last 30 days</p>
       <table class="widefat post fixed ll-plugin">
-        <tbody id='the-list'>
-          <tr class='header alternate'>
-            <td>Name</td>
-            <td>Read</td>
-            <td>Considered</td>
-            <td>Rejected</td>
-            <td>Accepted</td>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Read</th>
+            <th>Considered</th>
+            <th>Rejected</th>
+            <th>Accepted</th>
           </tr>
+        </thead>
+        <tbody id='the-list'>
+
 EOF;
       foreach($editors as $idx=>$editor) {
         $class = '';
@@ -155,13 +158,15 @@ EOF;
       {$editors}
       <h3>Plugin Statistics</h3>
       <table class="widefat post fixed ll-plugin">
-        <tbody id='the-list'>
-          <tr class='header alternate'>
-            <td>Plugin Version</td>
-            <td>Build #</td>
-            <td>Build Date</td>
-            <td>Plugin Validated</td>
+        <thead>
+          <tr>
+            <th>Plugin Version</th>
+            <th>Build #</th>
+            <th>Build Date</th>
+            <th>Plugin Validated</th>
           </tr>
+        </thead>
+        <tbody id='the-list'>
           <tr>
             <td>{$ver}</td>
             <td>{$this->xml->get_install_option('version_current')}</td>
@@ -184,7 +189,7 @@ EOF;
         <h3>Publication Statistics</h3>
         <table class="widefat post fixed ll-plugin">
           <tbody id='the-list'>
-          <tr class='header alternate'>
+          <tr class='header'>
             <td>Homepage Indexed</td>
             <td>Guidelines Indexed</td>
             <td># Comments</td>

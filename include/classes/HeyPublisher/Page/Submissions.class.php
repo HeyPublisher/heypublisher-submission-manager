@@ -17,6 +17,8 @@ class Submissions extends \HeyPublisher\Page {
   var $disallowed_states = array('withdrawn','published','rejected');
   var $sub_class = null;
   var $api = null;
+  var $has_voted = false;
+  var $editors = array();
 
   public function __construct() {
   	parent::__construct();
@@ -89,6 +91,11 @@ class Submissions extends \HeyPublisher\Page {
     $cats = $this->xml->get_my_categories_as_hash();
     $publication = get_bloginfo('name');
     $html .= <<<EOF
+      <script type='text/javascript'>
+        jQuery(function() {
+          HeyPublisher.submissionListInit();
+        });
+      </script>
       <p>Below are the most recent <b><i>{$publication}</i></b> submissions sent in by your writers.</p>
       <p>Click on the title to read the submission.</p>
       <p>Click on the plus button to see the author's bio.  If they did not provide one, this will will not be avaialable.</p>
@@ -139,14 +146,14 @@ EOF;
         $toggle = '';
         if ($hash->author->bio != '') {
           $toggle = <<<EOF
-          <a href="#" onclick="HeyPublisher.toggleDetails(this)" title="View details">
+          <a data-sid='{$x}' href="#" title="View details">
             <span class="heypub-icons dashicons dashicons-plus-alt"></span>
           </a>
 EOF;
         }
 
         $html .= <<<EOF
-          <tr data-sid='{$x}' class='{$class}' valign="top">
+          <tr class='{$class}' valign="top">
             <th scope="row">{$toggle}</th>
             <td class="heypub_list_title">
               <a href="{$url}" title="Review {$hash->title}">{$hp_base->truncate($hash->title,30)}</a>
@@ -156,14 +163,14 @@ EOF;
             </td>
 EOF;
         if ($hash->author->bio != '') {
-          $authorName = sprintf("%s", $hash->author->full_name,HEY_BASE_URL);
+          $authorName = sprintf("%s", $hash->author->full_name);
           $html .= <<< EOF
             <td class="heypub_list_title">
               {$authorName}
             </td>
 EOF;
         } else {
-          $html .= sprintf("<td>%s %s</td>", $hash->author->first_name, $hash->author->last_name);
+          $html .= sprintf("<td>%s</td>", $hash->author->full_name);
         }
         $contact = $hp_base->blank();
         if (FALSE != $hash->author->email) {
@@ -242,15 +249,50 @@ EOF;
           $email = sprintf('<a href="mailto:%s?subject=Your%%20submission%%20to%%20%s" target="_blank">%s</a>',$sub->author->email,get_bloginfo('name'),$sub->author->email);
         }
         $hblock = $this->submission_history_block($id);
+        $editor_id = get_current_user_id();
+        $token = $this->api->authentication_token();
+        $domain = HEYPUB_API;
+        $votes = $this->get_votes($id,$editor_id);
+        $vote_buttons = $this->vote_buttons_block($votes);
+        $vote_summary = $this->get_vote_summary_block($votes);
+        $notes_block = $this->get_notes($id,$editor_id);
+
         $html .= <<<EOF
-          <h2 class='heypub'>
+          <script type='text/javascript'>
+            jQuery(function() {
+              HeyPublisher.submissionDetailInit('{$domain}','{$editor_id}','{$token}','{$id}','{$this->xml->debug}');
+            });
+          </script>
+          <h2 class='heypub-sub-title'>
             "{$sub->title}" :
             {$sub->category} by {$sub->author->first_name} {$sub->author->last_name}
             <small>({$email})</small>
           </h2>
+          <!-- Notes and Votes setter -->
+          <div class='heypub-voting'>
+            {$vote_buttons}
+            <div>
+              <textarea id='heypub_editor_note' placeholder="Share your thoughts on this submission..."></textarea>
+              <button id='heypub-note-submit' class="heypub-button button-primary">Save Note</button>
+            </div>
+          </div>
+          <!-- Notes and Votes Display - only shown after editor votes -->
+          <div id='heypub-notes' style=''>
+            <h3>Notes and Votes
+              <a data-toggle='heypub-notes-detail' href="#" title="View all Notes" style="float:right;border:0;">
+                <span class="heypub-icons dashicons dashicons-plus-alt"></span>
+              </a>
+            </h3>
+            <div id='heypub-notes-detail' style='display:none;'>
+              {$vote_summary}
+              {$notes_block}
+            </div>
+          </div>
+
+          <!-- Summary -->
           <div>
             <h3>Summary
-              <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub_summary');" title="View summary" style="float:right;border:0;">
+              <a data-toggle='heypub_summary' href="#" title="View summary" style="float:right;border:0;">
                 <span class="heypub-icons dashicons dashicons-plus-alt"></span>
               </a>
             </h3>
@@ -258,13 +300,13 @@ EOF;
               {$this->summary_block($sub)}
             </div>
           </div>
-          <div><!--  id="hey-content" -->
+          <div>
             <h3>Submission</h3>
             {$this->submission_block($sub)}
           </div>
           <div>
             <h3>History
-              <a href="#" onclick="HeyPublisher.clickToggle(this,'#heypub_history');" title="View history" style="float:right;border:0;">
+              <a data-toggle='heypub_history' href="#" title="View history" style="float:right;border:0;">
                 <span class="heypub-icons dashicons dashicons-plus-alt"></span>
               </a>
             </h3>
@@ -356,10 +398,6 @@ EOF;
         }
     ?>
 
-    <!-- Editor Voting -->
-        <br/>
-    <?php echo $this->sub_class->editor_vote_box(); ?>
-
     <?php  }  // end of conditional testing whether submission is in allowed state or not
      ?>
 
@@ -373,7 +411,98 @@ EOF;
     return $html;
 
   }
+  // Get the notes for this submission
+  //  @since 2.7.0
+  private function get_notes($id,$editor_id) {
+    $notes = $this->api->get_submission_notes($id);
+    $html =<<<EOF
+    <table id='heypub-notes-list' class="widefat post fixed ll-plugin heypub-notes" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Editor</th>
+          <th>Date</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+EOF;
+    if ($notes['meta']['total'] == 0) {
+      $html .= "<tr><td colspan='3' class='heypub-notes not-found'>No notes found for this submission.</td></tr>";
+    } else {
+      foreach($notes['notes'] as $note) {
+        $class = '';
+        $editor = $this->get_editor_object($note['editor_id']);
+        if ($note['editor_id'] == $editor_id) {
+          $class = "class='mine'";
+          $editor = 'You';
+        }
+        $date = $this->get_formatted_date($note['date']);
+        $html .= <<<EOF
+          <tr {$class}>
+            <td>{$editor}</td>
+            <td>{$date}</td>
+            <td>{$note['note']}</td>
+          </tr>
+EOF;
+      }
+    }
+    $html .= "</tbody></table>";
+    return $html;
+  }
 
+  // Fetch the votes and register the vote as a class var for later reference.
+  // @since  2.7.0
+  private function get_votes($id,$editor_id){
+    $votes = $this->api->get_submission_votes($id,$editor_id);
+    if ($votes['meta']['returned'] == 1) {
+      $this->has_voted = $votes['votes'][0]['vote'];
+    }
+    return $votes;
+  }
+
+  // Get the sum total of votes in a display format
+  // @since  2.7.0
+  private function get_vote_summary_block($votes) {
+    $up = ngettext('vote','votes',$votes['meta']['up']);
+    $down = ngettext('vote','votes',$votes['meta']['down']);
+    $display_votes = 'display:none;';
+    if ($this->has_voted) { $display_votes = ''; }
+    $html .= <<<EOF
+      <div id='heypub_vote_sumary' class='heypub-voting heypub-vote_summary' style='{$display_votes}'>
+        <a href="#" title="No :(" class='vote-no always-on'>
+          <span class="heypub-icons dashicons dashicons-thumbs-down vote-no always-on"></span>
+        </a> <span id='votes-down-total'>{$votes['meta']['down']} {$down}</span>
+        <a href="#" title="Yes!" class='vote-yes always-on'>
+          <span class="heypub-icons dashicons dashicons-thumbs-up vote-yes always-on"></span>
+        </a> <span id='votes-up-total'> {$votes['meta']['up']} {$up}</span>
+      </div>
+EOF;
+    return $html;
+  }
+
+  // Formats the voting button block
+  // @since  2.7.0
+  private function vote_buttons_block($votes) {
+    $vote_yes = '';
+    $vote_no = '';
+    if ($this->has_voted) {
+      // need to figure out which vote this editor made
+      if ($this->has_voted == 'up') {
+        $vote_yes = 'on';
+      } else {
+        $vote_no = 'on';
+      }
+    }
+    $html .= <<<EOF
+      <a data-vote='down' href="#" title="No :(" class='vote-no {$vote_no}'>
+        <span class="heypub-icons dashicons dashicons-thumbs-down vote-no {$vote_no}"></span>
+      </a>
+      <a data-vote='up' href="#" title="Yes!" class='vote-yes {$vote_yes}'>
+        <span class="heypub-icons dashicons dashicons-thumbs-up vote-yes {$vote_yes}"></span>
+      </a>
+EOF;
+    return $html;
+  }
 
   private function author_bio($sub) {
     if (FALSE != $sub->author->bio) {
@@ -381,7 +510,7 @@ EOF;
     } else {
       $bio = '<i>None provided</i>';
     }
-    $html = sprintf('<dt>Author Bio:</dt><dd>%s</dd>',$bio);
+    $html = sprintf('<dt>Author Bio:</dt><dd>%s &nbsp;</dd>',$bio);
     return $html;
   }
   private function submission_summary($sub) {
@@ -404,6 +533,7 @@ EOF;
     $block = $this->submission_history_content($sid,'desc');
     return $this->toggle_block($block);
   }
+
   private function submission_history_content($sid,$order) {
     $this->xml->log("submission_history_content() SID: {$sid}");
     $history = $this->api->get_submission_history($sid,$order);
@@ -411,7 +541,6 @@ EOF;
     $rows = '';
     foreach ($history['history'] as $item) {
       $rows .= "\t<li>" . $this->format_submission_history($item) . "</li>\n";
-      // $this->xml->log(" => ROW: {$row}");
     }
     $block = <<<EOF
       <ul class='post-revisions hide-if-no-js submission-history'>
@@ -420,10 +549,30 @@ EOF;
 EOF;
     return $block;
   }
+
+  // Get an editor object from memory or db
+  // @since 2.7.0
+  private function get_editor_object($id) {
+    if ($id) {
+      if ($this->editors[$id]) {
+        $author = $this->editors[$id];
+      } else {
+        $author = get_the_author_meta( 'display_name', $id );
+        $this->editors[$id] = $author;
+      }
+    }
+    return $author;
+  }
+
+  private function get_formatted_date($d) {
+    $date = date_i18n('F j, Y @ H:i:s',strtotime($d));
+    return $date;
+  }
+
   // Follows the same format as wp_post_revision_title_expanded()
   // https://developer.wordpress.org/reference/functions/wp_post_revision_title_expanded/
   private function format_submission_history($item){
-    $author = get_the_author_meta( 'display_name', $item[editor_id] );
+    $author = $this->get_editor_object( $item[editor_id] );
     if (!$author) {
       if ($item['name'] == 'submitted') {
         $author = 'Author';
@@ -433,7 +582,7 @@ EOF;
     }
 
     $gravatar = get_avatar( $item[editor_id], 24 );
-    $date = date_i18n('F j, Y @ H:i:s',strtotime($item[date]));
+    $date = $this->get_formatted_date($item[date]);
     $data = sprintf(
          /* translators: post revision title: 1: author avatar, 2: author name, 3: time ago, 4: date */
          __( '%1$s %2$s: %3$s %4$s ago (%5$s)' ),

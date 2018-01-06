@@ -1,0 +1,82 @@
+/* Loudlever Common Styles */
+
+/* Page Header */
+#poststuff {
+  H3 {
+    &.hndle { // default header
+      font-size: $h2-fontsize;
+    }
+  }
+}
+/* Default Table Styling */
+TABLE {
+  &.ll-plugin {
+    border-collapse:collapse;
+    border: $table-border;
+    clear: none;
+    THEAD {
+      TR {
+        background-color: $th-background-color;
+        TH {
+          font-size: $th-fontsize;
+          font-weight:bold;
+        }
+      }
+    }
+    // Treat TDs as headers in some cases in some cases
+    TBODY {
+      TR {
+        &.header {
+          background-color: $th-background-color;
+          TD {
+            font-size: $th-fontsize;
+            font-weight:bold;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Primary Content Body */
+.has-right-sidebar {
+  #post-body-content {
+    &.ll-plugin {
+      margin-right: 240px;
+    }
+  }
+}
+
+/* Side Bar */
+.inner-sidebar {
+  &.ll-plugin {
+    width: 220px;
+
+    #side-sortables {
+      width: 220px;
+    }
+    .postbox {
+      min-width: 220px;
+    }
+  }
+}
+.ll-inside {
+  P {
+    padding-left: 12px;
+  }
+}
+a {
+  &.loudlever-button {
+    text-decoration:none;
+    display: block;
+
+    span {
+      &.dashicons {
+        padding-right: 5px;
+        &:hover {
+          color: orange;
+        }
+      }
+    }
+  }
+}
