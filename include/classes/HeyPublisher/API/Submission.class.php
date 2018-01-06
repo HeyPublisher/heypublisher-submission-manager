@@ -35,7 +35,7 @@ class Submission extends \HeyPublisher\API {
     return $result;
   }
 
-  // Get the votes for this editor - which will inform whether to pre-style vote buttons and display block
+  // Get the votes from this editor - which will inform whether to pre-style vote buttons and display block
   // @since 2.7.0
   public function get_submission_votes($id,$ed_id){
     $path = sprintf('submissions/%s/votes',$id);

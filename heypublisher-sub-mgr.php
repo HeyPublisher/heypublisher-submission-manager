@@ -8,7 +8,7 @@ Author URI: https://www.heypublisher.com
 Version: 2.7.0
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
-  Copyright 2014-2017 Richard Luck (https://github.com/aguywithanidea/)
+  Copyright 2014-2018 Richard Luck (https://github.com/aguywithanidea/)
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation
