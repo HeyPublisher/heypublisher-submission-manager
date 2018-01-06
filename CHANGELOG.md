@@ -2,13 +2,15 @@
 
 ### 2.7.0
 + Released: 2018-01-07
-+ Fixed some styling issues on the Submissions page
-+ Removed code that's no longer used
-+ Migrated all stylesheet generation to sass
-+ Fixed javascript error that was preventing editor notes input field from displaying.  You can now send notes to writers again!!
-+ Fixed errors with javascript that were preventing summary and author bio expand buttons from working in some versions of Firefox.
-+ Added ability for editors to store notes on submissions they're reviewing
-+ Added ability for editors to vote for submissions.
++ [[#1](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/1)] : Editors can now vote on submissions (up/down).
++ [[#82](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/82)] : Editors can now add notes to each submission they're reviewing.
++ [[#87](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/87)] : Fixed crummy little error that caused the summary block to collapse on the Submission Detail screen if a bio was not provided.
++ Additionally ....
+  + Fixed some styling issues on the Submissions page
+  + Removed code that's no longer used
+  + Migrated all stylesheet generation to sass
+  + Fixed javascript error that was preventing editor notes input field from displaying.  You can now send notes to writers again!!
+  + Fixed errors with javascript that were preventing summary and author bio expand buttons from working in some versions of Firefox.
 
 ### 2.6.3
 + Released: 2017-12-20
