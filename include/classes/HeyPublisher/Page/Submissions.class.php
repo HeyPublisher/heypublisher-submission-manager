@@ -457,7 +457,6 @@ EOF;
     if ($votes['meta']['returned'] == 1) {
       $this->has_voted = $votes['votes'][0]['vote'];
     }
-    // $this->xml->log("Vote is registerd as: {$this->has_voted}");
     return $votes;
   }
 
@@ -487,7 +486,6 @@ EOF;
     $vote_yes = '';
     $vote_no = '';
     if ($this->has_voted) {
-      $this->xml->log("setting vote button as: {$this->has_voted}");
       // need to figure out which vote this editor made
       if ($this->has_voted == 'up') {
         $vote_yes = 'on';
@@ -495,7 +493,6 @@ EOF;
         $vote_no = 'on';
       }
     }
-    $this->xml->log("vote vars: '{$vote_yes}' : '{$vote_no}' ");
     $html .= <<<EOF
       <a data-vote='down' href="#" title="No :(" class='vote-no {$vote_no}'>
         <span class="heypub-icons dashicons dashicons-thumbs-down vote-no {$vote_no}"></span>
@@ -544,7 +541,6 @@ EOF;
     $rows = '';
     foreach ($history['history'] as $item) {
       $rows .= "\t<li>" . $this->format_submission_history($item) . "</li>\n";
-      // $this->xml->log(" => ROW: {$row}");
     }
     $block = <<<EOF
       <ul class='post-revisions hide-if-no-js submission-history'>
@@ -559,10 +555,8 @@ EOF;
   private function get_editor_object($id) {
     if ($id) {
       if ($this->editors[$id]) {
-        $this->xml->log("Fetching editor {$id} from memory");
         $author = $this->editors[$id];
       } else {
-        $this->xml->log("Fetching editor {$id} from db");
         $author = get_the_author_meta( 'display_name', $id );
         $this->editors[$id] = $author;
       }
