@@ -260,7 +260,7 @@ EOF;
         $html .= <<<EOF
           <script type='text/javascript'>
             jQuery(function() {
-              HeyPublisher.ajaxInit('{$domain}','{$editor_id}','{$token}','{$id}','{$this->xml->debug}');
+              HeyPublisher.submissionDetailInit('{$domain}','{$editor_id}','{$token}','{$id}','{$this->xml->debug}');
             });
           </script>
           <h2 class='heypub-sub-title'>
