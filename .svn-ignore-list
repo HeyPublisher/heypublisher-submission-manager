@@ -1,0 +1,11 @@
+.DS_Store
+.git
+.sass-cache
+CHANGELOG.md
+LICENSE.md
+README.md
+_NOTES.txt
+difflist
+error.log
+include/.DS_Store
+sass
