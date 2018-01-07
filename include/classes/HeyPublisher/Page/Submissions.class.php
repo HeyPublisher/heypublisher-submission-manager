@@ -453,7 +453,9 @@ EOF;
   // Fetch the votes and register the vote as a class var for later reference.
   // @since  2.7.0
   private function get_votes($id,$editor_id){
+    $this->xml->log("get_votes({$id},{$editor_id})");
     $votes = $this->api->get_submission_votes($id,$editor_id);
+    $this->xml->log(sprintf("votes: %s",print_r($votes,1)));
     if ($votes['meta']['returned'] == 1) {
       $this->has_voted = $votes['votes'][0]['vote'];
     }

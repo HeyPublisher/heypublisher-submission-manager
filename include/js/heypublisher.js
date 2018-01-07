@@ -124,7 +124,8 @@
         timeout: 8000,
         dataType: 'json',
         headers: {
-          "Authorization": "Basic " + token
+          "Authorization": "Basic " + token,
+          "HeyPublisherAjax": true
         },
         data: data,
         success: function(data){
@@ -211,7 +212,8 @@
         timeout: 8000,
         dataType: 'json',
         headers: {
-          "Authorization": "Basic " + token
+          "Authorization": "Basic " + token,
+          "HeyPublisherAjax": true
         },
         data: data,
         success: function (){
@@ -244,7 +246,8 @@
         timeout: 8000,
         dataType: 'json',
         headers: {
-          "Authorization": "Basic " + token
+          "Authorization": "Basic " + token,
+          "HeyPublisherAjax": true
         },
         data: data,
         success: function (){
