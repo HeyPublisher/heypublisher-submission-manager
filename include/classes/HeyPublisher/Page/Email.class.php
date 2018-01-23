@@ -7,11 +7,17 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
  */
 // Load the class files and associated scoped functionality
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
+require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Email.class.php');
+
 class Email extends \HeyPublisher\Page {
+
+  var $api = null;
 
   public function __construct() {
   	parent::__construct();
     $this->slug .= '_email';
+    $this->api = new \HeyPublisher\API\Email;
+
   }
 
   public function __destruct() {
@@ -19,6 +25,11 @@ class Email extends \HeyPublisher\Page {
   }
 
   public function action_handler() {
+    if (isset($_REQUEST[show])) {
+      parent::page('Email Template', '', array($this,'display_email'),$_REQUEST[show]);
+      return;
+    }
+
     parent::page('Email Templates', '', array($this,'list_emails'));
   }
 
@@ -175,16 +186,68 @@ EOF;
     return $html;
   }
 
+  protected function display_email($id) {
+    global $hp_base, $hp_opt;
+    $html = '';
+
+  }
+
   protected function list_emails() {
-    $base = HEYPUB_SVC_URL_BASE;
-    $uid = $this->xml->user_oid;
-    $pid = $this->xml->pub_oid;
-    $admin_url = sprintf("%s/wp-admin/load-styles.php?c=1&dir=ltr&load=admin-bar,common,wp-admin,buttons&ver=%s",get_bloginfo('wpurl'), get_bloginfo('version'));
-    $url = sprintf('%s/response_template/index/%s/%s?v=%s&css=%s',$base,$uid,$pid,HEYPUB_PLUGIN_BUILD_NUMBER,urlencode($admin_url));
-    $html = <<<EOF
-<iframe src="$url" width='100%' height='500' scrolling='auto'> </iframe>
+    $emails = $this->api->get_emails();
+
+    $html .= <<<EOF
+      <script type='text/javascript'>
+        jQuery(function() {
+          // HeyPublisher.emailListInit();
+        });
+      </script>
+      <h3>All Templates</h3>
+      <p>To add a new custom email template, click on the 'Add New' button below.</p>
+      <p>Click on the pencil icon to edit an existing template</p>
+      <table class="widefat post fixed ll-plugin" cellspacing="0" id='heypub_emails'>
+        <thead>
+        	<tr>
+          	<th style='width:20%;'>Submission State</th>
+          	<th style='width:70%;'>Email Subject Line</th>
+          	<th style='width:10%;'>Action</th>
+        	</tr>
+        </thead>
+        <tfoot />
+        <tbody>
+        {$this->format_email_list($emails)}
+        </tbody>
+      </table>
 EOF;
+    // '
     return $html;
   }
+  private function format_email_list($emails) {
+    $html = '';
+    if (!empty($emails['email_templates'])) {
+      foreach($emails['email_templates'] as $x => $hash) {
+        $state = ucwords($hash['submission_state']);
+        $html .= <<<EOF
+          <tr>
+            <td>{$state}</td>
+            <td>{$hash['subject']}</td>
+            <td>
+              <a data-toggle='' href="#" title="Edit email template" style="">
+                <span class="heypub-icons dashicons dashicons-edit"></span>
+              </a>
+              <a data-toggle='heypub-delete-email' href="#" title="Delete email template" style="">
+                <span class="heypub-icons dashicons dashicons-trash"></span>
+              </a>
+            </td>
+          </tr>
+EOF;
+      }
+    } else {
+      $html .= <<<EOF
+        <tr><td colspan=3 class='heypub_no_emails'>No Templates Defined</td></tr>
+EOF;
+    }
+    return $html;
+  }
+
 }
 ?>
