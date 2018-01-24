@@ -39,7 +39,9 @@ class Options extends \HeyPublisher\Page {
   public function page_prep()  {
     parent::page('Plugin Options', '', array($this,'content'));
   }
+  // TODO: Replace calls to this to get_form_url_for_page()
   private function form_action() {
+    // $action = $this->get_form_url_for_page();
     $action = sprintf('admin.php?page=%s',$this->slug);
     return $action;
   }
@@ -256,6 +258,7 @@ EOF;
 
   private function submission_page($opts){
     $replacer = HEYPUB_SUBMISSION_PAGE_REPLACER;
+    // TODO: Replace this will call to $this->get_form_url_for_page('create_form_page')
     $link_url = sprintf('%s&action=create_form_page',$this->form_action());
     if(function_exists('wp_nonce_url')){
       $link_url = wp_nonce_url($link_url,'create_form');

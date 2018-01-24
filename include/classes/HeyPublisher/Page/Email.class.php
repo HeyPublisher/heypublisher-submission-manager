@@ -25,8 +25,8 @@ class Email extends \HeyPublisher\Page {
   }
 
   public function action_handler() {
-    if (isset($_REQUEST[show])) {
-      parent::page('Email Template', '', array($this,'display_email'),$_REQUEST[show]);
+    if (isset($_REQUEST[action])) {
+      parent::page('Email Template', '', array($this,'display_email'),$_REQUEST[action]);
       return;
     }
 
@@ -39,21 +39,21 @@ class Email extends \HeyPublisher\Page {
 
     $screen->add_help_tab(
       array(
-        'id'	    => $this->slug .= '_help',
+        'id'	    => sprintf('%s_help', $this->slug),
         'title'	  => __('Keyword Substitution'),
         'content' => $this->help_substitution_text()
       )
     );
     $screen->add_help_tab(
       array(
-        'id'	    => $this->slug .= '_help_example',
+        'id'	    => sprintf('%s_help_example', $this->slug),
         'title'	  => __('Example'),
         'content' => $this->help_example()
       )
     );
     $screen->add_help_tab(
       array(
-        'id'	    => $this->slug .= '_help_sub_states',
+        'id'	    => sprintf('%s_help_sub_states', $this->slug),
         'title'	  => __('Submission States'),
         'content' => $this->help_submission_states()
       )
@@ -187,14 +187,20 @@ EOF;
   }
 
   protected function display_email($id) {
-    global $hp_base, $hp_opt;
-    $html = '';
+    $title = 'Create New Email Template';
+    if ($id != 'new') {
+      $title = sprintf('Update Email Template for %s Submissions',ucwords($id));
+    }
+    $html = <<<EOF
+    <h3>{$title}</h3>
 
+EOF;
+    return $html;
   }
 
   protected function list_emails() {
     $emails = $this->api->get_emails();
-
+    $action = $this->get_form_url_for_page('new');
     $html .= <<<EOF
       <script type='text/javascript'>
         jQuery(function() {
@@ -217,6 +223,9 @@ EOF;
         {$this->format_email_list($emails)}
         </tbody>
       </table>
+      <form method="post" action="{$action}">
+        <input type="submit" class="heypub-button button-primary" name="create_button" id="create_button" value="Add New &raquo;" />
+      </form>
 EOF;
     // '
     return $html;
@@ -226,12 +235,13 @@ EOF;
     if (!empty($emails['email_templates'])) {
       foreach($emails['email_templates'] as $x => $hash) {
         $state = ucwords($hash['submission_state']);
+        $action = $this->get_form_url_for_page($hash['submission_state']);
         $html .= <<<EOF
           <tr>
             <td>{$state}</td>
             <td>{$hash['subject']}</td>
             <td>
-              <a data-toggle='' href="#" title="Edit email template" style="">
+              <a href="{$action}" title="Edit email template" style="">
                 <span class="heypub-icons dashicons dashicons-edit"></span>
               </a>
               <a data-toggle='heypub-delete-email' href="#" title="Delete email template" style="">
