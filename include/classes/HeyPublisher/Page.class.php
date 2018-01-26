@@ -158,7 +158,7 @@ EOF;
   // @since 2.8.0
   // Get the form action url as a relative url
   // Replaces function of same name in HeyPublisher class
-  protected function get_form_url_for_page($action) {
+  protected function get_form_url_for_page($action=null) {
     $additional = '';
     if ($action) {
       $additional = sprintf('&action=%s',$action);

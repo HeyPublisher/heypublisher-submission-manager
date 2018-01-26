@@ -26,10 +26,19 @@ class Email extends \HeyPublisher\Page {
 
   public function action_handler() {
     if (isset($_REQUEST[action])) {
-      parent::page('Email Template', '', array($this,'display_email'),$_REQUEST[action]);
-      return;
+      if ($_REQUEST[action] == 'update') {
+        $this->message = 'updated';
+      }
+      elseif ($_REQUEST[action] == 'delete') {
+        $this->message = 'deleted';
+      }
+      else {
+        parent::page('Email Template', '', array($this,'edit_email_form'),$_REQUEST[action]);
+        // early exit for good behavior
+        return;
+      }
     }
-
+    $this->print_message_if_exists();
     parent::page('Email Templates', '', array($this,'list_emails'));
   }
 
@@ -186,13 +195,74 @@ EOF;
     return $html;
   }
 
-  protected function display_email($id) {
-    $title = 'Create New Email Template';
-    if ($id != 'new') {
-      $title = sprintf('Update Email Template for %s Submissions',ucwords($id));
+  protected function edit_email_form($id) {
+    $action = $this->get_form_url_for_page('update');
+    $cancel = $this->get_form_url_for_page();
+    $state = ucwords($id);
+    if ($id == 'new') {
+      $title = sprintf('Edit %s Template',$state);
+      $email = [];
+      $block1 = <<<EOF
+      <p>
+        To create a new email template, simply fill out the form below with the message you want delivered to the writer.
+      </p>
+EOF;
+      $block2 = <<<EOF
+      <p>
+        If the <b>Submission State</b> you want is not listed, ensure you have set the writer notification option to <code>YES</code> on the <b>Plugin Options</b> page.
+      </p>
+EOF;
+      $submission_states = $this->api->get_submission_states();
+      $options = '';
+      foreach($submission_states as $x => $hash) {
+        $options .=<<< EOF
+          <option value='{$hash['id']}'>{$hash['submission_state']}</option>
+EOF;
+      }
+
+      $states = <<<EOF
+      <select name="hp_email[submission_state]" id="hp_submission_state" class='heypub' />
+        {$options}
+      </select>
+EOF;
+    }
+    else {
+      $block1 = '';
+      $block2 = '';
+      $states = <<<EOF
+      <input type="text" name="hp_email[submission_state]" id="hp_submission_state" class='heypub' value="{$state}" disabled="disabled" />
+EOF;
+      $title = sprintf('Edit %s Template',$state);
+      $email = $this->api->get_email($id);
     }
     $html = <<<EOF
+    <script type='text/javascript'>
+      jQuery(function() {
+        // HeyPublisher.emailListInit();
+      });
+    </script>
     <h3>{$title}</h3>
+    {$block1}
+    <p>Click on the <b>HELP</b> link above to learn how to customize this email.</p>
+    {$block2}
+    <form method="post" action="{$action}">
+    <ul>
+      <li>
+        <label class='heypub' for='hp_submission_state'>Submission State</label>
+        {$states}
+      </li>
+      <li>
+        <label class='heypub' for='hp_subject'>Email Subject</label>
+        <input type="text" name="hp_email[subject]" id="hp_subject" class='heypub' value="{$email['subject']}" />
+      </li>
+      <li>
+        <label class='heypub' for='hp_body'>Email Body</label>
+        <textarea name="hp_email[body]" id="hp_body" class='heypub'>{$email['body']}</textarea>
+      </li>
+    </ul>
+    <input type="submit" class="heypub-button button-primary" name="update_template" id="update_template" value="Update &raquo;" />
+    <a href="{$cancel}">cancel</a>
+    </form>
 
 EOF;
     return $html;
@@ -232,8 +302,8 @@ EOF;
   }
   private function format_email_list($emails) {
     $html = '';
-    if (!empty($emails['email_templates'])) {
-      foreach($emails['email_templates'] as $x => $hash) {
+    if (!empty($emails)) {
+      foreach($emails as $x => $hash) {
         $state = ucwords($hash['submission_state']);
         $action = $this->get_form_url_for_page($hash['submission_state']);
         $html .= <<<EOF
