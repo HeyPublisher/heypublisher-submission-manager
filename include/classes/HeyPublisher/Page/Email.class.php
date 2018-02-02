@@ -200,8 +200,9 @@ EOF;
     $cancel = $this->get_form_url_for_page();
     $state = ucwords($id);
     if ($id == 'new') {
-      $title = sprintf('Edit %s Template',$state);
+      $title = 'Create New Email Template';
       $email = [];
+      $button = 'create';
       $block1 = <<<EOF
       <p>
         To create a new email template, simply fill out the form below with the message you want delivered to the writer.
@@ -213,6 +214,10 @@ EOF;
       </p>
 EOF;
       $submission_states = $this->api->get_submission_states();
+      if (!$submission_states && $this->api->error) {
+        $this->xml->error = $this->api->error; # TODO: Fix this!!
+        $this->xml->print_webservice_errors(false);
+      }
       $options = '';
       foreach($submission_states as $x => $hash) {
         $options .=<<< EOF
@@ -227,6 +232,7 @@ EOF;
 EOF;
     }
     else {
+      $button = 'update';
       $block1 = '';
       $block2 = '';
       $states = <<<EOF
@@ -260,7 +266,7 @@ EOF;
         <textarea name="hp_email[body]" id="hp_body" class='heypub'>{$email['body']}</textarea>
       </li>
     </ul>
-    <input type="submit" class="heypub-button button-primary" name="update_template" id="update_template" value="Update &raquo;" />
+    <input type="submit" class="heypub-button button-primary" name="update_template" id="{$button}_template" value="{$button} &raquo;" />
     <a href="{$cancel}">cancel</a>
     </form>
 
@@ -270,6 +276,11 @@ EOF;
 
   protected function list_emails() {
     $emails = $this->api->get_emails();
+    if (!$emails && $this->api->error) {
+      $this->xml->error = $this->api->error; # TODO: Fix this!!
+      $this->xml->print_webservice_errors(false);
+    }
+
     $action = $this->get_form_url_for_page('new');
     $html .= <<<EOF
       <script type='text/javascript'>
