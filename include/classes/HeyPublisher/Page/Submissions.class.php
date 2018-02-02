@@ -19,12 +19,13 @@ class Submissions extends \HeyPublisher\Page {
   var $api = null;
   var $has_voted = false;
   var $editors = array();
+  var $page = '_submissions';
 
   public function __construct() {
   	parent::__construct();
     $this->sub_class = new \HeyPublisherSubmission;
     $this->api = new \HeyPublisher\API\Submission;
-    $this->slug .= '_submissions';
+    $this->slug .= $this->page;
   }
 
   public function __destruct() {

@@ -12,10 +12,11 @@ require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Email.c
 class Email extends \HeyPublisher\Page {
 
   var $api = null;
+  var $page = '_email';
 
   public function __construct() {
   	parent::__construct();
-    $this->slug .= '_email';
+    $this->slug .= $this->page;
     $this->api = new \HeyPublisher\API\Email;
 
   }
@@ -26,7 +27,10 @@ class Email extends \HeyPublisher\Page {
 
   public function action_handler() {
     if (isset($_REQUEST[action])) {
-      if ($_REQUEST[action] == 'update') {
+      if ($_REQUEST[action] == 'create') {
+        $this->message = 'created';
+      }
+      elseif ($_REQUEST[action] == 'update') {
         $this->message = 'updated';
       }
       elseif ($_REQUEST[action] == 'delete') {
@@ -196,7 +200,7 @@ EOF;
   }
 
   protected function edit_email_form($id) {
-    $action = $this->get_form_url_for_page('update');
+    $this->validate_nonced_field();
     $cancel = $this->get_form_url_for_page();
     $state = ucwords($id);
     if ($id == 'new') {
@@ -241,6 +245,8 @@ EOF;
       $title = sprintf('Edit %s Template',$state);
       $email = $this->api->get_email($id);
     }
+    $nonce = $this->get_nonced_field();
+    $action = $this->get_form_url_for_page($button);
     $html = <<<EOF
     <script type='text/javascript'>
       jQuery(function() {
@@ -266,7 +272,8 @@ EOF;
         <textarea name="hp_email[body]" id="hp_body" class='heypub'>{$email['body']}</textarea>
       </li>
     </ul>
-    <input type="submit" class="heypub-button button-primary" name="update_template" id="{$button}_template" value="{$button} &raquo;" />
+    {$nonce}
+    <input type="submit" class="heypub-button button-primary" name="{$button}_template" id="{$button}_template" value="{$button} &raquo;" />
     <a href="{$cancel}">cancel</a>
     </form>
 
@@ -280,7 +287,7 @@ EOF;
       $this->xml->error = $this->api->error; # TODO: Fix this!!
       $this->xml->print_webservice_errors(false);
     }
-
+    $nonce = $this->get_nonced_field();
     $action = $this->get_form_url_for_page('new');
     $html .= <<<EOF
       <script type='text/javascript'>
@@ -305,6 +312,7 @@ EOF;
         </tbody>
       </table>
       <form method="post" action="{$action}">
+        {$nonce}
         <input type="submit" class="heypub-button button-primary" name="create_button" id="create_button" value="Add New &raquo;" />
       </form>
 EOF;

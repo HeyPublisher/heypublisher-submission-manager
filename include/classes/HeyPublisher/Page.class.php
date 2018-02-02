@@ -16,6 +16,8 @@ class Page extends \Loudlever\Loudlever {
   var $xml = null;  # the pointer for $hp_xml
   var $strip = 'strip';
   var $slug = 'heypublisher';  # the slug used for constructing URLs
+  var $page = '';
+  var $nonce = '';
   var $message = '';
   var $additional_side_nav = null;
 
@@ -28,6 +30,7 @@ class Page extends \Loudlever\Loudlever {
     $this->plugin['contact'] = 'mailto:support@heypublisher.com';
     $this->log_file = HEYPUB_PLUGIN_FULLPATH . '/error.log';
     $this->xml = $hp_xml;
+    $this->nonce = sprintf('hp_nonce%s',$this->page);
   }
 
   public function __destruct() {
@@ -155,6 +158,15 @@ EOF;
     return $url;
   }
 
+  protected function get_nonced_field() {
+    $nonce = wp_nonce_field($this->nonce);
+    return $nonce;
+  }
+
+  protected function validate_nonced_field() {
+    check_admin_referer($this->nonce);
+  }
+
   // @since 2.8.0
   // Get the form action url as a relative url
   // Replaces function of same name in HeyPublisher class
@@ -164,6 +176,10 @@ EOF;
       $additional = sprintf('&action=%s',$action);
     }
     $url = sprintf('admin.php?page=%s%s',$this->slug,$additional);
+
+    if(function_exists('wp_nonce_url') && $this->nonce){
+      $url = wp_nonce_url($url,$this->nonce);
+    }
     return $url;
   }
 }
