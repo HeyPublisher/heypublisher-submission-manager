@@ -176,6 +176,20 @@
   };
 
   // -----------------------------------
+  // External facing - initializes the JS on the Email List Page
+  HeyPublisher.emailListInit = function() {
+    console.log('emailListInit() => ');
+    // bind the buttons on this page
+    $.each($('[data-email]'), function(idx,val) {
+      $(val).click(function(event) {
+        // event.preventDefault();
+        var id = $(val).data('email');
+        return confirm("Are you sure you want to delete the " + id + " template?" );
+      })
+    });
+  };
+
+  // -----------------------------------
   // External facing - initializes the JS on the Submission Details Page
   HeyPublisher.submissionDetailInit = function(d,e,t,s,b) {
     domain    = d;
