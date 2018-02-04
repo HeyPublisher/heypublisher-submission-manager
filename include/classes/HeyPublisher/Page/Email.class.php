@@ -27,22 +27,29 @@ class Email extends \HeyPublisher\Page {
 
   public function action_handler() {
     if (isset($_REQUEST[action])) {
-      if ($_REQUEST[action] == 'create') {
-        $this->message = 'created';
-      }
-      elseif ($_REQUEST[action] == 'update') {
-        $this->message = 'updated';
+      if ($_REQUEST[action] == 'create' || $_REQUEST[action] == 'update' ) {
+        $this->validate_nonced_field();
+        $this->message = $this->api->update_template($_POST);
       }
       elseif ($_REQUEST[action] == 'delete') {
-        $this->message = 'deleted';
+        $this->validate_nonced_field();
+        $this->message = $this->api->delete_template($_REQUEST[delete]);
       }
       else {
+        // Display the create / edit form
         parent::page('Email Template', '', array($this,'edit_email_form'),$_REQUEST[action]);
-        // early exit for good behavior
         return;
+        // early exit for good behavior
       }
     }
-    $this->print_message_if_exists();
+    if ($this->message) {
+      if ($this->api->error) {
+        $this->xml->error = $this->api->error; # TODO: Fix this!!
+        $this->xml->print_webservice_errors(false);
+      } else {
+        $this->print_message_if_exists();
+      }
+    }
     parent::page('Email Templates', '', array($this,'list_emails'));
   }
 
@@ -200,7 +207,6 @@ EOF;
   }
 
   protected function edit_email_form($id) {
-    $this->validate_nonced_field();
     $cancel = $this->get_form_url_for_page();
     $state = ucwords($id);
     if ($id == 'new') {
@@ -240,20 +246,17 @@ EOF;
       $block1 = '';
       $block2 = '';
       $states = <<<EOF
-      <input type="text" name="hp_email[submission_state]" id="hp_submission_state" class='heypub' value="{$state}" disabled="disabled" />
+      <input type='hidden' name="hp_email[submission_state]" value="{$id}" />
+      <input type="text" name="hp_email_disabled" id="hp_submission_state" class='heypub' value="{$state}" disabled="disabled" />
 EOF;
       $title = sprintf('Edit %s Template',$state);
       $email = $this->api->get_email($id);
     }
+
     $nonce = $this->get_nonced_field();
     $action = $this->get_form_url_for_page($button);
     $html = <<<EOF
-    <script type='text/javascript'>
-      jQuery(function() {
-        // HeyPublisher.emailListInit();
-      });
-    </script>
-    <h3>{$title}</h3>
+    <h3 class='first'>{$title}</h3>
     {$block1}
     <p>Click on the <b>HELP</b> link above to learn how to customize this email.</p>
     {$block2}
@@ -282,20 +285,31 @@ EOF;
   }
 
   protected function list_emails() {
-    $emails = $this->api->get_emails();
-    if (!$emails && $this->api->error) {
+    $res = $this->api->get_emails();
+    if (!$res && $this->api->error) {
       $this->xml->error = $this->api->error; # TODO: Fix this!!
       $this->xml->print_webservice_errors(false);
     }
+    $emails = $res['email_templates'];
     $nonce = $this->get_nonced_field();
     $action = $this->get_form_url_for_page('new');
+    if ($res['meta']['remaining'] > 0) {
+      $button = <<<EOF
+        <input type="submit" class="heypub-button button-primary" name="create_button" id="create_button" value="Add New &raquo;" />
+EOF;
+    }
+    else {
+      $button = <<<EOF
+        <input type="submit" class="heypub-button button-primary" disabled='disabled' name="create_button" id="create_button" value="No More Templates" />
+EOF;
+    }
     $html .= <<<EOF
       <script type='text/javascript'>
         jQuery(function() {
-          // HeyPublisher.emailListInit();
+          HeyPublisher.emailListInit();
         });
       </script>
-      <h3>All Templates</h3>
+      <h3 class='first'>All Templates</h3>
       <p>To add a new custom email template, click on the 'Add New' button below.</p>
       <p>Click on the pencil icon to edit an existing template</p>
       <table class="widefat post fixed ll-plugin" cellspacing="0" id='heypub_emails'>
@@ -313,7 +327,7 @@ EOF;
       </table>
       <form method="post" action="{$action}">
         {$nonce}
-        <input type="submit" class="heypub-button button-primary" name="create_button" id="create_button" value="Add New &raquo;" />
+        {$button}
       </form>
 EOF;
     // '
@@ -323,17 +337,19 @@ EOF;
     $html = '';
     if (!empty($emails)) {
       foreach($emails as $x => $hash) {
-        $state = ucwords($hash['submission_state']);
-        $action = $this->get_form_url_for_page($hash['submission_state']);
+        $s = $hash['submission_state'];
+        $state = ucwords($s);
+        $edit = $this->get_form_url_for_page($s);
+        $delete = $this->get_form_url_for_page('delete',$s);
         $html .= <<<EOF
           <tr>
             <td>{$state}</td>
             <td>{$hash['subject']}</td>
             <td>
-              <a href="{$action}" title="Edit email template" style="">
+              <a href="{$edit}" title="Edit email template" style="">
                 <span class="heypub-icons dashicons dashicons-edit"></span>
               </a>
-              <a data-toggle='heypub-delete-email' href="#" title="Delete email template" style="">
+              <a data-email='{$state}' href="{$delete}" title="Delete email template" style="">
                 <span class="heypub-icons dashicons dashicons-trash"></span>
               </a>
             </td>

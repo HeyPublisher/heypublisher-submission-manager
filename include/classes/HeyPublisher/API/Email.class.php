@@ -22,7 +22,7 @@ class Email extends \HeyPublisher\API {
     $path = 'email_templates';
     $result = $this->get($path);
     $this->logger->debug(sprintf("get_emails():\n\tResults: %s",print_r($result,1)));
-    $emails = $this->normalize_results($result);
+    $emails = $this->normalize_results($result,true);
     return $emails;
   }
 
@@ -44,9 +44,48 @@ class Email extends \HeyPublisher\API {
     }
   }
 
-  private function normalize_results($emails) {
+  // Delete a template
+  public function delete_template($id) {
+    $message = 'Unknown DELETE error';
+    $path = sprintf('email_templates/%s',$id);
+    $result = $this->delete($path);
+    if ($result == 'deleted') {
+      $message = 'Email template deleted';
+    }
+    elseif (!$this->error) {
+      $this->error = "Unable to delete template";
+    }
+    return $message;
+  }
+
+  // Update a template
+  public function update_template($post) {
+    $message = 'Unknown POST error';
+    if ($post['hp_email']) {
+      $path = 'email_templates';
+      $result = $this->post($path,$post['hp_email']);
+      $emails = $this->normalize_results($result);
+      if ($emails[0] && $emails[0]['id'] > 0) {
+        $message = 'Email template updated';
+      }
+      elseif (!$this->error) {
+        $this->error = "Unable to validate template";
+      }
+    }
+    else {
+      $this->error = 'Unknown POST error';
+    }
+    return $message;
+  }
+
+  private function normalize_results($emails,$include_meta=false) {
     if ($emails['email_templates'] && sizeof($emails['email_templates']) > 0 ) {
-      return $emails['email_templates'];
+      if ($include_meta) {
+        return $emails;
+      }
+      else {
+        return $emails['email_templates'];
+      }
     } else {
       return [];
     }

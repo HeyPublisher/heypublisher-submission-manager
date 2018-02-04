@@ -7,7 +7,8 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
 
 /**
  * HeyPublisher base class for all JSON API calls
- *
+ * TODO: https://stackoverflow.com/questions/13420952/php-curl-delete-request
+ * Clean up this file to be more DRY
  */
 
 class API {
@@ -47,6 +48,7 @@ class API {
   */
   public function post($path, array $post = NULL, array $options = array()) {
     $url = sprintf('%s/%s',$this->api,$path);
+    $post = $this->clean_post_vars($post);
     $defaults = array(
       CURLOPT_POST => 1,
       CURLOPT_HEADER => 0,
@@ -90,6 +92,29 @@ class API {
     return $result;
   }
 
+  /**
+  * Send a GET requst using cURL
+  * @param string $url to request
+  * @return string
+  */
+  public function delete($path) {
+    $this->logger->debug("in delete()\n\tpath: {$path}");
+    $url = sprintf('%s/%s',$this->api,$path);
+    $this->logger->debug("=> url: {$url}");
+    $defaults = array(
+      CURLOPT_URL => $url,
+      CURLOPT_HEADER => 0,
+      CURLOPT_RETURNTRANSFER  => TRUE,
+      CURLOPT_CUSTOMREQUEST   => 'DELETE',
+      CURLOPT_TIMEOUT => $this->timeout
+    );
+    $curl = curl_init();
+    curl_setopt_array($curl, $defaults );
+    $result = $this->send($curl);
+    curl_close($curl);
+    return $result;
+  }
+
   // Execute the curl command
   private function send($curl) {
     $this->logger->debug("send()");
@@ -106,14 +131,26 @@ class API {
     // Check for errors
     if ( curl_errno($curl) ) {
       $this->error = sprintf('HeyPublisher API Error : %s', curl_error($curl));
-    } else {
+    }
+    else {
       switch($status){
-        case 200:
-          // TODO: Convert JSON to hash
+        case 200:   // success GET
           $return = json_decode($result, true);
           break;
+        case 201:   // success POST
+          $return = json_decode($result, true);
+          break;
+        case 204:   // success DELETE
+          $return = 'deleted';
+          break;
         default:
-          $this->error = sprintf('HeyPublisher API Return Status : %s', $status);
+          if ($result) {
+            $data = json_decode($result, true);
+            $message = $data['message'];
+            $this->error = sprintf('HeyPublisher API Error : %s (%s)', $message, $status);
+          } else {
+            $this->error = sprintf('HeyPublisher API Return Status : %s', $status);
+          }
           break;
       }
     }
@@ -127,5 +164,16 @@ class API {
     return $token;
   }
 
+  private function clean_post_vars($array) {
+    $tmp = array();
+    foreach ($array as $key=>$val) {
+      if (is_scalar($val)) {
+        $tmp[$key] = htmlentities(stripslashes($val));
+      } else {
+        $tmp[$key] = $val;
+      }
+    }
+    return $tmp;
+  }
 }
 ?>
