@@ -87,6 +87,7 @@ Yes - you can define custom response templates that contain whatever message you
 ### Screenshots
 
 1. Plugin Validation Screen.  This is how you connect the plugin to HeyPublisher.  Input the username and password you want to create (if you don't already have a HeyPublisher account).
+![Plugin Validation Screen](heypublisher-submission-manager/screenshot-1.jpg)
 2. Publication Information screen.  Input how you want your publication to appear within HeyPublisher's database.
 3. Publication Contact information. Input the contact information for how writers should reach you if they have a question about their submission.
 4. Submission Form Configuration.  Create (or select) the page in your WordPress site that contains your Submission Guidelines and Submission Form.  If the Submission Form page does not already exist, click the link and the plugin will create it for you.
@@ -105,6 +106,6 @@ HeyPublisher builds tools for writers and publishers.  Find out more by visiting
 ## About This Plugin
 
 + WordPress minimum version: 4.0
-+ WordPress version tested up to: 4.9.1
-+ Current Stable Tag: 2.7.0
++ WordPress version tested up to: 4.9.4
++ Current Stable Tag: 2.8.0
 + License: GPLv2
