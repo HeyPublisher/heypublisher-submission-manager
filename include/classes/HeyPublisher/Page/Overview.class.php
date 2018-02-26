@@ -127,7 +127,7 @@ EOF;
 
   private function get_editor_stats($history,$id){
     $data = array('read' => 0, 'under_consideration' => 0, 'rejected' => 0, 'accepted' => 0);
-    if (in_array($id,$history['editors'])) {
+    if ($history['editors'] && in_array($id,$history['editors'])) {
       foreach($history['history'] as $set) {
         if ($set['editor_id'] == $id) {
           $data = $set;

@@ -7,11 +7,18 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
  */
 // Load the class files and associated scoped functionality
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
+require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Email.class.php');
+
 class Email extends \HeyPublisher\Page {
+
+  var $api = null;
+  var $page = '_email';
 
   public function __construct() {
   	parent::__construct();
-    $this->slug .= '_email';
+    $this->slug .= $this->page;
+    $this->api = new \HeyPublisher\API\Email;
+
   }
 
   public function __destruct() {
@@ -19,6 +26,30 @@ class Email extends \HeyPublisher\Page {
   }
 
   public function action_handler() {
+    if (isset($_REQUEST[action])) {
+      if ($_REQUEST[action] == 'create' || $_REQUEST[action] == 'update' ) {
+        $this->validate_nonced_field();
+        $this->message = $this->api->update_template($_POST);
+      }
+      elseif ($_REQUEST[action] == 'delete') {
+        $this->validate_nonced_field();
+        $this->message = $this->api->delete_template($_REQUEST[delete]);
+      }
+      else {
+        // Display the create / edit form
+        parent::page('Email Template', '', array($this,'edit_email_form'),$_REQUEST[action]);
+        return;
+        // early exit for good behavior
+      }
+    }
+    if ($this->message) {
+      if ($this->api->error) {
+        $this->xml->error = $this->api->error; # TODO: Fix this!!
+        $this->xml->print_webservice_errors(true);
+      } else {
+        $this->print_message_if_exists();
+      }
+    }
     parent::page('Email Templates', '', array($this,'list_emails'));
   }
 
@@ -28,21 +59,21 @@ class Email extends \HeyPublisher\Page {
 
     $screen->add_help_tab(
       array(
-        'id'	    => $this->slug .= '_help',
+        'id'	    => sprintf('%s_help', $this->slug),
         'title'	  => __('Keyword Substitution'),
         'content' => $this->help_substitution_text()
       )
     );
     $screen->add_help_tab(
       array(
-        'id'	    => $this->slug .= '_help_example',
+        'id'	    => sprintf('%s_help_example', $this->slug),
         'title'	  => __('Example'),
         'content' => $this->help_example()
       )
     );
     $screen->add_help_tab(
       array(
-        'id'	    => $this->slug .= '_help_sub_states',
+        'id'	    => sprintf('%s_help_sub_states', $this->slug),
         'title'	  => __('Submission States'),
         'content' => $this->help_submission_states()
       )
@@ -175,16 +206,163 @@ EOF;
     return $html;
   }
 
-  protected function list_emails() {
-    $base = HEYPUB_SVC_URL_BASE;
-    $uid = $this->xml->user_oid;
-    $pid = $this->xml->pub_oid;
-    $admin_url = sprintf("%s/wp-admin/load-styles.php?c=1&dir=ltr&load=admin-bar,common,wp-admin,buttons&ver=%s",get_bloginfo('wpurl'), get_bloginfo('version'));
-    $url = sprintf('%s/response_template/index/%s/%s?v=%s&css=%s',$base,$uid,$pid,HEYPUB_PLUGIN_BUILD_NUMBER,urlencode($admin_url));
+  protected function edit_email_form($id) {
+    $cancel = $this->get_form_url_for_page();
+    $state = ucwords($id);
+    if ($id == 'new') {
+      $title = 'Create New Email Template';
+      $email = [];
+      $button = 'create';
+      $block1 = <<<EOF
+      <p>
+        To create a new email template, simply fill out the form below with the message you want delivered to the writer.
+      </p>
+EOF;
+      $block2 = <<<EOF
+      <p>
+        If the <b>Submission State</b> you want is not listed, ensure you have set the writer notification option to <code>YES</code> on the <b>Plugin Options</b> page.
+      </p>
+EOF;
+      $submission_states = $this->api->get_submission_states();
+      if (!$submission_states && $this->api->error) {
+        $this->xml->error = $this->api->error; # TODO: Fix this!!
+        $this->xml->print_webservice_errors(true);
+      }
+      $options = '';
+      foreach($submission_states as $x => $hash) {
+        $options .=<<< EOF
+          <option value='{$hash['id']}'>{$hash['submission_state']}</option>
+EOF;
+      }
+
+      $states = <<<EOF
+      <select name="hp_email[submission_state]" id="hp_submission_state" class='heypub' />
+        {$options}
+      </select>
+EOF;
+    }
+    else {
+      $button = 'update';
+      $block1 = '';
+      $block2 = '';
+      $states = <<<EOF
+      <input type='hidden' name="hp_email[submission_state]" value="{$id}" />
+      <input type="text" name="hp_email_disabled" id="hp_submission_state" class='heypub' value="{$state}" disabled="disabled" />
+EOF;
+      $title = sprintf('Edit %s Template',$state);
+      $email = $this->api->get_email($id);
+    }
+
+    $nonce = $this->get_nonced_field();
+    $action = $this->get_form_url_for_page($button);
     $html = <<<EOF
-<iframe src="$url" width='100%' height='500' scrolling='auto'> </iframe>
+    <h3 class='first'>{$title}</h3>
+    {$block1}
+    <p>Click on the <b>HELP</b> link above to learn how to customize this email.</p>
+    {$block2}
+    <form method="post" action="{$action}">
+    <ul>
+      <li>
+        <label class='heypub' for='hp_submission_state'>Submission State</label>
+        {$states}
+      </li>
+      <li>
+        <label class='heypub' for='hp_subject'>Email Subject</label>
+        <input type="text" name="hp_email[subject]" id="hp_subject" class='heypub' value="{$email['subject']}" />
+      </li>
+      <li>
+        <label class='heypub' for='hp_body'>Email Body</label>
+        <textarea name="hp_email[body]" id="hp_body" class='heypub'>{$email['body']}</textarea>
+      </li>
+    </ul>
+    {$nonce}
+    <input type="submit" class="heypub-button button-primary" name="{$button}_template" id="{$button}_template" value="{$button} &raquo;" />
+    <a href="{$cancel}">cancel</a>
+    </form>
+
 EOF;
     return $html;
   }
+
+  protected function list_emails() {
+    $res = $this->api->get_emails();
+    if (!$res && $this->api->error) {
+      $this->xml->error = $this->api->error; # TODO: Fix this!!
+      $this->xml->print_webservice_errors(true);
+    }
+    $emails = $res['email_templates'];
+    $nonce = $this->get_nonced_field();
+    $action = $this->get_form_url_for_page('new');
+    if ($res['meta']['total'] > $res['meta']['returned']) {
+      $button = <<<EOF
+        <input type="submit" class="heypub-button button-primary" name="create_button" id="create_button" value="Add New &raquo;" />
+EOF;
+    }
+    else {
+      $button = <<<EOF
+        <input type="submit" class="heypub-button button-primary" disabled='disabled' name="create_button" id="create_button" value="No More Templates" />
+EOF;
+    }
+    $html .= <<<EOF
+      <script type='text/javascript'>
+        jQuery(function() {
+          HeyPublisher.emailListInit();
+        });
+      </script>
+      <h3 class='first'>All Templates</h3>
+      <p>To add a new custom email template, click on the 'Add New' button below.</p>
+      <p>Click on the pencil icon to edit an existing template</p>
+      <table class="widefat post fixed ll-plugin" cellspacing="0" id='heypub_emails'>
+        <thead>
+        	<tr>
+          	<th style='width:25%;'>Submission State</th>
+          	<th style='width:65%;'>Email Subject Line</th>
+          	<th style='width:10%;'>Action</th>
+        	</tr>
+        </thead>
+        <tfoot />
+        <tbody>
+        {$this->format_email_list($emails)}
+        </tbody>
+      </table>
+      <form method="post" action="{$action}">
+        {$nonce}
+        {$button}
+      </form>
+EOF;
+    // '
+    return $html;
+  }
+  private function format_email_list($emails) {
+    $html = '';
+    if (!empty($emails)) {
+      foreach($emails as $x => $hash) {
+        $s = implode(' ',explode('_',$hash['submission_state']));
+        $state = ucwords($s);
+        $edit = $this->get_form_url_for_page($s);
+        $delete = $this->get_form_url_for_page('delete',$s);
+        $html .= <<<EOF
+          <tr>
+            <td>{$state}</td>
+            <td>{$hash['subject']}</td>
+            <td>
+              <a href="{$edit}" title="Edit email template" style="">
+                <span class="heypub-icons dashicons dashicons-edit"></span>
+              </a>
+              <a data-email='{$state}' href="{$delete}" title="Delete email template" style="">
+                <span class="heypub-icons dashicons dashicons-trash"></span>
+              </a>
+            </td>
+          </tr>
+EOF;
+      }
+    } else {
+      $html .= <<<EOF
+        <tr><td colspan=3 class='heypub_no_emails'>No Templates Defined</td></tr>
+EOF;
+    }
+    return $html;
+  }
+
 }
 ?>

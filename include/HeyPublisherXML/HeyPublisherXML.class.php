@@ -55,19 +55,6 @@ class HeyPublisherXML {
     }
   }
 
-  // TODO: Can this be deprecated?
-  protected function clean_local_vars($array) {
-    $tmp = array();
-    foreach ($array as $key=>$val) {
-      if (is_scalar($val)) {
-        $tmp[$key] = htmlentities(stripslashes($val));
-      } else {
-        $tmp[$key] = $val;
-      }
-    }
-    return $tmp;
-  }
-
   public function get_category_mapping() {
     if ($this->config[categories]) {
       return $this->config[categories];
@@ -600,12 +587,14 @@ EOF;
       $email = HEYPUB_PLUGIN_ERROR_CONTACT;
       $contact = <<<EOF
         <p>
-          Please contact
+          You can check <a href='http://stats.pingdom.com/a2g0m0m0itgd' target='_blank'>our status page</a>
+          for more information.  Or contact
           <a href="mailto:{$email}?subject=plugin%20error%20{$id}">
             support@heypublisher.com
           </a>
-          for further information.
+          for assistance.
         </p>
+
 EOF;
     }
     $e = <<<EOF

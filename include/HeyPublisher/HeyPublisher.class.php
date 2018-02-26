@@ -17,7 +17,8 @@ class HeyPublisher {
   public function page_title($title) {
     return "<h2>$title</h2>";
   }
-
+  // TODO: Why should this create an absolute URL - why not a relative url?
+  // TODO: Replace this with function in Page class
   public function get_form_post_url_for_page($page) {
     $url = sprintf('%s/wp-admin/admin.php?page=%s',get_bloginfo('wpurl'),$page);
     return $url;
