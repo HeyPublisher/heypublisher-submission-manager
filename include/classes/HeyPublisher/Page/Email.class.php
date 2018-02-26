@@ -45,7 +45,7 @@ class Email extends \HeyPublisher\Page {
     if ($this->message) {
       if ($this->api->error) {
         $this->xml->error = $this->api->error; # TODO: Fix this!!
-        $this->xml->print_webservice_errors(false);
+        $this->xml->print_webservice_errors(true);
       } else {
         $this->print_message_if_exists();
       }
@@ -226,7 +226,7 @@ EOF;
       $submission_states = $this->api->get_submission_states();
       if (!$submission_states && $this->api->error) {
         $this->xml->error = $this->api->error; # TODO: Fix this!!
-        $this->xml->print_webservice_errors(false);
+        $this->xml->print_webservice_errors(true);
       }
       $options = '';
       foreach($submission_states as $x => $hash) {
@@ -288,12 +288,12 @@ EOF;
     $res = $this->api->get_emails();
     if (!$res && $this->api->error) {
       $this->xml->error = $this->api->error; # TODO: Fix this!!
-      $this->xml->print_webservice_errors(false);
+      $this->xml->print_webservice_errors(true);
     }
     $emails = $res['email_templates'];
     $nonce = $this->get_nonced_field();
     $action = $this->get_form_url_for_page('new');
-    if ($res['meta']['remaining'] > 0) {
+    if ($res['meta']['total'] > $res['meta']['returned']) {
       $button = <<<EOF
         <input type="submit" class="heypub-button button-primary" name="create_button" id="create_button" value="Add New &raquo;" />
 EOF;
@@ -315,8 +315,8 @@ EOF;
       <table class="widefat post fixed ll-plugin" cellspacing="0" id='heypub_emails'>
         <thead>
         	<tr>
-          	<th style='width:20%;'>Submission State</th>
-          	<th style='width:70%;'>Email Subject Line</th>
+          	<th style='width:25%;'>Submission State</th>
+          	<th style='width:65%;'>Email Subject Line</th>
           	<th style='width:10%;'>Action</th>
         	</tr>
         </thead>
@@ -337,7 +337,7 @@ EOF;
     $html = '';
     if (!empty($emails)) {
       foreach($emails as $x => $hash) {
-        $s = $hash['submission_state'];
+        $s = implode(' ',explode('_',$hash['submission_state']));
         $state = ucwords($s);
         $edit = $this->get_form_url_for_page($s);
         $delete = $this->get_form_url_for_page('delete',$s);
