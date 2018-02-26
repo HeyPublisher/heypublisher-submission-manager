@@ -1,5 +1,11 @@
 ## Changelog
 
+### 2.8.0
++ Released: 2018-02-25
++ [[#89](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/89)] : UI for email response template management is now wholly within WordPress, so those funky styling issues are no longer an issue.
++ [[#90](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/90)] : Added link to the HeyPublisher status page so if you get an error you'll know what's going on.
++ Verified WordPress 4.9.4
+
 ### 2.7.0
 + Released: 2018-01-07
 + [[#1](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/1)] : Editors can now vote on submissions (up/down).

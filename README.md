@@ -89,15 +89,25 @@ Yes - you can define custom response templates that contain whatever message you
 1. Plugin Validation Screen.  This is how you connect the plugin to HeyPublisher.  Input the username and password you want to create (if you don't already have a HeyPublisher account).
 ![Plugin Validation Screen](screenshot-1.jpg)
 2. Publication Information screen.  Input how you want your publication to appear within HeyPublisher's database.
+![Publication Information screen](screenshot-2.jpg)
 3. Publication Contact information. Input the contact information for how writers should reach you if they have a question about their submission.
+![Publication Contact information](screenshot-3.jpg)
 4. Submission Form Configuration.  Create (or select) the page in your WordPress site that contains your Submission Guidelines and Submission Form.  If the Submission Form page does not already exist, click the link and the plugin will create it for you.
+![Submission Form Configuration](screenshot-4.jpg)
 5. Submission Categories. Select the types of work you want to accept, and how these correspond to the categories you've created in WordPress.
+![Submission Categories](screenshot-5.jpg)
 6. Writer Notifications.  Select YES for those notifications you want the writer to receive.
+![Writer Notifications](screenshot-6.jpg)
 7. Miscellaneous.  You can probably keep this on the default setting.  Adjust only if  you accept submissions in languages and character sets different than the one you publish.
+![Miscellaneous](screenshot-7.jpg)
 8. Open Submissions.  From this screen you can view and manage the submissions received by your publication.  Clicking on the plus icon will display the author's bio, if they have provided one.  Clicking on the title of the submission will allow you to 'preview' the submission.
+![Open Submissions](screenshot-8.jpg)
 9. Submission Status.  When 'previewing' a submission, the submission status side-bar will give you a quick status on the submission, including how many days it's been in your slushpile.  From this side-bar you can choose to accept or reject the submission.  Any note you add to the submission will be sent to the author if you have Writer Notifications turned on.
+![Submission Status](screenshot-9.jpg)
 10. Statistics screen.  Provides a quick snapshot of your slushpile.
+![Statistics screen](screenshot-10.jpg)
 11. Reimport.  If a writer modifies a submission you have already 'Accepted' - you can re-import the submission into WordPress by selecting the "Reimport Into WordPress" value from the drop-down and clicking the "Update Submission" button.
+![Reimport](screenshot-11.jpg)
 
 ### About Us
 
