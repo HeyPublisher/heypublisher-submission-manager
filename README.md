@@ -117,5 +117,5 @@ HeyPublisher builds tools for writers and publishers.  Find out more by visiting
 
 + WordPress minimum version: 4.0
 + WordPress version tested up to: 4.9.4
-+ Current Stable Tag: 2.8.0
++ Current Stable Tag: 2.8.1
 + License: GPLv2

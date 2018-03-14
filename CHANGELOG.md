@@ -1,5 +1,10 @@
 ## Changelog
 
+### 2.8.1
++ Released: 2018-03-14
++ [[#92](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/92)] : Fixed issue where publishers are unable to create an email template if they don't already have an email template defined.
++ [[#93](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/93)] : Fixed issue where it was impossible to delete an email template for a multi-word submission state (ie: 'read' was ok, but 'publisher revision requested' would fail).
+
 ### 2.8.0
 + Released: 2018-02-25
 + [[#89](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/89)] : UI for email response template management is now wholly within WordPress, so those funky styling issues are no longer an issue.

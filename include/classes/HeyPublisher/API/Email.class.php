@@ -79,7 +79,7 @@ class Email extends \HeyPublisher\API {
   }
 
   private function normalize_results($emails,$include_meta=false) {
-    if ($emails['email_templates'] && sizeof($emails['email_templates']) > 0 ) {
+    if (is_array($emails['email_templates'])) {
       if ($include_meta) {
         return $emails;
       }
