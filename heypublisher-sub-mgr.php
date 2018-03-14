@@ -5,7 +5,7 @@ Plugin URI: https://www.heypublisher.com
 Description: HeyPublisher is a better way of managing unsolicited submissions directly within WordPress.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 2.8.0
+Version: 2.8.1
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
   Copyright 2014-2018 Richard Luck (https://github.com/aguywithanidea/)
@@ -74,16 +74,18 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.6.3 => 70
   2.7.0 => 71
   2.8.0 => 72
+  2.8.1 => 73
+
 ---------------------------------------------------------------------------------
 */
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2018-02-25");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2018-03-14");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "72");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "2.8.0");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "73");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "2.8.1");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';

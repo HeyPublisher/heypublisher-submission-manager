@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
 Requires at least: 4.0
 Tested up to: 4.9.4
-Stable Tag: 2.8.0
+Stable Tag: 2.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,6 +111,11 @@ Yes - you can define custom response templates that contain whatever message you
 
 == Changelog ==
 
+= 2.8.1 =
+* Released: 2018-03-14
+* Fixed issue where publishers are unable to create an email template if they don't already have an email template defined.
+* Fixed issue where it was impossible to delete an email template for a multi-word submission state (ie: 'read' was ok, but 'publisher revision requested' would fail).
+
 = 2.8.0 =
 * Released: 2018-02-25
 * UI for email response template management is now wholly within WordPress, so those funky styling issues are no longer an issue.
@@ -125,7 +130,6 @@ Yes - you can define custom response templates that contain whatever message you
 * Fixed errors with javascript that were preventing summary and author bio expand buttons from working in some versions of Firefox.
 * Added ability for editors to store notes on submissions they're reviewing
 * Added ability for editors to vote for submissions.
-
 
 = 2.6.3 =
 * Released: 2017-12-20

@@ -340,7 +340,7 @@ EOF;
         $s = implode(' ',explode('_',$hash['submission_state']));
         $state = ucwords($s);
         $edit = $this->get_form_url_for_page($s);
-        $delete = $this->get_form_url_for_page('delete',$s);
+        $delete = $this->get_form_url_for_page('delete',$hash['submission_state']);
         $html .= <<<EOF
           <tr>
             <td>{$state}</td>
