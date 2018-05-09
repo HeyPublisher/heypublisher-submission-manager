@@ -5,7 +5,7 @@ Plugin URI: https://www.heypublisher.com
 Description: HeyPublisher is a better way of managing unsolicited submissions directly within WordPress.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 2.8.1
+Version: 2.8.2
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
   Copyright 2014-2018 Richard Luck (https://github.com/aguywithanidea/)
@@ -75,6 +75,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.7.0 => 71
   2.8.0 => 72
   2.8.1 => 73
+  2.8.2 => 74
 
 ---------------------------------------------------------------------------------
 */
@@ -82,10 +83,10 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2018-03-14");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2018-05-09");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "73");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "2.8.1");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "74");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "2.8.2");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
@@ -405,8 +406,8 @@ function heypub_uninit() {
   $install = $hp_xml->install;
   if ($install != FALSE && isset($install['user_oid']) ) {
     // disable the publisher in the db
-    $opts[accepting_subs] = false;
-    $opts[genres_list] = false;
+    $opts['accepting_subs'] = false;
+    $opts['genres_list'] = false;
     $opts['guide'] = get_permalink($opts['sub_guide_id']);
     $hp_xml->update_publisher($opts,true);
   }
