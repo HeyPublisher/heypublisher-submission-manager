@@ -56,8 +56,8 @@ class HeyPublisherXML {
   }
 
   public function get_category_mapping() {
-    if ($this->config[categories]) {
-      return $this->config[categories];
+    if ($this->config['categories']) {
+      return $this->config['categories'];
     }
     else {
       return array();
@@ -65,7 +65,7 @@ class HeyPublisherXML {
   }
 
   public function set_category_mapping($map) {
-    $this->config[categories] = $map;
+    $this->config['categories'] = $map;
     return;
   }
 
@@ -87,12 +87,12 @@ class HeyPublisherXML {
   }
 
   public function set_install_option($key,$val){
-    $this->install[$key] = $val;
+    $this->install["$key"] = $val;
   }
 
   public function get_install_option($key){
-    if ($this->install[$key]) {
-      return $this->install[$key];
+    if ($this->install["$key"]) {
+      return $this->install["$key"];
     }
     return false;
   }
@@ -152,21 +152,21 @@ class HeyPublisherXML {
   }
 
   public function set_config_option($key,$val){
-    $this->config[$key] = $val;
+    $this->config["$key"] = $val;
   }
 
   public function set_config_option_bulk($hash){
     $allowed = array_keys($this->config_options_definition());
     foreach ($hash as $key=>$val) {
       if (in_array($key,$allowed)) {
-        $this->config[$key] = $val;
+        $this->config["$key"] = $val;
       }
     }
   }
 
   public function get_config_option($key){
-    if ($this->config[$key]) {
-      return $this->config[$key];
+    if ($this->config["$key"]) {
+      return $this->config["$key"];
     }
     return false;
   }
@@ -269,9 +269,9 @@ class HeyPublisherXML {
 
   function update_publisher_mailchimp($post) {
     $xml = null;
-    $active =   htmlentities(stripslashes($post[mailchimp_active]));
-    $api_key =  htmlentities(stripslashes($post[mailchimp_api_key]));
-    $list_id =  htmlentities(stripslashes($post[mailchimp_list_id]));
+    $active =   htmlentities(stripslashes($post['mailchimp_active']));
+    $api_key =  htmlentities(stripslashes($post['mailchimp_api_key']));
+    $list_id =  htmlentities(stripslashes($post['mailchimp_list_id']));
     // if ($post[mailchimp_active]) {
     $xml =<<< EOF
     <mailchimp>
@@ -286,9 +286,9 @@ EOF;
 
   function update_publisher_categories($post) {
     $ret = null;
-    if ($post[accepting_subs] && $post[genres_list]) {
+    if ($post['accepting_subs'] && $post['genres_list']) {
       $cat_array = array();
-      foreach ($post[genres_list] as $name => $id) {
+      foreach ($post['genres_list'] as $name => $id) {
         $cat_array[] = sprintf('<category>%s</category>', $id);
       }
       if (FALSE != $cat_array) {
@@ -299,8 +299,8 @@ EOF;
   }
 
   function update_publisher_reading_period($post) {
-    $bool = $this->boolean($post[reading_period]);
-    if ($post[reading_period]) {
+    $bool = $this->boolean($post['reading_period']);
+    if ($post['reading_period']) {
       $start = $post['start_date'];
       $end = $post['end_date'];
       $ret = "<reading_period><reading_start_date>$start</reading_start_date><reading_end_date>$end</reading_end_date></reading_period>";
@@ -320,9 +320,9 @@ EOF;
     }
   }
   function update_publisher_paying_market($post) {
-    $bool = $this->boolean($post[paying_market]);
-    if ($post[paying_market]) {
-      $val = htmlentities(stripslashes($post[paying_market_range]));
+    $bool = $this->boolean($post['paying_market']);
+    if ($post['paying_market']) {
+      $val = htmlentities(stripslashes($post['paying_market_range']));
       $ret = "<paying_market><paying_market_amount>$val</paying_market_amount></paying_market>";
     } else {
       $ret = "<paying_market>$bool</paying_market>";
@@ -364,25 +364,25 @@ EOF;
     $categories = $this->update_publisher_categories($post);
     $mailchimp = $this->update_publisher_mailchimp($post);
     $reading = $this->update_publisher_reading_period($post);
-    $simulsubs = $this->boolean($post[simu_subs]);
-    $multisubs = $this->boolean($post[multi_subs]);
-    $reprints = $this->boolean($post[reprint_subs]);
-    $accepting_subs  = $this->boolean($post[accepting_subs]);
+    $simulsubs = $this->boolean($post['simu_subs']);
+    $multisubs = $this->boolean($post['multi_subs']);
+    $reprints = $this->boolean($post['reprint_subs']);
+    $accepting_subs  = $this->boolean($post['accepting_subs']);
     $paying = $this->update_publisher_paying_market($post);
     # no htmlentities here, otherwise " becomes %quote; and cronks the seo name
-    $name = stripslashes($post[name]);
-    $issn = htmlentities(stripslashes($post[issn]));
-    $established = htmlentities(stripslashes($post[established]));
-    $editor = htmlentities(stripslashes($post[editor_name]));
-    $editor_email = htmlentities(stripslashes($post[editor_email]));
-    $address = htmlentities(stripslashes($post[address]));
-    $city = htmlentities(stripslashes($post[city]));
-    $state = htmlentities(stripslashes($post[state]));
-    $zipcode = htmlentities(stripslashes($post[zipcode]));
-    $country = htmlentities(stripslashes($post[country]));
-    $twitter = htmlentities(stripslashes($post[twitter]));
-    $facebook = htmlentities(stripslashes($post[facebook]));
-    $url = htmlentities(stripslashes($post[url]));
+    $name = stripslashes($post['name']);
+    $issn = htmlentities(stripslashes($post['issn']));
+    $established = htmlentities(stripslashes($post['established']));
+    $editor = htmlentities(stripslashes($post['editor_name']));
+    $editor_email = htmlentities(stripslashes($post['editor_email']));
+    $address = htmlentities(stripslashes($post['address']));
+    $city = htmlentities(stripslashes($post['city']));
+    $state = htmlentities(stripslashes($post['state']));
+    $zipcode = htmlentities(stripslashes($post['zipcode']));
+    $country = htmlentities(stripslashes($post['country']));
+    $twitter = htmlentities(stripslashes($post['twitter']));
+    $facebook = htmlentities(stripslashes($post['facebook']));
+    $url = htmlentities(stripslashes($post['url']));
 
     $uninstall = '';
     if ($uninstall_plugin) {
@@ -391,38 +391,38 @@ EOF;
 
     $post = <<<EOF
 <publisher>
-    <oid>$this->pub_oid</oid>
-    <publishertype_id>$post[pub_type]</publishertype_id>
-    <name>$name</name>
-    <url>$url</url>
-    <issn>$issn</issn>
-    <established>$established</established>
-    <circulation>$post[circulation]</circulation>
-    <sub_guideline>$post[guide]</sub_guideline>
-    <editor>$editor</editor>
-    <editor_email>$editor_email</editor_email>
-    <accepts_simultaneous_submissions>$simulsubs</accepts_simultaneous_submissions>
-    <accepts_multiple_submissions>$multisubs</accepts_multiple_submissions>
-    <accepts_reprints>$reprints</accepts_reprints>
-    <now_accepting_submissions>$accepting_subs</now_accepting_submissions>
-    <address>$address</address>
-    <city>$city</city>
-    <state>$state</state>
-    <zipcode>$zipcode</zipcode>
-    <country>$country</country>
-    <twitter>$twitter</twitter>
-    <facebook>$facebook</facebook>
-    <submission_url>$post[submission_url]</submission_url>
+    <oid>{$this->pub_oid}</oid>
+    <publishertype_id>{$post['pub_type']}</publishertype_id>
+    <name>{$name}</name>
+    <url>{$url}</url>
+    <issn>{$issn}</issn>
+    <established>{$established}</established>
+    <circulation>{$post['circulation']}</circulation>
+    <sub_guideline>{$post['guide']}</sub_guideline>
+    <editor>{$editor}</editor>
+    <editor_email>{$editor_email}</editor_email>
+    <accepts_simultaneous_submissions>{$simulsubs}</accepts_simultaneous_submissions>
+    <accepts_multiple_submissions>{$multisubs}</accepts_multiple_submissions>
+    <accepts_reprints>{$reprints}</accepts_reprints>
+    <now_accepting_submissions>{$accepting_subs}</now_accepting_submissions>
+    <address>{$address}</address>
+    <city>{$city}</city>
+    <state>{$state}</state>
+    <zipcode>{$zipcode}</zipcode>
+    <country>{$country}</country>
+    <twitter>{$twitter}</twitter>
+    <facebook>{$facebook}</facebook>
+    <submission_url>{$post['submission_url']}</submission_url>
     <submission_product>HeyPublisher</submission_product>
     <platform>wordpress</platform>
-    <turn_off_tidy>$post[turn_off_tidy]</turn_off_tidy>
+    <turn_off_tidy>{$post['turn_off_tidy']}</turn_off_tidy>
     <notify_submitted>1</notify_submitted>
-    <notify_read>$post[notify_read]</notify_read>
-    <notify_rejected>$post[notify_rejected]</notify_rejected>
-    <notify_published>$post[notify_published]</notify_published>
-    <notify_accepted>$post[notify_accepted]</notify_accepted>
-    <notify_under_consideration>$post[notify_under_consideration]</notify_under_consideration>
-    <notify_withdrawn>$post[notify_withdrawn]</notify_withdrawn>
+    <notify_read>{$post['notify_read']}</notify_read>
+    <notify_rejected>{$post['notify_rejected']}</notify_rejected>
+    <notify_published>{$post['notify_published']}</notify_published>
+    <notify_accepted>{$post['notify_accepted']}</notify_accepted>
+    <notify_under_consideration>{$post['notify_under_consideration']}</notify_under_consideration>
+    <notify_withdrawn>{$post['notify_withdrawn']}</notify_withdrawn>
     {$categories}
     {$reading}
     {$paying}
@@ -734,7 +734,7 @@ EOF;
   // Process the submission action with an optional message
   function submission_action($id,$action,$message=false) {
       $return = false;
-      if (!$this->submission_status[$action]) {
+      if (!$this->submission_status["$action"]) {
         $this->error = sprintf('%s is an invalid action',$action);
         // $this->print_webservice_errors();
         return $return;
@@ -799,11 +799,11 @@ EOF;
   public function sync_publisher_info() {
     $p = $this->get_publisher_info();
     if ($p) {
-      $this->set_config_option('seo_url',$p[seo_url]);
-      $this->set_config_option('homepage_first_validated_at',$p[homepage_first_validated_at]);
-      $this->set_config_option('homepage_last_validated_at',$p[homepage_last_validated_at]);
-      $this->set_config_option('guide_first_validated_at',$p[guide_first_validated_at]);
-      $this->set_config_option('guide_last_validated_at',$p[guide_last_validated_at]);
+      $this->set_config_option('seo_url',$p['seo_url']);
+      $this->set_config_option('homepage_first_validated_at',$p['homepage_first_validated_at']);
+      $this->set_config_option('homepage_last_validated_at',$p['homepage_last_validated_at']);
+      $this->set_config_option('guide_first_validated_at',$p['guide_first_validated_at']);
+      $this->set_config_option('guide_last_validated_at',$p['guide_last_validated_at']);
       // we won't store total subs and open subs
       // xml.avg_response_days(-1)   # we'll calculate this later
       // xml.avg_acceptance_rate(-1) # we'll calculate this later

@@ -238,7 +238,7 @@ EOF;
     $pages = get_pages();
     $select = '';
     foreach ($pages as $p) {
-      $select .= sprintf('<option value="%s" %s>%s</option>', $p->ID, ($p->ID == $opts[sub_guide_id]) ? 'selected=selected' : null, $p->post_title);
+      $select .= sprintf('<option value="%s" %s>%s</option>', $p->ID, ($p->ID == $opts['sub_guide_id']) ? 'selected=selected' : null, $p->post_title);
     }
     $html = <<<EOF
     <h3>Submission Guidelines</h3>
@@ -266,7 +266,7 @@ EOF;
     $html = "<h3>Submission Form</h3>";
     $nopage = 'style="display:none;"';
     $yespage = '';
-    if (!$opts[sub_page_id]) {
+    if (!$opts['sub_page_id']) {
       $yespage = 'style="display:none;"';
       $nopage = '';
     }
@@ -283,7 +283,7 @@ EOF;
     $select = '';
     $pages = get_pages();
     foreach ($pages as $p) {
-      $select .= sprintf('<option value="%s" %s>%s</option>', $p->ID, ($p->ID == $opts[sub_page_id]) ? 'selected=selected' : null, $p->post_title);
+      $select .= sprintf('<option value="%s" %s>%s</option>', $p->ID, ($p->ID == $opts['sub_page_id']) ? 'selected=selected' : null, $p->post_title);
     }
     $html .= <<<EOF
       <ul>
@@ -368,7 +368,7 @@ EOF;
       $mapping .= sprintf('
         <td>%s &nbsp; <input id="cat_%s"type="checkbox" name="heypub_opt[genres_list][]" value="%s" %s onclick="HeyPublisher.clickCheck(this,\'chk_%s\');"/></td>
         <td>%s</td>',
-          $hash[name],$hash[id],$hash[id],($hash[has]) ? "checked=checked" : null,$hash[id],$this->heypub_get_category_mapping($hash[id],$hash[has])
+          $hash['name'],$hash['id'],$hash['id'],($hash['has']) ? "checked=checked" : null,$hash['id'],$this->heypub_get_category_mapping($hash['id'],$hash['has'])
       );
       $cnt ++;
     }
@@ -550,7 +550,7 @@ EOF;
         $cats = $this->xml->get_my_categories_as_hash();
         $has_genres = '0';
         foreach ($cats as $id=>$hash) {
-          if ($hash[has]) { $has_genres = '1'; }
+          if ($hash['has']) { $has_genres = '1'; }
         }
 
         $message .= "<br/><br/>To help you get started we've pre-populated the form with information we already have.";
@@ -606,12 +606,12 @@ EOF;
   // map the internal categories to HeyPub categories
   private function set_category_mapping($post) {
     $result = array();
-    if ($post[accepting_subs] && $post[genres_list]) {
-      $map = $post[category_map];
-      $genres = $post[genres_list];
+    if ($post['accepting_subs'] && $post['genres_list']) {
+      $map = $post['category_map'];
+      $genres = $post['genres_list'];
       foreach ($genres as $x) {
-        if ($map[$x]) {
-          $result[$x] = $map[$x];
+        if ($map["$x"]) {
+          $result["$x"] = $map["$x"];
         }
       }
     }
@@ -622,7 +622,7 @@ EOF;
     $html = '';
     if (empty($pub_types)) { return $html; }
     foreach ($pub_types as $id=>$hash){
-      $html .= sprintf('<option value="%s" %s>%s</option>',$hash[id],($hash[has]) ? "selected=selected" : null, $hash[name]);
+      $html .= sprintf('<option value="%s" %s>%s</option>',$hash['id'],($hash['has']) ? "selected=selected" : null, $hash['name']);
     }
     return $html;
   }
@@ -634,7 +634,7 @@ EOF;
     $map = $this->xml->get_category_mapping();
     $list = wp_dropdown_categories(
       array(
-        'selected' => ($map[$id]) ? $map[$id] : 0,
+        'selected' => ($map["$id"]) ? $map["$id"] : 0,
         'id' => "chk_$id",
         'hide_empty' => 0,
         'name' => "heypub_opt[category_map][$id]",

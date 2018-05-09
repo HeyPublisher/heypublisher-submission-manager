@@ -1,5 +1,10 @@
 ## Changelog
 
+### 2.8.2
++ Released: 2018-05-09
++ [[#93](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/93)] : Fixed issue where it was impossible to edit an email template for a multi-word submission state.  93 was fixed without checking the edits which uses the same logic.
++ [[#95](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/95)] : Fixed issue with undefined constants throwing warnings in versions of PHP > 7.0
+
 ### 2.8.1
 + Released: 2018-03-14
 + [[#92](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/92)] : Fixed issue where publishers are unable to create an email template if they don't already have an email template defined.

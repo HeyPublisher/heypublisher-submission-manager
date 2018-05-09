@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
 Requires at least: 4.0
 Tested up to: 4.9.4
-Stable Tag: 2.8.1
+Stable Tag: 2.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,11 @@ Yes - you can define custom response templates that contain whatever message you
 11. Reimport.  If a writer modifies a submission you have already 'Accepted' - you can re-import the submission into WordPress by selecting the "Reimport Into WordPress" value from the drop-down and clicking the "Update Submission" button.
 
 == Changelog ==
+
+= 2.8.2 =
+* Released: 2018-05-09
+* Fixed issue where it was impossible to edit an email template for a multi-word submission state.  2.8.1 fixed issue for deletes but not edits, which uses the same logic.
+* Fixed issue with undefined constants throwing warnings in versions of PHP > 7.0
 
 = 2.8.1 =
 * Released: 2018-03-14

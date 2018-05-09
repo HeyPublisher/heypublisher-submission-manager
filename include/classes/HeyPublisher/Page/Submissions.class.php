@@ -40,37 +40,37 @@ class Submissions extends \HeyPublisher\Page {
       heypub_not_authenticated();
       return;
     }
-    if (isset($_REQUEST[show])) {
-      parent::page('Submission', '', array($this,'display_submission'),$_REQUEST[show]);
+    if (isset($_REQUEST['show'])) {
+      parent::page('Submission', '', array($this,'display_submission'),$_REQUEST['show']);
       return;
     }
 
     // process the request actions
-    if (isset($_REQUEST[action])) {
-      if ($_REQUEST[action] == 'reject') {
+    if (isset($_REQUEST['action'])) {
+      if ($_REQUEST['action'] == 'reject') {
         $this->message = $this->reject_submission($_REQUEST);
       }
-      elseif ($_REQUEST[action] == 'withdraw') {
+      elseif ($_REQUEST['action'] == 'withdraw') {
         $this->message = $this->withdraw_submission($_REQUEST);
       }
-      elseif ($_REQUEST[action] == 'review') {
+      elseif ($_REQUEST['action'] == 'review') {
         $this->message = $this->consider_submission($_REQUEST);
       }
-      elseif ($_REQUEST[action] == 'accept') {
+      elseif ($_REQUEST['action'] == 'accept') {
         $this->message = $this->accept_submission($_REQUEST);
         // We exit if we don't have a message, that means we had to prompt for user.
         if (!$this->message) { return; }
       }
-      elseif ($_REQUEST[action] == 'create_user') {
+      elseif ($_REQUEST['action'] == 'create_user') {
         $this->message = $this->create_user($_REQUEST);
         if (!$this->message) { return; }
       }
-      elseif ($_REQUEST[action] == 'request_revision') {
+      elseif ($_REQUEST['action'] == 'request_revision') {
         $this->message = $this->request_revision($_REQUEST);
       }
       else {
         $this->xml->error = "Oops - looks like you didn't select an action from the dropdown.";
-        if ($_REQUEST[notes] != '') {
+        if ($_REQUEST['notes'] != '') {
           $this->xml->error .= '<br/>Your note to the author was not sent.';
         }
         $this->xml->print_webservice_errors(false);
@@ -557,11 +557,11 @@ EOF;
   // @since 2.7.0
   private function get_editor_object($id) {
     if ($id) {
-      if ($this->editors[$id]) {
-        $author = $this->editors[$id];
+      if ($this->editors["$id"]) {
+        $author = $this->editors["$id"];
       } else {
         $author = get_the_author_meta( 'display_name', $id );
-        $this->editors[$id] = $author;
+        $this->editors["$id"] = $author;
       }
     }
     return $author;
@@ -575,7 +575,7 @@ EOF;
   // Follows the same format as wp_post_revision_title_expanded()
   // https://developer.wordpress.org/reference/functions/wp_post_revision_title_expanded/
   private function format_submission_history($item){
-    $author = $this->get_editor_object( $item[editor_id] );
+    $author = $this->get_editor_object( $item['editor_id'] );
     if (!$author) {
       if ($item['name'] == 'submitted') {
         $author = 'Author';
@@ -584,15 +584,15 @@ EOF;
       }
     }
 
-    $gravatar = get_avatar( $item[editor_id], 24 );
-    $date = $this->get_formatted_date($item[date]);
+    $gravatar = get_avatar( $item['editor_id'], 24 );
+    $date = $this->get_formatted_date($item['date']);
     $data = sprintf(
          /* translators: post revision title: 1: author avatar, 2: author name, 3: time ago, 4: date */
          __( '%1$s %2$s: %3$s %4$s ago (%5$s)' ),
          $gravatar,
          $author,
-         strtolower($item[status]),
-         human_time_diff( strtotime( $item[date] ), current_time( 'timestamp' ) ),
+         strtolower($item['status']),
+         human_time_diff( strtotime( $item['date'] ), current_time( 'timestamp' ) ),
          $date
      );
      return $data;
@@ -685,8 +685,8 @@ EOF;
 private function accept_process_submission($req,$uid,$msg=FALSE) {
   global $hp_base;
   check_admin_referer('heypub-bulk-submit');
-  $id = $req[post][0];
-  $notes = $req[notes];
+  $id = $req['post'][0];
+  $notes = $req['notes'];
   $this->xml->log(sprintf("accept_process_submission req = \n%s\n USER_ID: %s\nMSG: %s",print_r($req,1),$uid,$msg));
 
   if ($this->xml->submission_action($id,'accepted',$notes)) {
@@ -709,9 +709,9 @@ private function accept_process_submission($req,$uid,$msg=FALSE) {
 function accept_submission($req) {
   global $hp_base;
   check_admin_referer('heypub-bulk-submit');
-  $id = $req[post][0];
+  $id = $req['post'][0];
   $sub = $this->xml->get_submission_by_id($id);
-  $notes = $req[notes];
+  $notes = $req['notes'];
 	// do we have this author in the db?
   $user_id = $hp_base->get_author_id($sub->author);
   $this->xml->log("accept_submission($req)");
@@ -785,8 +785,8 @@ EOF;
   // Save For Later Handler - Marks these records for later review.
   private function consider_submission($req) {
     check_admin_referer('heypub-bulk-submit');
-    $post = $req[post];
-    $notes = $req[notes];
+    $post = $req['post'];
+    $notes = $req['notes'];
     $cnt = 0;
     foreach ($post as $key) {
       if ($this->xml->submission_action($key,'under_consideration',$notes)) {
@@ -802,8 +802,8 @@ EOF;
     $map = $this->xml->get_category_mapping();
     // printf("<pre>Sub object looks like : %s</pre>",print_r($sub,1));
     $cat = sprintf("%s",$sub->category->id);
-    if ($map[$cat]) {
-      $category = $map[$cat]; // local id
+    if ($map["$cat"]) {
+      $category = $map["$cat"]; // local id
     }
     // this piece does not exist - create it
     $post = array();
@@ -829,17 +829,17 @@ EOF;
   */
   private function create_user($req) {
     global $hp_base;
-    if (!$req[username]) {
+    if (!$req['username']) {
      $this->xml->error = "Oops - looks like you didn't provide a valid username";
      $this->xml->print_webservice_errors(false);
      $this->accept_submission($req);
      return FALSE;
     }
-    $id = $req[post][0];
+    $id = $req['post'][0];
     $sub = $this->xml->get_submission_by_id($id);
-    $notes = $req[notes];
+    $notes = $req['notes'];
     // do we have this author in the db?
-    $user_id = $hp_base->create_author($req[username],$sub->author);
+    $user_id = $hp_base->create_author($req['username'],$sub->author);
     if (!is_wp_error($user_id)) {
       $url = $hp_base->get_author_edit_url($user_id);
       $msg = sprintf("<br/><br/>The author <b><a href='$url'>%s</a></b> was created in your database.  Please ensure their information is correct prior to publication.", $sub->author->full_name);
@@ -849,7 +849,7 @@ EOF;
     else {
       $err = $user_id->get_error_message();
       $this->xml->error = <<<EOF
-        We ran into problems creating the user account for {$req[username]}.
+        We ran into problems creating the user account for {$req['username']}.
         <br/>
         {$err}
         <br/>
@@ -871,7 +871,7 @@ EOF;
     $ids = array();
     foreach ($results as $hash) {
       $sub_id = "$hash->sub_id";
-      $ids[$sub_id] = $hash->post_id;
+      $ids["$sub_id"] = $hash->post_id;
     }
     return $ids;
   }
@@ -940,8 +940,8 @@ EOF;
   // Rejection Handler - these posts may or may not be in the db
   private function reject_submission($req) {
     check_admin_referer('heypub-bulk-submit');
-    $post = $req[post];
-    $notes = $req[notes];
+    $post = $req['post'];
+    $notes = $req['notes'];
     $cnt = 0;
     foreach ($post as $key) {
       if ($this->xml->submission_action($key,'rejected',$notes)) {
@@ -960,8 +960,8 @@ EOF;
   // Withdraw Handler - these posts may or may not be in the db
   private function withdraw_submission($req) {
     check_admin_referer('heypub-bulk-submit');
-    $post = $req[post];
-    $notes = $req[notes];
+    $post = $req['post'];
+    $notes = $req['notes'];
     $cnt = 0;
     foreach ($post as $key) {
       if ($this->xml->submission_action($key,'publisher_withdrew',$notes)) {
@@ -980,8 +980,8 @@ EOF;
   // Request a revision from the writer
   private function request_revision($req) {
     check_admin_referer('heypub-bulk-submit');
-    $post = $req[post][0];
-    $notes = $req[notes];
+    $post = $req['post'][0];
+    $notes = $req['notes'];
     if ($this->xml->submission_action($post,'publisher_revision_requested',$notes)) {
       $message = "An email has been sent to the author requesting they submit a new revision of their work.";
     } else {

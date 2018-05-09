@@ -26,18 +26,18 @@ class Email extends \HeyPublisher\Page {
   }
 
   public function action_handler() {
-    if (isset($_REQUEST[action])) {
-      if ($_REQUEST[action] == 'create' || $_REQUEST[action] == 'update' ) {
+    if (isset($_REQUEST['action'])) {
+      if ($_REQUEST['action'] == 'create' || $_REQUEST['action'] == 'update' ) {
         $this->validate_nonced_field();
         $this->message = $this->api->update_template($_POST);
       }
-      elseif ($_REQUEST[action] == 'delete') {
+      elseif ($_REQUEST['action'] == 'delete') {
         $this->validate_nonced_field();
-        $this->message = $this->api->delete_template($_REQUEST[delete]);
+        $this->message = $this->api->delete_template($_REQUEST['delete']);
       }
       else {
         // Display the create / edit form
-        parent::page('Email Template', '', array($this,'edit_email_form'),$_REQUEST[action]);
+        parent::page('Email Template', '', array($this,'edit_email_form'),$_REQUEST['action']);
         return;
         // early exit for good behavior
       }
@@ -339,7 +339,7 @@ EOF;
       foreach($emails as $x => $hash) {
         $s = implode(' ',explode('_',$hash['submission_state']));
         $state = ucwords($s);
-        $edit = $this->get_form_url_for_page($s);
+        $edit = $this->get_form_url_for_page($hash['submission_state']);
         $delete = $this->get_form_url_for_page('delete',$hash['submission_state']);
         $html .= <<<EOF
           <tr>
