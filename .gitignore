@@ -1,0 +1,6 @@
+# ignore our control file
+difflist
+
+# ignore the svn control files
+.svn
+
