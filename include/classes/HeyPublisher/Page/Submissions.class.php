@@ -466,8 +466,13 @@ EOF;
   // Get the sum total of votes in a display format
   // @since  2.7.0
   private function get_vote_summary_block($votes) {
-    $up = ngettext('vote','votes',$votes['meta']['up']);
-    $down = ngettext('vote','votes',$votes['meta']['down']);
+    if (function_exists('ngettext')) {
+        $up = ngettext('vote','votes',$votes['meta']['up']);
+        $down = ngettext('vote','votes',$votes['meta']['down']);
+      } else {
+          $up = '';
+          $down = '';
+      }
     $display_votes = 'display:none;';
     if ($this->has_voted) { $display_votes = ''; }
     $html .= <<<EOF
