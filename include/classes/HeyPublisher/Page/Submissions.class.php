@@ -252,7 +252,7 @@ EOF;
         $hblock = $this->submission_history_block($id);
         $editor_id = get_current_user_id();
         $token = $this->api->authentication_token();
-        $domain = HEYPUB_API;
+        $domain = sprintf('%s/v2',HEYPUB_API);
         $votes = $this->get_votes($id,$editor_id);
         $vote_buttons = $this->vote_buttons_block($votes);
         $vote_summary = $this->get_vote_summary_block($votes);

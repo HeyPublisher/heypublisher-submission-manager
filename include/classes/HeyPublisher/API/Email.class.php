@@ -19,7 +19,7 @@ class Email extends \HeyPublisher\API {
   }
 
   public function get_emails() {
-    $path = 'email_templates';
+    $path = 'v2/email_templates';
     $result = $this->get($path);
     $this->logger->debug(sprintf("get_emails():\n\tResults: %s",print_r($result,1)));
     $emails = $this->normalize_results($result,true);
@@ -27,14 +27,14 @@ class Email extends \HeyPublisher\API {
   }
 
   public function get_email($id) {
-    $path = sprintf('email_templates/%s',$id);
+    $path = sprintf('v2/email_templates/%s',$id);
     $result = $this->get($path);
     $emails = $this->normalize_results($result);
     return $emails[0];
   }
 
   public function get_submission_states() {
-    $path = 'email_templates/submission_states';
+    $path = 'v2/email_templates/submission_states';
     $result = $this->get($path);
     $this->logger->debug(sprintf("get_submission_states():\n\tResults: %s",print_r($result,1)));
     if ($result['submission_states'] && sizeof($result['submission_states']) > 0 ) {
@@ -47,7 +47,7 @@ class Email extends \HeyPublisher\API {
   // Delete a template
   public function delete_template($id) {
     $message = 'Unknown DELETE error';
-    $path = sprintf('email_templates/%s',$id);
+    $path = sprintf('v2/email_templates/%s',$id);
     $result = $this->delete($path);
     if ($result == 'deleted') {
       $message = 'Email template deleted';
@@ -62,7 +62,7 @@ class Email extends \HeyPublisher\API {
   public function update_template($post) {
     $message = 'Unknown POST error';
     if ($post['hp_email']) {
-      $path = 'email_templates';
+      $path = 'v2/email_templates';
       $result = $this->post($path,$post['hp_email']);
       $emails = $this->normalize_results($result);
       if ($emails[0] && $emails[0]['id'] > 0) {

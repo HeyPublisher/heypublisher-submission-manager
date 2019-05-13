@@ -85,8 +85,9 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
 define("HEYPUB_PLUGIN_BUILD_DATE", "2018-05-09");
 // Version Number (can be text)
+// TODO: Upgrade this to 75 for release of 3.0.0
 define("HEYPUB_PLUGIN_BUILD_NUMBER", "74");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "2.8.2");
+define("HEYPUB_PLUGIN_VERSION", "2.9.0");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
@@ -106,7 +107,7 @@ define('HEYPUB_FEEDBACK_GETSATISFACTION','mailto:support@heypublisher.com?Subjec
 // define('HEYPUB_SVC_URL_STYLE_GUIDE','http://blog.heypublisher.com/docs/plugins/wordpress/style_guide/');     # designates the URL of the style guide
 # designates the base URL and version of API
 define('HEYPUB_SVC_URL_BASE', $domain . '/api/v1');
-define('HEYPUB_API', $domain . '/api/v2');
+define('HEYPUB_API', $domain . '/api');
 # Stylesheet for plugin resides on HP server now
 define('HEYPUB_SVC_STYLESHEET_URL',$domain . '/stylesheets/wordpress/plugin.css?' . HEYPUB_PLUGIN_VERSION);
 
@@ -385,6 +386,8 @@ function heypub_init(){
     if ($opts['version_current'] < 65) {  // upgrade to 2.4.0 options
       $hp_xml->set_config_option('notify_withdrawn','1');
     }
+
+
 
     // For future reference, just keep adding new hash keys that are version specific by following same logic
     // if ($opts['version_current'] < 50) {  // upgrade to 1.4.x options
