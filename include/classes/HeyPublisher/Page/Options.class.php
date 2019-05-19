@@ -14,12 +14,19 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
 
 // Load the class files and associated scoped functionality
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
+require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Publisher.class.php');
+
 class Options extends \HeyPublisher\Page {
   var $domain = '';
+  var $api = null;
+  var $page = '_options';
+
 
   public function __construct() {
   	parent::__construct();
-    $this->slug .= '_options';
+    $this->api = new \HeyPublisher\API\Publisher;
+    $this->slug .= $this->page;
+    // $this->slug .= '_options';
   }
 
   public function __destruct() {
@@ -27,16 +34,15 @@ class Options extends \HeyPublisher\Page {
   }
 
   // TODO: need a better way of doing this :(
+  // Likely update to match other classes: public function action_handler() {
   public function options() {
     //   Possibly process form post
-    $message = $this->process_options();
-    if ($message) {
-      printf('<div id="message" class="updated fade"><p>%s</p></div>',$message);
-    }
+    $this->message = $this->process_options();
     $this->page_prep();
   }
 
   public function page_prep()  {
+    $this->print_message_if_exists();
     parent::page('Plugin Options', '', array($this,'content'));
   }
   // TODO: Replace calls to this to get_form_url_for_page()
@@ -53,10 +59,17 @@ class Options extends \HeyPublisher\Page {
       $content = $this->not_validated_form();
       $button = "Create Account";
     } else {
-      $content = $this->validated_form();
+      $content = $this->options_capture_form();
       $button = 'Update';
     }
     $action = $this->form_action();
+    $this->log(sprintf("in pageprep\n\terrors = %\n\tmessage = %s",$this->api->error,$this->message));
+    if ($this->api->error) {
+      $this->xml->error = $this->api->error; # TODO: Fix this!!
+      $this->xml->print_webservice_errors(true);
+    }
+
+    $this->print_message_if_exists();
     $html = <<<EOF
       <form method="post" action="{$action}">
         {$nonce}
@@ -116,12 +129,13 @@ EOF;
     return $html;
   }
 
-  private function publication_block($opts) {
+  // TODO: fix call to `publication_types`
+  private function publication_block($data) {
+    // $this->log(sprintf("$results publication_block: %s",print_r($data,1)));
+    $name = htmlentities($this->strip(@$data['name']));
+    $years = $this->get_years_for_select($this->strip(@$data['established']));
+    // $this->warning = "This stuff don't match";
 
-    $this->log(sprintf("opts in publication_block: %s",print_r($opts,1)));
-    $name = htmlentities(stripslashes($opts['name']));
-
-    $years = $this->get_years_for_select($opts['established']);
 
     $html = <<<EOF
     <!-- Publication Block -->
@@ -140,11 +154,11 @@ EOF;
       </li>
       <li>
         <label class='heypub' for='hp_url'>Publication URL</label>
-        <input type="text" name="heypub_opt[url]" id="hp_url" value="{$this->strip($opts['url'])}" class='heypub'/>
+        <input type="text" name="heypub_opt[url]" id="hp_url" value="{$this->strip(@$data['urls']['website'])}" class='heypub'/>
       </li>
       <li>
         <label class='heypub' for='hp_issn'>ISSN</label>
-        <input type="text" name="heypub_opt[issn]" id="hp_issn" value="{$this->strip($opts['issn'])}" class='heypub'/>
+        <input type="text" name="heypub_opt[issn]" id="hp_issn" value="{$this->strip(@$data['issn'])}" class='heypub'/>
       </li>
       <li>
         <label class='heypub' for='hp_established'>Year Established</label>
@@ -153,8 +167,8 @@ EOF;
         </select>
       </li>
       <li>
-        <label class='heypub' for='hp_circulation'>Monthly Circulation (Visitors)</label>
-        <input type="text" name="heypub_opt[circulation]" id="hp_circulation" class='heypub' value="{$this->strip($opts['circulation'])}" /> (000's)
+        <label class='heypub' for='hp_readership'>Monthly Circulation (Readership)</label>
+        <input type="text" name="heypub_opt[readership]" id="hp_readership" class='heypub' value="{$this->strip(@$data['readership'])}" />
       </li>
     </ul>
 EOF;
@@ -163,7 +177,7 @@ EOF;
     return $html;
   }
 
-  private function social_media($opts) {
+  private function social_media($data) {
     $html = <<<EOF
       <!-- Social Block -->
       <h3>Social Media Information</h3>
@@ -171,25 +185,26 @@ EOF;
       <ul>
         <li>
           <label class='heypub' for='hp_facebook'>Facebook Fan Page URL</label>
-          <input type="text" name="heypub_opt[facebook]" id="hp_facebook" class='heypub' value="{$this->strip($opts['facebook'])}" />
+          <input type="text" name="heypub_opt[facebook]" id="hp_facebook" class='heypub' value="{$this->strip(@$data['urls']['facebook'])}" />
         </li>
         <li>
           <label class='heypub' for='hp_twitter'>Twitter ID @</label>
-          <input type="text" name="heypub_opt[twitter]" id="hp_twitter" class='heypub' value="{$this->strip($opts['twitter'])}" />
+          <input type="text" name="heypub_opt[twitter]" id="hp_twitter" class='heypub' value="{$this->strip(@$data['urls']['twitter'])}" />
         </li>
       </ul>
 EOF;
     return $html;
   }
 
-  private function contact_information($opts){
+  // TODO: Multiple editors management - should pull from the editors user table
+  private function contact_information($data){
     require_once(HEYPUB_PLUGIN_FULLPATH.'/include/country_list.php');
-
+    $country = $this->strip(@$data['address']['country']);
     $options = '';
 
     foreach ($countries as $key=>$val) {
       $sel = '';
-      if ($key == $opts['country'] || $val == $opts['country']) { // we have some old stle country entries.
+      if ($key == $country || $val == $country) { // we have some old stle country entries.
         $sel = "selected='selected'";
       }
       $options .= "<option value='$key' $sel>$val</option>";
@@ -199,28 +214,28 @@ EOF;
     <h3>Contact Information</h3>
     <ul>
       <li>
-        <label class='heypub' for='hp_editor_name'>Editor Name</label>
-        <input type="text" name="heypub_opt[editor_name]" id="hp_editor_name" class='heypub' value="{$this->strip($opts['editor_name'])}" />
+        <label class='heypub' for='hp_editor_name'>Managing Editor Name</label>
+        <input type="text" name="heypub_opt[editor_name]" id="hp_editor_name" class='heypub' value="{$this->strip(@$data['editors'][0]['name'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_editor_email'>Email Address</label>
-        <input type="text" name="heypub_opt[editor_email]" id="hp_editor_email" class='heypub' value="{$this->strip($opts['editor_email'])}" />
+        <input type="text" name="heypub_opt[editor_email]" id="hp_editor_email" class='heypub' value="{$this->strip(@$data['editors'][0]['email'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_address'>Street Address</label>
-        <input type="text" name="heypub_opt[address]" id="hp_address" class='heypub' value="{$this->strip($opts['address'])}" />
+        <input type="text" name="heypub_opt[address]" id="hp_address" class='heypub' value="{$this->strip(@$data['address']['street'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_city'>City</label>
-        <input type="text" name="heypub_opt[city]" id="hp_city" class='heypub' value="{$this->strip($opts['city'])}" />
+        <input type="text" name="heypub_opt[city]" id="hp_city" class='heypub' value="{$this->strip(@$data['address']['city'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_state'>State/Region</label>
-        <input type="text" name="heypub_opt[state]" id="hp_state" class='heypub' value="{$this->strip($opts['state'])}" />
+        <input type="text" name="heypub_opt[state]" id="hp_state" class='heypub' value="{$this->strip(@$data['address']['state'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_zipcode'>Zip Code</label>
-        <input type="text" name="heypub_opt[zipcode]" id="hp_zipcode" class='heypub' value="{$this->strip($opts['zipcode'])}" />
+        <input type="text" name="heypub_opt[zipcode]" id="hp_zipcode" class='heypub' value="{$this->strip(@$data['address']['zipcode'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_country'>Country</label>
@@ -482,16 +497,21 @@ EOF;
     return $html;
   }
 
-  private function validated_form() {
+  // Display the form that captures all of the options.
+  private function options_capture_form() {
+    // load the existing configuration
     $opts = $this->xml->config;
-    // $this->log(sprintf("Options::validated_form() $opts = %s",print_r($opts,1)));
+    // Load the data from HeyPublisher db
+    $settings = $this->api->get_publisher_info();
+    $this->log(sprintf("Options::options_capture_form() $opts = %s",print_r($opts,1)));
+    $this->log(sprintf("Options::options_capture_form() $settings = %s",print_r($settings,1)));
     // $this->log(" => dislaying Options page");
     $html = <<<EOF
       <input type="hidden" name="heypub_opt[isvalidated]" value="1" />
       <input type="hidden" name="save_settings" value="0" />
-      {$this->publication_block($opts)}
-      {$this->contact_information($opts)}
-      {$this->social_media($opts)}
+      {$this->publication_block($settings)}
+      {$this->contact_information($settings)}
+      {$this->social_media($settings)}
       {$this->submission_guidelines($opts)}
       {$this->submission_page($opts)}
       {$this->submission_criteria($opts)}
@@ -569,6 +589,8 @@ EOF;
 
   // After form POST - sync all options into local WP database as well as push
   // to the remote server.  This keeps the two databases in sync
+  // TODO: Make this use JSON endpoint
+  // TODO: ensure we're only saving items that are a MUST for makiing plugin work -- everything else is remotely accessed
   private function update_options($post) {
     // $this->log(sprintf("IN update_options(): $post = %s",print_r($post,1)));
     $message = null;
@@ -597,6 +619,7 @@ EOF;
     // now attempt to sync with HeyPublisher.com
     $success = $this->xml->update_publisher($opts);
     // fetch the info back because we want to store seo_url and other stats locally.
+    // TODO: Call the JSON feed
     $this->xml->sync_publisher_info();
     if ($success) {
       $message = 'Your changes have been saved and syncronized with HeyPublisher.';

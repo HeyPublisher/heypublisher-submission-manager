@@ -147,10 +147,12 @@ class API {
           if ($result) {
             $data = json_decode($result, true);
             $message = $data['message'];
+            $this->logger->debug(sprintf("\tdata = %s",print_r($data,1)));
             $this->error = sprintf('HeyPublisher API Error : %s (%s)', $message, $status);
           } else {
             $this->error = sprintf('HeyPublisher API Return Status : %s', $status);
           }
+          $this->logger->debug(sprintf("\treturning error %s",$this->error));
           break;
       }
     }

@@ -797,6 +797,7 @@ EOF;
   // remote server is synced locally 'after' a save with remote server.
   // only select fields are synced this way
   public function sync_publisher_info() {
+    // TODO: Change this to call the statistics endpoint
     $p = $this->get_publisher_info();
     if ($p) {
       $this->set_config_option('seo_url',$p['seo_url']);

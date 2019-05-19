@@ -19,6 +19,7 @@ class Page extends \Loudlever\Loudlever {
   var $page = '';
   var $nonce = '';
   var $message = '';
+  var $warning = '';
   var $additional_side_nav = null;
 
 
@@ -37,8 +38,8 @@ class Page extends \Loudlever\Loudlever {
   	parent::__destruct();
   }
 
-  protected function strip($var) {
-    return stripslashes($var);
+  protected function strip($var, $default = '') {
+    return isset($var) ? stripslashes($var) : $default;
   }
 
   // Page wrapper
@@ -134,17 +135,29 @@ EOF;
   }
 
   protected function print_message_if_exists() {
+    if (!empty($this->warning)) {
+      $this->display_message($this->warning,'warning');
+    }
     if (!empty($this->message)) {
-      $e = <<<EOF
-        <div id="message" class="notice updated">
-          <p>
-            {$this->message}
-          </p>
-        </div>
-EOF;
-      print($e);
+      $this->display_message($this->message,'success');
     }
   }
+
+  private function display_message($message,$class) {
+    $valid = array('success','error','warning');
+    if (!in_array($class,$valid)) {
+      $class = 'info';
+    }
+    $e = <<<EOF
+      <div class="notice notice-{$class} is-dismissible">
+        <p>
+          {$message}
+        </p>
+      </div>
+EOF;
+    print($e);
+  }
+
   protected function nonced_url($action=[],$nonce=null) {
     $url = sprintf('%s/wp-admin/admin.php?page=%s',get_bloginfo('wpurl'),$this->slug);
     if (is_array($action) && !empty($action)) {

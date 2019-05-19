@@ -9,6 +9,7 @@ Version: 2.8.2
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
   Copyright 2014-2018 Richard Luck (https://github.com/aguywithanidea/)
+  Copyright 2019-2019 HeyPublisher, LLC (https://www.heypublisher.com/)
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation
@@ -76,6 +77,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.8.0 => 72
   2.8.1 => 73
   2.8.2 => 74
+  3.0.0 => 75
 
 ---------------------------------------------------------------------------------
 */
