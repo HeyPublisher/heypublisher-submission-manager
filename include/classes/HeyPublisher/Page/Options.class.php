@@ -135,7 +135,7 @@ EOF;
     $name = htmlentities($this->strip(@$data['name']));
     $years = $this->get_years_for_select($this->strip(@$data['established']));
     // $this->warning = "This stuff don't match";
-
+    $link = $this->get_external_url_with_icon($this->strip(@$data['urls']['website']));
 
     $html = <<<EOF
     <!-- Publication Block -->
@@ -154,7 +154,7 @@ EOF;
       </li>
       <li>
         <label class='heypub' for='hp_url'>Publication URL</label>
-        <input type="text" name="heypub_opt[url]" id="hp_url" value="{$this->strip(@$data['urls']['website'])}" class='heypub'/>
+        <input type="text" name="heypub_opt[url]" id="hp_url" value="{$this->strip(@$data['urls']['website'])}" class='heypub'/> {$link}
       </li>
       <li>
         <label class='heypub' for='hp_issn'>ISSN</label>
@@ -177,6 +177,9 @@ EOF;
     return $html;
   }
 
+  // TODO: add verification icons to the URLs
+  // TODO: change twitter to be URL, not just handle
+  // TODO: add duotrope and dynamic other URLs like we used ot have on website.
   private function social_media($data) {
     $html = <<<EOF
       <!-- Social Block -->
@@ -252,6 +255,7 @@ EOF;
   private function submission_guidelines($opts){
     $pages = get_pages();
     $select = '';
+    $link = $this->get_edit_url_for_page($opts['sub_guide_id']);
     foreach ($pages as $p) {
       $select .= sprintf('<option value="%s" %s>%s</option>', $p->ID, ($p->ID == $opts['sub_guide_id']) ? 'selected=selected' : null, $p->post_title);
     }
@@ -265,6 +269,7 @@ EOF;
           <option value="">-- NONE --</option>
           {$select}
         </select>
+        {$link}
       </li>
     </ul>
 EOF;
@@ -275,6 +280,7 @@ EOF;
     $replacer = HEYPUB_SUBMISSION_PAGE_REPLACER;
     // TODO: Replace this will call to $this->get_form_url_for_page('create_form_page')
     $link_url = sprintf('%s&action=create_form_page',$this->form_action());
+    $link = $this->get_edit_url_for_page($opts['sub_page_id']);
     if(function_exists('wp_nonce_url')){
       $link_url = wp_nonce_url($link_url,'create_form');
     }
@@ -308,6 +314,7 @@ EOF;
             <option value="">-- Select --</option>
             {$select}
           </select>
+          {$link}
         </li>
       </ul>
       <p class='heypub-subtext'>Ensure that the following shortcode is contained somewhere within this page.</p>
@@ -412,40 +419,41 @@ EOF;
   }
 
 
-  private function writer_notifications($opts) {
+  private function writer_notifications($data) {
     $sub_states = sprintf('%s/about/submission_states',$this->domain);
+    $notes = @$data['notifications'];
     $html = <<<EOF
       <h3>Writer Notifications</h3>
       <p>
-        Automatically send an email to the author when their submission transitions into any one of the
+        HeyPublisher will automatically send an email to your writer when their submission transitions into one of the
         <a href='{$sub_states}' target='_blank'>states in the submission cycle</a>.
       </p>
       <p>
-        Disable sending of email by setting the value to <code>No</code> below.</p>
+        You can disable sending email by setting the value to <code>No</code> below.</p>
       <p>
-        Customize the emails sent to the author through the
+        Customize the content of the emails you want sent through the
         <a href='admin.php?page=heypublisher_email' target=_top>Email Templates</a>
         screen.
       </p>
       <input type='hidden' name='notify_submitted' value='1'>
       <ul>
         <li>
-          {$this->boolean_select('Read?','notify_read',$opts,'Sent when the submission is first read by an Editor.')}
+          {$this->boolean_select('Read?','read',$notes,'Sent when the submission is first read by an Editor.')}
         </li>
         <li>
-          {$this->boolean_select('Under Review?','notify_under_consideration',$opts,'Sent when the submission is being held for consideration.')}
+          {$this->boolean_select('Under Review?','considered',$notes,'Sent when the submission is being held for consideration.')}
         </li>
         <li>
-          {$this->boolean_select('Accepted?','notify_accepted',$opts,'Sent if the submission is Accepted for publication.')}
+          {$this->boolean_select('Accepted?','accepted',$notes,'Sent if the submission is Accepted for publication.')}
         </li>
         <li>
-          {$this->boolean_select('Rejected?','notify_rejected',$opts,'Sent if the submission is Rejected by an Editor.')}
+          {$this->boolean_select('Rejected?','rejected',$notes,'Sent if the submission is Rejected by an Editor.')}
         </li>
         <li>
-          {$this->boolean_select('Published?','notify_published',$opts,'Sent when a submission is Published, or on the actual publication date if Scheduled.')}
+          {$this->boolean_select('Published?','published',$notes,'Sent when a submission is Published, or on the actual publication date if Scheduled.')}
         </li>
         <li>
-          {$this->boolean_select('Withdrawn?','notify_withdrawn',$opts,'Confirmation sent when a submission is marked as Withdrawn.')}
+          {$this->boolean_select('Withdrawn?','withdrawn',$notes,'Confirmation sent when a submission is marked as Withdrawn.')}
         </li>
       </ul>
 EOF;
@@ -500,6 +508,7 @@ EOF;
   // Display the form that captures all of the options.
   private function options_capture_form() {
     // load the existing configuration
+    // Need this for submission form and guidelines page IDs
     $opts = $this->xml->config;
     // Load the data from HeyPublisher db
     $settings = $this->api->get_publisher_info();
@@ -515,7 +524,7 @@ EOF;
       {$this->submission_guidelines($opts)}
       {$this->submission_page($opts)}
       {$this->submission_criteria($opts)}
-      {$this->writer_notifications($opts)}
+      {$this->writer_notifications($settings)}
       {$this->experimental_options($opts)}
 
 EOF;

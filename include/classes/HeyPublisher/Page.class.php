@@ -195,5 +195,26 @@ EOF;
     }
     return $url;
   }
+  // Get the page edit url as a relative url
+  protected function get_edit_url_for_page($id){
+    $url = '';
+    if (!empty($id)) {
+      $edit = get_edit_post_link($id);
+      $view = get_permalink($id);
+      $link = $this->get_external_url_with_icon($view);
+      $url = sprintf(" <a href='%s' class='dashicons dashicons-edit
+' title='Edit this Page'> </a> %s",$edit,$link);
+    }
+    return $url;
+  }
+  // Get external URL as a link
+  protected function get_external_url_with_icon($link,$icon='dashicons-external'){
+    $url = '';
+    if (!empty($link)) {
+      $url = sprintf(" <a href='%s' class='dashicons {$icon}' title='Opens in new page' target='_new'> </a>",$link);
+    }
+    return $url;
+  }
+
 }
 ?>
