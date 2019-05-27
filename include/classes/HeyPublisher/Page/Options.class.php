@@ -252,16 +252,18 @@ EOF;
     return $html;
   }
 
-  private function submission_guidelines($opts){
+  private function submission_guidelines($opts,$data){
     $pages = get_pages();
+    $hidden = (@$data['guidelines']['custom']) ? null : "style='display:none;' ";
     $select = '';
     $link = $this->get_edit_url_for_page($opts['sub_guide_id']);
+    $text = $this->get_external_url_with_icon(@$data['urls']['heypublisher']);
     foreach ($pages as $p) {
       $select .= sprintf('<option value="%s" %s>%s</option>', $p->ID, ($p->ID == $opts['sub_guide_id']) ? 'selected=selected' : null, $p->post_title);
     }
     $html = <<<EOF
     <h3>Submission Guidelines</h3>
-    <p>Tell us where to find your submission guidelines.</p>
+    <!--p>Where are your submission guidelines?</p-->
     <ul>
       <li>
         <label class='heypub' for='hp_sub_guide'>Submission Guidelines Page</label>
@@ -271,10 +273,69 @@ EOF;
         </select>
         {$link}
       </li>
+      <li>
+        <label class='heypub' for='hp_sub_guide_text_active'>Customize Submission Guidelines?</label>
+        <select name="heypub_opt[guidelines_custom]" id="hp_guidelines_custom" onchange="HeyPublisher.selectToggle(this,'#heypub_show_guidelines_text');">
+          {$this->boolean_options('custom',@$data['guidelines'])}
+        </select>
+      </li>
+
+       <div id='heypub_show_guidelines_text' {$hidden}>
+          <!-- Editor is overriding scraped guidelines -->
+          <p>We will display the submission guidelines you have listed above.  If you want to edit the guidelines we display, edit that text here.</p>
+          <ul>
+          <li>
+            <label class='heypub' for='hp_sub_guide_text'>Submission Guidelines</label>
+            <textarea name="heypub_opt[sub_guide_text]" id="hp_body" class='heypub'>{$this->strip(@$data['guidelines']['text'])}</textarea>
+            {$text}
+          </li>
+          </ul>
+        </div>
     </ul>
 EOF;
     return $html;
+
+
+  //   private function integrations($data) {
+  //     $mailchimp = @$data['integrations']['mailchimp'];
+  //     $html = <<<EOF
+  //       <!-- MailChimp -->
+  //       <h3>MailChimp Mailing List Subscriptions</h3>
+  //       <p>
+  //         If you use <a href='https://mailchimp.com/' target='_blank'>MailChimp</a> to manage your mailing list, setting to <code>Yes</code> will prompt new writers to subscribe to your mailing list when they submit their work.
+  //       </p>
+  //       <ul>
+  //         <li>
+  //           <label class='heypub' for='hp_mailchimp_active'>Prompt to Subscribe?</label>
+  //           <select name="heypub_opt[mailchimp_active]" id="hp_mailchimp_active" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
+  //             {$this->boolean_options('active',$mailchimp)}
+  //           </select>
+  //         </li>
+  //       </ul>
+  //       <div id='heypub_show_mailchimp_list' {$hidden}>
+  //         <!-- Content Specific for the MailChimp Config -->
+  //         <p>Read more on how to <a href='http://kb.mailchimp.com/integrations/api-integrations/about-api-keys' target='_blank'>Find or Generate Your API Key</a> and how to <a href='http://kb.mailchimp.com/lists/manage-contacts/find-your-list-id' target="_blank">Find Your List ID</a> before continuing.
+  //         </p>
+  //         <ul>
+  //           <li>
+  //             <label class='heypub' for='hp_mailchimp_apikey'>API Key</label>
+  //             <input type="text" name="heypub_opt[mailchimp_api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip(@$mailchimp['api_key'])}" />
+  //           </li>
+  //           <li>
+  //             <label class='heypub' for='hp_mailchimp_listid'>List ID</label>
+  //             <input type="text" name="heypub_opt[mailchimp_list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip(@$mailchimp['list_id'])}" />
+  //           </li>
+  //         </ul>
+  //       </div>
+  // EOF;
+  //     return $html;
+  //   }
+
+
+
+
   }
+
 
   private function submission_page($opts){
     $replacer = HEYPUB_SUBMISSION_PAGE_REPLACER;
@@ -299,7 +360,7 @@ EOF;
         Just <a href="{$link_url}">CLICK HERE &raquo; </a> to create the page now.
         You can change the content and title of this page at any time.
       </p>
-      <p {$yespage} id='heypub-yes-guidelines'>This is the Page where the submission form will be displayed.</p>
+      <p {$yespage} id='heypub-yes-guidelines'>Where should your submission form be displayed?</p>
 EOF;
     $select = '';
     $pages = get_pages();
@@ -317,9 +378,9 @@ EOF;
           {$link}
         </li>
       </ul>
-      <p class='heypub-subtext'>Ensure that the following shortcode is contained somewhere within this page.</p>
+      <p class='heypub-subtext'>Ensure that the following shortcode is contained somewhere within this page.
+      This code will be replaced by the actual submission form when a writer views the page.</p>
       <blockquote class='heypub'><b>{$replacer}</b></blockquote>
-      <p class='heypub-subtext'>This code will be replaced by the actual submission form when writers visit this page.</p>
 EOF;
     return $html;
   }
@@ -460,8 +521,9 @@ EOF;
     return $html;
   }
 
-  private function experimental_options($opts) {
-    $hidden = ($opts['mailchimp_active']) ? null : "style='display:none;' ";
+  private function integrations($data) {
+    $mailchimp = @$data['integrations']['mailchimp'];
+    $hidden = (@$mailchimp['active']) ? null : "style='display:none;' ";
     $html = <<<EOF
       <!-- MailChimp -->
       <h3>MailChimp Mailing List Subscriptions</h3>
@@ -472,7 +534,7 @@ EOF;
         <li>
           <label class='heypub' for='hp_mailchimp_active'>Prompt to Subscribe?</label>
           <select name="heypub_opt[mailchimp_active]" id="hp_mailchimp_active" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
-            {$this->boolean_options('mailchimp_active',$opts)}
+            {$this->boolean_options('active',$mailchimp)}
           </select>
         </li>
       </ul>
@@ -483,22 +545,28 @@ EOF;
         <ul>
           <li>
             <label class='heypub' for='hp_mailchimp_apikey'>API Key</label>
-            <input type="text" name="heypub_opt[mailchimp_api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip($opts['mailchimp_api_key'])}" />
+            <input type="text" name="heypub_opt[mailchimp_api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip(@$mailchimp['api_key'])}" />
           </li>
           <li>
             <label class='heypub' for='hp_mailchimp_listid'>List ID</label>
-            <input type="text" name="heypub_opt[mailchimp_list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip($opts['mailchimp_list_id'])}" />
+            <input type="text" name="heypub_opt[mailchimp_list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip(@$mailchimp['list_id'])}" />
           </li>
         </ul>
       </div>
+EOF;
+    return $html;
+  }
+
+  private function experimental_options($data) {
+    $html = <<<EOF
       <!-- Experimental Options -->
       <h3>Disable HTML Clean-Up</h3>
       <p>
-        Set to <code>YES</code> if you accept submissions from writers that use a different character set than your own.  Otherwise leave set to <code>No</code>.
+        Generally you should keep this set to <code>No</code>.  If you accept submissions from writers using symbol-based languages (ie: Japanese, Chinese, etc.) you may need to set this to <code>Yes</code>.
       </p>
       <ul>
         <li>
-          {$this->boolean_select('Turn Off HTML Clean-Up?','turn_off_tidy',$opts)}
+          {$this->boolean_select('Turn Off HTML Clean-Up?','multibyte',@$data['accepts'])}
         </li>
       </ul>
 EOF;
@@ -509,6 +577,7 @@ EOF;
   private function options_capture_form() {
     // load the existing configuration
     // Need this for submission form and guidelines page IDs
+    // TODO: Move config into a base class so XML can be deprecated
     $opts = $this->xml->config;
     // Load the data from HeyPublisher db
     $settings = $this->api->get_publisher_info();
@@ -521,11 +590,12 @@ EOF;
       {$this->publication_block($settings)}
       {$this->contact_information($settings)}
       {$this->social_media($settings)}
-      {$this->submission_guidelines($opts)}
+      {$this->submission_guidelines($opts,$settings)}
       {$this->submission_page($opts)}
       {$this->submission_criteria($opts)}
       {$this->writer_notifications($settings)}
-      {$this->experimental_options($opts)}
+      {$this->integrations($settings)}
+      {$this->experimental_options($settings)}
 
 EOF;
 
