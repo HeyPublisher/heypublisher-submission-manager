@@ -29,6 +29,18 @@ class Publisher extends \HeyPublisher\API {
     $this->error = 'Error finding publisher info on HeyPublisher.com';
     return;
   }
+
+  // get the Genres HeyPublisher supports
+  public function get_genres() {
+    $path = 'genres';
+    $result = $this->get($path);
+    $this->logger->debug(sprintf("get_genres():\n\tResults: %s",print_r($result,1)));
+    if (key_exists('genres',$result)) {
+      return $result['genres'];
+    }
+    $this->error = 'Error finding genre info on HeyPublisher.com';
+    return;
+  }
 }
 
 ?>

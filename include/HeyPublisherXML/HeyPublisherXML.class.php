@@ -679,6 +679,7 @@ EOF;
   * Fetch the hash of 'all' categories, plus the categories this publisher belongs to, and return as a hash
   * suitable for making checkboxes with.
   */
+  // Deprecated with 3.0
   function get_my_categories_as_hash() {
       $return = false;
       $post = <<<EOF

@@ -274,7 +274,7 @@ EOF;
         {$link}
       </li>
       <li>
-        <label class='heypub' for='hp_sub_guide_text_active'>Customize Submission Guidelines?</label>
+        <label class='heypub' for='hp_sub_guide_text_active'>Custom Submission Guidelines?</label>
         <select name="heypub_opt[guidelines_custom]" id="hp_guidelines_custom" onchange="HeyPublisher.selectToggle(this,'#heypub_show_guidelines_text');">
           {$this->boolean_options('custom',@$data['guidelines'])}
         </select>
@@ -282,7 +282,7 @@ EOF;
 
        <div id='heypub_show_guidelines_text' {$hidden}>
           <!-- Editor is overriding scraped guidelines -->
-          <p>We will display the submission guidelines you have listed above.  If you want to edit the guidelines we display, edit that text here.</p>
+          <p>We will display the submission guidelines you have listed above on HeyPublisher.com.  You can customize the guidelines we display here.</p>
           <ul>
           <li>
             <label class='heypub' for='hp_sub_guide_text'>Submission Guidelines</label>
@@ -385,52 +385,51 @@ EOF;
     return $html;
   }
 
-  private function submission_criteria($opts) {
+  private function submission_criteria($data) {
+    $hidden = (@$data['active']) ? null : "style='display:none;' ";
     $html = <<<EOF
       <h3>Submission Criteria</h3>
-      <!--p>
-        What are the types of work you accept from writers? Do you accept simultaneous submissions?
-        Do you accept multiple submissions?
-      </p-->
-      <!-- Genres -->
       <ul>
         <li>
           <label class='heypub' for='hp_accepting_subs'>Currently Accepting Submissions?</label>
           <select name="heypub_opt[accepting_subs]" id="hp_accepting_subs" onchange="HeyPublisher.selectToggle(this,'#heypub_show_genres_list');">
-            {$this->boolean_options('accepting_subs',$opts)}
+            {$this->boolean_options('active',@$data)}
           </select>
         </li>
       </ul>
-EOF;
-    $hidden = ($opts['accepting_subs']) ? null : "style='display:none;' ";
-    $html .= <<<EOF
       <div id='heypub_show_genres_list' {$hidden}>
-        <!-- Content Specific for the Genres -->
+        <!-- Genres -->
         <h3>Select all categories of work your publication accepts.</h3>
         {$this->genre_map()}
         <br/>
       </div>
-
-EOF;
-    $html .= <<<EOF
       <ul>
         <li>
-          {$this->boolean_select('Simultaneous Submissions?','simu_subs',$opts)}
+          {$this->boolean_select('Accept Reprints?','reprints',@$data['accepts'])}
         </li>
         <li>
-          {$this->boolean_select('Multiple Submissions?','multi_subs',$opts)}
+          {$this->boolean_select('Simultaneous Submissions?','simultaneous',@$data['accepts'])}
         </li>
         <li>
-          {$this->boolean_select('Accept Reprints?','reprint_subs',$opts)}
+          {$this->boolean_select('Email Submissions?','email',@$data['accepts'])}
+        </li>
+        <li>
+          {$this->boolean_select('Multiple Submissions?','multiple',@$data['accepts'])}
         </li>
       </ul>
 EOF;
     return $html;
   }
-
+  // Map internal categories to HeyPublisher Genres
+  // TODO: FIX THIS to use the JSON api
   private function genre_map() {
     $cols = 2; // colums for mapping table
+    $genres = $this->api->get_genres();
+    $this->log(sprintf("Options::genre_map() \$genres = %s",print_r($genres,1)));
+
+
     $cats = $this->xml->get_my_categories_as_hash();
+    $this->log(sprintf("Options::genre_map() \$cats = %s",print_r($cats,1)));
     if (empty($cats)) { return ''; }
     $header = '';
     for ($x=0;$x<$cols;$x++) {
@@ -592,7 +591,7 @@ EOF;
       {$this->social_media($settings)}
       {$this->submission_guidelines($opts,$settings)}
       {$this->submission_page($opts)}
-      {$this->submission_criteria($opts)}
+      {$this->submission_criteria($settings)}
       {$this->writer_notifications($settings)}
       {$this->integrations($settings)}
       {$this->experimental_options($settings)}
