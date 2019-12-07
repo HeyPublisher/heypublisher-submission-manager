@@ -1,5 +1,11 @@
 ## Changelog
 
+### 2.8.3
++ Released: 2019-12-06
++ [[#98](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/98)] : Added link to the Statuscake status page, in cases where errors are thrown.
++ Additionally ....
+  + Validated functionality through [WordPress Version 5.3](https://wordpress.org/support/wordpress-version/version-5-3/).
+
 ### 2.8.2
 + Released: 2018-05-09
 + [[#93](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/93)] : Fixed issue where it was impossible to edit an email template for a multi-word submission state.  93 was fixed without checking the edits which uses the same logic.
