@@ -467,12 +467,12 @@ EOF;
   // @since  2.7.0
   private function get_vote_summary_block($votes) {
     if (function_exists('ngettext')) {
-        $up = ngettext('vote','votes',$votes['meta']['up']);
-        $down = ngettext('vote','votes',$votes['meta']['down']);
-      } else {
-          $up = '';
-          $down = '';
-      }
+      $up = ngettext('vote','votes',$votes['meta']['up']);
+      $down = ngettext('vote','votes',$votes['meta']['down']);
+    } else {
+        $up = '';
+        $down = '';
+    }
     $display_votes = 'display:none;';
     if ($this->has_voted) { $display_votes = ''; }
     $html .= <<<EOF

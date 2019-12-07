@@ -587,7 +587,7 @@ EOF;
       $email = HEYPUB_PLUGIN_ERROR_CONTACT;
       $contact = <<<EOF
         <p>
-          You can check <a href='http://stats.pingdom.com/a2g0m0m0itgd' target='_blank'>our status page</a>
+          You can check <a href='https://uptime.statuscake.com/?TestID=oQBfCXVK2A' target='_blank'>our status page</a>
           for more information.  Or contact
           <a href="mailto:{$email}?subject=plugin%20error%20{$id}">
             support@heypublisher.com

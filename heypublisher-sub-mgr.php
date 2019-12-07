@@ -5,11 +5,11 @@ Plugin URI: https://www.heypublisher.com
 Description: HeyPublisher is a better way of managing unsolicited submissions directly within WordPress.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 2.8.2
+Version: 2.8.3
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
   Copyright 2014-2018 Richard Luck (https://github.com/aguywithanidea/)
-  Copyright 2019-2019 HeyPublisher, LLC (https://www.heypublisher.com/)
+  Copyright 2019-2020 HeyPublisher, LLC (https://www.heypublisher.com/)
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation
@@ -77,7 +77,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.8.0 => 72
   2.8.1 => 73
   2.8.2 => 74
-  3.0.0 => 75
+  2.8.3 => 75
 
 ---------------------------------------------------------------------------------
 */
@@ -85,11 +85,10 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2018-05-09");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2019-12-06");
 // Version Number (can be text)
-// TODO: Upgrade this to 75 for release of 3.0.0
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "74");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "2.9.0");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "75");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "2.8.3");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
@@ -99,6 +98,7 @@ if ($debug) {
 }
 define('HEYPUB_PLUGIN_ERROR_CONTACT','support@heypublisher.com');
 
+// TODO: This has been deprecated - but needs to be traced through code to remove references
 define('HEYPUB_DONATE_URL','https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6');
 
 define('HEYPUB_PLUGIN_FULLPATH', dirname(__FILE__));
