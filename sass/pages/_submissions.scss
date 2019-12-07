@@ -150,6 +150,8 @@ float: right;
     border: $vote-button;
     display: inline-block;
     color: $vote-button-color;
+    width: 20px;
+    height: 20px;
     &:hover {
       border-color: $highlight;
     }

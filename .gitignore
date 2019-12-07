@@ -3,4 +3,6 @@ difflist
 
 # ignore the svn control files
 .svn
-
+*heypublisher.css.map
+error.log
+.sass-cache

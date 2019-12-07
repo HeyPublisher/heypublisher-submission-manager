@@ -1,5 +1,5 @@
 /*
-  HeyPublisher Style Sheet v1.1
+  HeyPublisher Style Sheet v2.8.3
 
 */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -661,7 +661,9 @@ blockquote.heypub_summary {
     border-radius: 50%;
     border: 1px solid #CCCCCC;
     display: inline-block;
-    color: #CCCCCC; }
+    color: #CCCCCC;
+    width: 20px;
+    height: 20px; }
     .heypub-voting a:hover {
       border-color: #ffa500; }
     .heypub-voting a.vote-no.always-on, .heypub-voting a.vote-no.on {
