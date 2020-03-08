@@ -191,7 +191,7 @@ class HeyPublisherXML {
     curl_setopt($this->curl, CURLOPT_POSTFIELDS, $post);
     // Execute the request and also time the transaction
     $result = curl_exec($this->curl);
-    $this->log(sprintf("send():\URL = %s\nPOST = %s",$url,print_r($post,1)));
+    $this->log(sprintf("HeyPublisherXML => send():\nURL = %s\nPOST = %s",$url,print_r($post,1)));
     $this->log(sprintf("INFO:\n%s",print_r(curl_getinfo($this->curl),1)));
     // $this->log(sprintf("RESULT: %s",$result));
     // Check for errors
