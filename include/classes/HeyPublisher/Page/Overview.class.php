@@ -13,11 +13,13 @@ load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class
 require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Submission.class.php');
 class Overview extends \HeyPublisher\Page {
   var $api = null;
+  var $page = '-submission-manager';
 
   public function __construct() {
   	parent::__construct();
     $this->api = new \HeyPublisher\API\Submission;
-    // $this->slug .= '_main';
+    $this->slug .= $this->page;
+    $this->log("slug = {$this->slug}");
   }
 
   public function __destruct() {
