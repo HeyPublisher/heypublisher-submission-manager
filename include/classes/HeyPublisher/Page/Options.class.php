@@ -26,7 +26,6 @@ class Options extends \HeyPublisher\Page {
   	parent::__construct();
     $this->api = new \HeyPublisher\API\Publisher;
     $this->slug .= $this->page;
-    // $this->slug .= '_options';
   }
 
   public function __destruct() {
@@ -42,7 +41,7 @@ class Options extends \HeyPublisher\Page {
   }
 
   public function page_prep()  {
-    $this->print_message_if_exists();
+    // $this->print_message_if_exists(); // this is being called in content()
     parent::page('Plugin Options', '', array($this,'content'));
   }
   // TODO: Replace calls to this to get_form_url_for_page()
@@ -56,9 +55,11 @@ class Options extends \HeyPublisher\Page {
   	global $wpdb,$wp_roles,$hp_base;
     $nonce = wp_nonce_field('heypub-save-options');
     if (!$this->xml->is_validated) {
+      // Display the form to register the plugin
       $content = $this->not_validated_form();
       $button = "Create Account";
     } else {
+      // Display the form to update options
       $content = $this->options_capture_form();
       $button = 'Update';
     }
@@ -95,6 +96,7 @@ EOF;
     return $opts;
   }
 
+  // Display form for non-validated plugins for publisher to register publication and editor contact info
   private function not_validated_form() {
     $opts = $this->xml->config;
     // $this->log(sprintf("not_validated_form opts: %s",print_r($opts,1)));
@@ -580,8 +582,8 @@ EOF;
     $opts = $this->xml->config;
     // Load the data from HeyPublisher db
     $settings = $this->api->get_publisher_info();
-    $this->log(sprintf("Options::options_capture_form() $opts = %s",print_r($opts,1)));
-    $this->log(sprintf("Options::options_capture_form() $settings = %s",print_r($settings,1)));
+    $this->log(sprintf("Options::options_capture_form() \$opts = %s",print_r($opts,1)));
+    $this->log(sprintf("Options::options_capture_form() \$settings = %s",print_r($settings,1)));
     // $this->log(" => dislaying Options page");
     $html = <<<EOF
       <input type="hidden" name="heypub_opt[isvalidated]" value="1" />
@@ -606,13 +608,16 @@ EOF;
    */
   function process_options() {
     // $this->log(sprintf("POST = %s",print_r($_POST,1)));
+    $this->log("Page:Options #process_option()");
     $message = null; // default is null message
     if(isset($_REQUEST['save_settings']) && check_admin_referer('heypub-save-options')) {
-      $this->log("we passed conditional");
+      $this->log("\tSaving Settings from form POST");
       if (isset($_POST['hp_user'])) {
+        $this->log("\tcalling validate_user()");
         $message = $this->validate_user($_POST);
       }
       elseif (isset($_POST['heypub_opt']) && $_POST['heypub_opt']['isvalidated'] == '1') {
+        $this->log("\tcalling update_options()");
         $message = $this->update_options($_POST);
       }
     }
@@ -641,8 +646,13 @@ EOF;
       $this->xml->set_install_option('publisher_oid',$this->xml->pub_oid);
       $this->xml->set_is_validated();  // ensures that this page load has correct value
 
-      // Fetch Publisher INFO from Webservice and pre-populate the layout, if we can
-      $pub = $this->xml->get_publisher_info();
+      // Fetch Publisher INFO from HeyPublisher API and pre-populate the layout, if we can
+      // The options have not yet been loaded at this stage, so need to be explicitly set:
+      $this->api->uoid = $this->xml->user_oid;
+      $this->api->poid = $this->xml->pub_oid;
+
+      // This is happening in page prep
+      $pub = $this->api->get_publisher_info();
       $message = 'Account validation succeeded!<br/>You can now configure your account.';
       if ($pub) {
         $cats = $this->xml->get_my_categories_as_hash();
