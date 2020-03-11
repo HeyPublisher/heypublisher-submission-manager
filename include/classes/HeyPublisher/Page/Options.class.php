@@ -146,7 +146,7 @@ EOF;
     <ul>
       <li>
         <label class='heypub' for='hp_type'>Publication Type</label>
-        <select name="heypub_opt[pub_type]" id="hp_type">
+        <select name="heypub_opt[publisher_type][id]" id="hp_type">
         {$this->publication_types()}
         </select>
       </li>
@@ -156,7 +156,7 @@ EOF;
       </li>
       <li>
         <label class='heypub' for='hp_url'>Publication URL</label>
-        <input type="text" name="heypub_opt[url]" id="hp_url" value="{$this->strip(@$data['urls']['website'])}" class='heypub'/> {$link}
+        <input type="text" name="heypub_opt[urls][website]" id="hp_url" value="{$this->strip(@$data['urls']['website'])}" class='heypub'/> {$link}
       </li>
       <li>
         <label class='heypub' for='hp_issn'>ISSN</label>
@@ -190,11 +190,11 @@ EOF;
       <ul>
         <li>
           <label class='heypub' for='hp_facebook'>Facebook Fan Page URL</label>
-          <input type="text" name="heypub_opt[facebook]" id="hp_facebook" class='heypub' value="{$this->strip(@$data['urls']['facebook'])}" />
+          <input type="text" name="heypub_opt[urls][facebook]" id="hp_facebook" class='heypub' value="{$this->strip(@$data['urls']['facebook'])}" />
         </li>
         <li>
           <label class='heypub' for='hp_twitter'>Twitter ID @</label>
-          <input type="text" name="heypub_opt[twitter]" id="hp_twitter" class='heypub' value="{$this->strip(@$data['urls']['twitter'])}" />
+          <input type="text" name="heypub_opt[urls][twitter]" id="hp_twitter" class='heypub' value="{$this->strip(@$data['urls']['twitter'])}" />
         </li>
       </ul>
 EOF;
@@ -219,32 +219,36 @@ EOF;
     <h3>Contact Information</h3>
     <ul>
       <li>
+        <label class='heypub' for='hp_editor_title'>Title</label>
+        <input type="text" name="heypub_opt[editors][0][title]" id="hp_editor_title" class='heypub' value="{$this->strip(@$data['editors'][0]['title'])}" />
+      </li>
+      <li>
         <label class='heypub' for='hp_editor_name'>Managing Editor Name</label>
-        <input type="text" name="heypub_opt[editor_name]" id="hp_editor_name" class='heypub' value="{$this->strip(@$data['editors'][0]['name'])}" />
+        <input type="text" name="heypub_opt[editors][0][name]" id="hp_editor_name" class='heypub' value="{$this->strip(@$data['editors'][0]['name'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_editor_email'>Email Address</label>
-        <input type="text" name="heypub_opt[editor_email]" id="hp_editor_email" class='heypub' value="{$this->strip(@$data['editors'][0]['email'])}" />
+        <input type="text" name="heypub_opt[editors][0][email]" id="hp_editor_email" class='heypub' value="{$this->strip(@$data['editors'][0]['email'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_address'>Street Address</label>
-        <input type="text" name="heypub_opt[address]" id="hp_address" class='heypub' value="{$this->strip(@$data['address']['street'])}" />
+        <input type="text" name="heypub_opt[address][street]" id="hp_address" class='heypub' value="{$this->strip(@$data['address']['street'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_city'>City</label>
-        <input type="text" name="heypub_opt[city]" id="hp_city" class='heypub' value="{$this->strip(@$data['address']['city'])}" />
+        <input type="text" name="heypub_opt[address][city]" id="hp_city" class='heypub' value="{$this->strip(@$data['address']['city'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_state'>State/Region</label>
-        <input type="text" name="heypub_opt[state]" id="hp_state" class='heypub' value="{$this->strip(@$data['address']['state'])}" />
+        <input type="text" name="heypub_opt[address][state]" id="hp_state" class='heypub' value="{$this->strip(@$data['address']['state'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_zipcode'>Zip Code</label>
-        <input type="text" name="heypub_opt[zipcode]" id="hp_zipcode" class='heypub' value="{$this->strip(@$data['address']['zipcode'])}" />
+        <input type="text" name="heypub_opt[address][zipcode]" id="hp_zipcode" class='heypub' value="{$this->strip(@$data['address']['zipcode'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_country'>Country</label>
-        <select name="heypub_opt[country]" id="hp_country" class="heypub">
+        <select name="heypub_opt[address][country]" id="hp_country" class="heypub">
           {$options}
         </select>
       </li>
@@ -276,7 +280,7 @@ EOF;
         {$link}
       </li>
       <li>
-        <label class='heypub' for='hp_sub_guide_text_active'>Custom Submission Guidelines?</label>
+        <label class='heypub' for='hp_sub_guide_text_active'>Customize Submission Guidelines?</label>
         <select name="heypub_opt[guidelines_custom]" id="hp_guidelines_custom" onchange="HeyPublisher.selectToggle(this,'#heypub_show_guidelines_text');">
           {$this->boolean_options('custom',@$data['guidelines'])}
         </select>
@@ -284,10 +288,10 @@ EOF;
 
        <div id='heypub_show_guidelines_text' {$hidden}>
           <!-- Editor is overriding scraped guidelines -->
-          <p>We will display the submission guidelines you have listed above on HeyPublisher.com.  You can customize the guidelines we display here.</p>
+          <p>By default we display submission guidelines from the page you selected above.  You can customize the text we display here.  500 words maximum.</p>
           <ul>
           <li>
-            <label class='heypub' for='hp_sub_guide_text'>Submission Guidelines</label>
+            <label class='heypub' for='hp_sub_guide_text'>Submission Guidelines to Display</label>
             <textarea name="heypub_opt[sub_guide_text]" id="hp_body" class='heypub'>{$this->strip(@$data['guidelines']['text'])}</textarea>
             {$text}
           </li>
@@ -407,16 +411,16 @@ EOF;
       </div>
       <ul>
         <li>
-          {$this->boolean_select('Accept Reprints?','reprints',@$data['accepts'])}
+          {$this->boolean_select('Accept Reprints?','reprints',@$data['accepts'],'accepts')}
         </li>
         <li>
-          {$this->boolean_select('Simultaneous Submissions?','simultaneous',@$data['accepts'])}
+          {$this->boolean_select('Simultaneous Submissions?','simultaneous',@$data['accepts'],'accepts')}
         </li>
         <li>
-          {$this->boolean_select('Email Submissions?','email',@$data['accepts'])}
+          {$this->boolean_select('Email Submissions?','email',@$data['accepts'],'accepts')}
         </li>
         <li>
-          {$this->boolean_select('Multiple Submissions?','multiple',@$data['accepts'])}
+          {$this->boolean_select('Multiple Submissions?','multiple',@$data['accepts'],'accepts')}
         </li>
       </ul>
 EOF;
@@ -500,22 +504,22 @@ EOF;
       <input type='hidden' name='notify_submitted' value='1'>
       <ul>
         <li>
-          {$this->boolean_select('Read?','read',$notes,'Sent when the submission is first read by an Editor.')}
+          {$this->boolean_select('Read?','read',$notes,'notifications','Sent when the submission is first read by an Editor.')}
         </li>
         <li>
-          {$this->boolean_select('Under Review?','considered',$notes,'Sent when the submission is being held for consideration.')}
+          {$this->boolean_select('Under Review?','considered',$notes,'notifications','Sent when the submission is being held for consideration.')}
         </li>
         <li>
-          {$this->boolean_select('Accepted?','accepted',$notes,'Sent if the submission is Accepted for publication.')}
+          {$this->boolean_select('Accepted?','accepted',$notes,'notifications','Sent if the submission is Accepted for publication.')}
         </li>
         <li>
-          {$this->boolean_select('Rejected?','rejected',$notes,'Sent if the submission is Rejected by an Editor.')}
+          {$this->boolean_select('Rejected?','rejected',$notes,'notifications','Sent if the submission is Rejected by an Editor.')}
         </li>
         <li>
-          {$this->boolean_select('Published?','published',$notes,'Sent when a submission is Published, or on the actual publication date if Scheduled.')}
+          {$this->boolean_select('Published?','published',$notes,'notifications','Sent when a submission is Published, or on the actual publication date if Scheduled.')}
         </li>
         <li>
-          {$this->boolean_select('Withdrawn?','withdrawn',$notes,'Confirmation sent when a submission is marked as Withdrawn.')}
+          {$this->boolean_select('Withdrawn?','withdrawn',$notes,'notifications','Confirmation sent when a submission is marked as Withdrawn.')}
         </li>
       </ul>
 EOF;
@@ -567,7 +571,7 @@ EOF;
       </p>
       <ul>
         <li>
-          {$this->boolean_select('Turn Off HTML Clean-Up?','multibyte',@$data['accepts'])}
+          {$this->boolean_select('Turn Off HTML Clean-Up?','multibyte',@$data['accepts'],'accepts')}
         </li>
       </ul>
 EOF;
@@ -699,13 +703,14 @@ EOF;
     }
 
     // get the URL for the sub guidelines
-    $opts['guide'] = get_permalink($opts['sub_guide_id']);
+    $opts['urls']['guideline'] = get_permalink($opts['sub_guide_id']);
     // get the URL for the sub form itself
-    $opts['submission_url'] = get_permalink($opts['sub_page_id']);
+    $opts['urls']['submission'] = get_permalink($opts['sub_page_id']);
     // Blog's RSS feed is:
-    $opts['rss'] = get_bloginfo('rss2_url');
+    $opts['urls']['rss'] = get_bloginfo('rss2_url');
     // now attempt to sync with HeyPublisher.com
-    $success = $this->xml->update_publisher($opts);
+    $success = $this->api->update_publisher($opts);
+    // $success = $this->xml->update_publisher($opts);
     // fetch the info back because we want to store seo_url and other stats locally.
     // TODO: Call the JSON feed
     $this->xml->sync_publisher_info();

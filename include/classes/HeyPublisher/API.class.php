@@ -93,6 +93,33 @@ class API {
   }
 
   /**
+  * Send a PUT requst using cURL
+  * @param string $url to request
+  * @param array $put values to send
+  * @param array $options for cURL
+  * @return string
+  */
+  public function put($path, array $put = NULL, array $options = array()) {
+    $url = sprintf('%s/%s',$this->api,$path);
+    $this->logger->debug("in put()\n\tpath: {$path}");
+    $this->logger->debug(sprintf("\tput: %s", print_r($put,1)));
+    $data = $this->clean_post_vars($put);
+    $defaults = array(
+      CURLOPT_URL => $url,
+      CURLOPT_HEADER => 0,
+      CURLOPT_RETURNTRANSFER  => TRUE,
+      CURLOPT_CUSTOMREQUEST   => 'PUT',
+      CURLOPT_TIMEOUT => $this->timeout,
+      CURLOPT_POSTFIELDS => http_build_query($data)
+    );
+    $curl = curl_init();
+    curl_setopt_array($curl, ($options + $defaults) );
+    $result = $this->send($curl);
+    curl_close($curl);
+    return $result;
+  }
+
+  /**
   * Send a GET requst using cURL
   * @param string $url to request
   * @return string

@@ -47,6 +47,15 @@ class Publisher extends \HeyPublisher\API {
     $this->error = 'Error finding genre info on HeyPublisher.com';
     return;
   }
+  // Update the publisher record
+  public function update_publisher($data) {
+    $path = sprintf('publishers/%s',$this->poid);
+    $result = $this->put($path,$data);
+
+    $this->error = 'Nothing to see here yet...';
+    return;
+  }
+
 }
 
 ?>

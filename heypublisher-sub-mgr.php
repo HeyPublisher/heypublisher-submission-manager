@@ -414,6 +414,7 @@ function heypub_uninit() {
     $opts['accepting_subs'] = false;
     $opts['genres_list'] = false;
     $opts['guide'] = get_permalink($opts['sub_guide_id']);
+    // TODO: This should change to api->update_publisher();
     $hp_xml->update_publisher($opts,true);
   }
   $hp_xml->install = false;

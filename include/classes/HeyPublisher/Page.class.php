@@ -121,10 +121,15 @@ EOF;
     return $html;
   }
   // Wrapper for these options when the select form is consistent
-  protected function boolean_select($label,$key,$opts,$alt=false) {
+  protected function boolean_select($label,$key,$opts,$pre=false,$alt=false) {
+    $name = 'heypub_opt';
+    if ($pre) {
+      $name = "heypub_opt[{$pre}]";
+    }
+
     $html = <<<EOF
       <label class='heypub' for='hp_{$key}'>{$label}</label>
-      <select name="heypub_opt[{$key}]" id="hp_{$key}">
+      <select name="{$name}[{$key}]" id="hp_{$key}">
       {$this->boolean_options($key,$opts)}
       </select>
 EOF;

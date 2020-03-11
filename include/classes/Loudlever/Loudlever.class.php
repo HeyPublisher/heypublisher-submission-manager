@@ -16,8 +16,8 @@ class Loudlever {
     'url' => '',
     'home' => 'https://wordpress.org/plugins/',
     'support' => 'https://wordpress.org/support/',
-    'contact' => 'mailto:wordpress@loudlever.com',
-    'more' => 'https://profiles.wordpress.org/loudlever#content-plugins'
+    'contact' => 'mailto:support@heypublisher.com',
+    'more' => 'https://profiles.wordpress.org/heypublisher#content-plugins'
   );
 
   public function __construct() {
