@@ -28,10 +28,10 @@ class Publisher extends \HeyPublisher\API {
       return $this->publisher;
     }
     $result = $this->get($path);
-    if ($result && key_exists('publishers',$result)) {
+    if ($result && key_exists('publisher',$result)) {
       $this->logger->debug(sprintf("\tResults: %s",print_r($result,1)));
-      $this->publisher = $result['publishers'][0];
-      return $result['publishers'][0];
+      $this->publisher = $result['publisher'];
+      return $result['publisher'];
     }
     return;
   }
@@ -50,9 +50,11 @@ class Publisher extends \HeyPublisher\API {
 
   // Update the publisher record
   public function update_publisher($data) {
+    // expected key is 'publisher'
+    $publisher = array('publisher' => $data);
     $this->logger->debug("API::Publisher#update_publisher()");
     $path = sprintf('publishers/%s',$this->poid);
-    $result = $this->put($path,$data);
+    $result = $this->put($path,$publisher);
 
     $this->error = 'Nothing to see here yet...';
     return;

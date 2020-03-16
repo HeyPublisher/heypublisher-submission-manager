@@ -398,7 +398,7 @@ EOF;
       <ul>
         <li>
           <label class='heypub' for='hp_accepting_subs'>Currently Accepting Submissions?</label>
-          <select name="heypub_opt[accepting_subs]" id="hp_accepting_subs" onchange="HeyPublisher.selectToggle(this,'#heypub_show_genres_list');">
+          <select name="heypub_opt[active]" id="hp_accepting_subs" onchange="HeyPublisher.selectToggle(this,'#heypub_show_genres_list');">
             {$this->boolean_options('active',@$data)}
           </select>
         </li>
@@ -538,7 +538,7 @@ EOF;
       <ul>
         <li>
           <label class='heypub' for='hp_mailchimp_active'>Prompt to Subscribe?</label>
-          <select name="heypub_opt[mailchimp_active]" id="hp_mailchimp_active" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
+          <select name="heypub_opt[integrations][mailchimp][active]" id="hp_mailchimp_active" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
             {$this->boolean_options('active',$mailchimp)}
           </select>
         </li>
@@ -550,11 +550,11 @@ EOF;
         <ul>
           <li>
             <label class='heypub' for='hp_mailchimp_apikey'>API Key</label>
-            <input type="text" name="heypub_opt[mailchimp_api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip(@$mailchimp['api_key'])}" />
+            <input type="text" name="heypub_opt[integrations][mailchimp][api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip(@$mailchimp['api_key'])}" />
           </li>
           <li>
             <label class='heypub' for='hp_mailchimp_listid'>List ID</label>
-            <input type="text" name="heypub_opt[mailchimp_list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip(@$mailchimp['list_id'])}" />
+            <input type="text" name="heypub_opt[integrations][mailchimp][list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip(@$mailchimp['list_id'])}" />
           </li>
         </ul>
       </div>
@@ -684,11 +684,12 @@ EOF;
   // TODO: Make this use JSON endpoint
   // TODO: ensure we're only saving items that are a MUST for makiing plugin work -- everything else is remotely accessed
   private function update_options($post) {
-    // $this->log(sprintf("IN update_options(): $post = %s",print_r($post,1)));
+    $this->log(sprintf("Page::Options#update_options(): \n\t\$post = %s",print_r($post,1)));
     $message = null;
     // Processing a form post of Option Updates
     // Get options from the post
     $opts = $post['heypub_opt'];
+    $this->log(sprintf("\t\$opts = %s",print_r($opts,1)));
     //  Bulk update the form post
     $this->xml->set_config_option_bulk($opts);
     // update the category mapping
