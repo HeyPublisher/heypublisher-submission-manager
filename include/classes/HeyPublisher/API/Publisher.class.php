@@ -55,8 +55,9 @@ class Publisher extends \HeyPublisher\API {
     $this->logger->debug("API::Publisher#update_publisher()");
     $path = sprintf('publishers/%s',$this->poid);
     $result = $this->put($path,$publisher);
-
-    $this->error = 'Nothing to see here yet...';
+    if ($result == 'updated') {
+      return $result;
+    }
     return;
   }
 

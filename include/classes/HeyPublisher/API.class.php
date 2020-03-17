@@ -114,7 +114,7 @@ class API {
     );
     $curl = curl_init();
     curl_setopt_array($curl, ($options + $defaults) );
-    $result = $this->send($curl);
+    $result = $this->send($curl,'updated');
     curl_close($curl);
     return $result;
   }
@@ -137,13 +137,13 @@ class API {
     );
     $curl = curl_init();
     curl_setopt_array($curl, $defaults );
-    $result = $this->send($curl);
+    $result = $this->send($curl,'deleted');
     curl_close($curl);
     return $result;
   }
 
   // Execute the curl command
-  private function send($curl) {
+  private function send($curl, $desired = false) {
     $this->logger->debug("send()");
     $return = false;
     $this->logger->debug(sprintf("send():\n\tuoid = %s\n\tpoid = %s",$this->uoid,$this->poid));
@@ -151,7 +151,6 @@ class API {
     curl_setopt($curl, CURLOPT_USERPWD, "{$this->uoid}:{$this->poid}");
 
     $result = curl_exec($curl);
-    $http_code = false;
     $url = curl_getinfo($curl,CURLINFO_EFFECTIVE_URL);
     $status = (int)curl_getinfo($curl, CURLINFO_HTTP_CODE);
     $this->logger->debug(sprintf("send():\n\tURL = %s\n\tStatus = %s",$url,$status));
@@ -167,8 +166,8 @@ class API {
         case 201:   // success POST
           $return = json_decode($result, true);
           break;
-        case 204:   // success DELETE
-          $return = 'deleted';
+        case 204:   // success for PUT & DELETE
+          $return = $desired;
           break;
         default:
           if ($result) {
