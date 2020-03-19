@@ -183,18 +183,20 @@ EOF;
   // TODO: change twitter to be URL, not just handle
   // TODO: add duotrope and dynamic other URLs like we used ot have on website.
   private function social_media($data) {
+    $fb = $this->get_external_url_with_icon($this->strip(@$data['urls']['facebook']));
+    $tw = $this->get_external_url_with_icon($this->strip(@$data['urls']['twitter']));
     $html = <<<EOF
       <!-- Social Block -->
       <h3>Social Media Information</h3>
       <!--p>Tell us how to find your Facebook Fan Page and follow your tweets on Twitter.</p-->
       <ul>
         <li>
-          <label class='heypub' for='hp_facebook'>Facebook Fan Page URL</label>
-          <input type="text" name="heypub_opt[urls][facebook]" id="hp_facebook" class='heypub' value="{$this->strip(@$data['urls']['facebook'])}" />
+          <label class='heypub' for='hp_facebook'>Facebook</label>
+          <input type="text" name="heypub_opt[urls][facebook]" id="hp_facebook" class='heypub' value="{$this->strip(@$data['urls']['facebook'])}" /> {$fb}
         </li>
         <li>
-          <label class='heypub' for='hp_twitter'>Twitter ID @</label>
-          <input type="text" name="heypub_opt[urls][twitter]" id="hp_twitter" class='heypub' value="{$this->strip(@$data['urls']['twitter'])}" />
+          <label class='heypub' for='hp_twitter'>Twitter</label>
+          <input type="text" name="heypub_opt[urls][twitter]" id="hp_twitter" class='heypub' value="{$this->strip(@$data['urls']['twitter'])}" /> {$tw}
         </li>
       </ul>
 EOF;

@@ -106,11 +106,13 @@ class API {
     $data = $this->clean_post_vars($put);
     $defaults = array(
       CURLOPT_URL => $url,
-      CURLOPT_HEADER => 0,
-      CURLOPT_RETURNTRANSFER  => TRUE,
-      CURLOPT_CUSTOMREQUEST   => 'PUT',
+      CURLOPT_FRESH_CONNECT => 1,
+      CURLOPT_RETURNTRANSFER => 1,
+      CURLOPT_FORBID_REUSE => 1,
       CURLOPT_TIMEOUT => $this->timeout,
-      CURLOPT_POSTFIELDS => http_build_query($data)
+      CURLOPT_CUSTOMREQUEST   => 'PUT',
+      CURLOPT_POSTFIELDS => http_build_query($data),
+      CURLOPT_HEADER => 0
     );
     $curl = curl_init();
     curl_setopt_array($curl, ($options + $defaults) );
