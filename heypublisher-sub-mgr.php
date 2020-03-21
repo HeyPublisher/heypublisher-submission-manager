@@ -78,6 +78,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.8.1 => 73
   2.8.2 => 74
   2.8.3 => 75
+  2.9.0 => 76
 
 ---------------------------------------------------------------------------------
 */
@@ -85,10 +86,10 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2019-12-06");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2020-03-20");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "75");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "2.8.3");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "76");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "2.9.0");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';

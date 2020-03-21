@@ -221,10 +221,6 @@ EOF;
     <h3>Contact Information</h3>
     <ul>
       <li>
-        <label class='heypub' for='hp_editor_title'>Title</label>
-        <input type="text" name="heypub_opt[editors][0][title]" id="hp_editor_title" class='heypub' value="{$this->strip(@$data['editors'][0]['title'])}" />
-      </li>
-      <li>
         <label class='heypub' for='hp_editor_name'>Managing Editor Name</label>
         <input type="text" name="heypub_opt[editors][0][name]" id="hp_editor_name" class='heypub' value="{$this->strip(@$data['editors'][0]['name'])}" />
       </li>
@@ -395,6 +391,8 @@ EOF;
 
   private function submission_criteria($data) {
     $hidden = (@$data['active']) ? null : "style='display:none;' ";
+    $mapped_genres = $this->genre_map(@$data);
+
     $html = <<<EOF
       <h3>Submission Criteria</h3>
       <ul>
@@ -408,7 +406,7 @@ EOF;
       <div id='heypub_show_genres_list' {$hidden}>
         <!-- Genres -->
         <h3>Select all categories of work your publication accepts.</h3>
-        {$this->genre_map()}
+        {$mapped_genres}
         <br/>
       </div>
       <ul>
@@ -428,26 +426,43 @@ EOF;
 EOF;
     return $html;
   }
+  // Map the list of all genres with the local list of genres
+  private function merged_genre_map($my_genres) {
+    // Extract the ids from the genres passed in by publisher data
+    $has_genres = array_map(function($var){ return $var['id']; }, $my_genres);
+    $all_genres = $this->api->get_genres();
+    // Not sure of the value of this - but keeping reference for now
+    // $saved_genres = $this->xml->get_category_mapping();
+    $map = array();
+    foreach ($all_genres as $key=>$hash) {
+      $name = $hash['name'];
+      $has = in_array($hash['id'],$has_genres) ? true : false;
+      $map[$name] = array('name' => $name, 'id' => $hash['id'], 'has' => $has);
+    }
+    return $map;
+  }
+
+
   // Map internal categories to HeyPublisher Genres
   // TODO: FIX THIS to use the JSON api
-  private function genre_map() {
+  private function genre_map($data) {
     $cols = 2; // colums for mapping table
-    $genres = $this->api->get_genres();
-    $this->log(sprintf("Options::genre_map() \$genres = %s",print_r($genres,1)));
+    // Get the full list of HP genres from the API
+    $genres = $this->merged_genre_map($data['genres']);
 
+    $this->log(sprintf("Options::genre_map() \n\tMapped genres = %s",print_r($genres,1)));
 
-    $cats = $this->xml->get_my_categories_as_hash();
-    $this->log(sprintf("Options::genre_map() \$cats = %s",print_r($cats,1)));
-    if (empty($cats)) { return ''; }
+    // $cats = $this->xml->get_my_categories_as_hash();
+    // $this->log(sprintf("Options::genre_map() \$cats = %s",print_r($cats,1)));
+    if (empty($genres)) { return ''; }
     $header = '';
     for ($x=0;$x<$cols;$x++) {
       $header .= "<th>Genre</th><th>Your Category</th>";
     }
     $cnt = 0;
     $count = 1;
-    // printf("<pre>Cats: %s</pre>",print_r($cats,1));
     $mapping = '';
-    foreach ($cats as $id=>$hash) {
+    foreach ($genres as $id=>$hash) {
       $count++;
       $class = null;
       if(($count%($cols*2)) != 0) { $class = 'alternate';}
@@ -456,9 +471,10 @@ EOF;
         $mapping .= sprintf("</tr><tr class='%s'>",$class);
       }
       $mapping .= sprintf('
-        <td>%s &nbsp; <input id="cat_%s"type="checkbox" name="heypub_opt[genres_list][]" value="%s" %s onclick="HeyPublisher.clickCheck(this,\'chk_%s\');"/></td>
+        <td>%s &nbsp; <input id="cat_%s"type="checkbox" name="heypub_opt[genres][][id]" value="%s" %s onclick="HeyPublisher.clickCheck(this,\'chk_%s\');"/></td>
         <td>%s</td>',
-          $hash['name'],$hash['id'],$hash['id'],($hash['has']) ? "checked=checked" : null,$hash['id'],$this->heypub_get_category_mapping($hash['id'],$hash['has'])
+          $hash['name'],$hash['id'],$hash['id'],($hash['has']) ? "checked=checked" : null,$hash['id'],
+          $this->get_wp_category_dropdown($hash['id'],$hash['has'])
       );
       $cnt ++;
     }
@@ -722,6 +738,7 @@ EOF;
     }
     return $message;
   }
+
   // map the internal categories to HeyPub categories
   private function set_category_mapping($post) {
     $result = array();
@@ -745,7 +762,10 @@ EOF;
     }
     return $html;
   }
-  private function heypub_get_category_mapping($id,$show) {
+
+  // Generate the dropdown of all categories in this WP install
+  // With the passed in selected ID
+  private function get_wp_category_dropdown($id,$show) {
     // global $hp_base;
     // $id is the remote category id from HP
     // All categories for this install:
