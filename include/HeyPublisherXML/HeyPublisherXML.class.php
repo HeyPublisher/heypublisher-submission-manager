@@ -42,14 +42,18 @@ class HeyPublisherXML {
   public function __destruct() {
 
   }
+  // Prior to deconstruction, this function is called so that all options
+  // saved in class var are saved to database
   public function save_option_state() {
     // Register the shutdown functions
     // http://stackoverflow.com/questions/33231656/register-static-class-method-as-shutdown-function-in-php
     // http://us.php.net/manual/en/function.register-shutdown-function.php
     curl_close($this->curl);
+    // Saves the install options (see: init_install_options() for definition)
     if ($this->install) {
       update_option(HEYPUB_PLUGIN_OPT_INSTALL,$this->install);
     }
+    // Saves the configuration options (see: config_options_definition() for definition)
     if ($this->config) {
       update_option(HEYPUB_PLUGIN_OPT_CONFIG,$this->config);
     }
@@ -102,8 +106,7 @@ class HeyPublisherXML {
     $hash = array(
       'categories' => array(),
       'name'  => null,
-      'url'   => null,
-      'circulation' => null,
+      'readership' => null,
       'issn' => null,
       'established' => null,
       'editor_name' => null,
@@ -115,14 +118,27 @@ class HeyPublisherXML {
       'reprint_subs' => true,
       'paying_market' => false,
       'paying_market_range' => null,
-      'address' => null,
-      'city' => null,
-      'state' => null,
-      'zipcode' => null,
-      'country' => null,
-      'twitter' => null,
-      'facebook' => null,
-      'rss' => null,
+      'address' => array(
+        'street'  => null,
+        'city'    => null,
+        'state'   => null,
+        'country' => null,
+        'zipcode' => null
+      ),
+      'urls'  => array (
+        'website' => null,
+        'twitter' => null,
+        'facebook' => null,
+        'rss' => null
+      ),
+      'notifications' => array(
+        'read' => true,
+        'considered' => true,
+        'accepted' => true,
+        'rejected' => true,
+        'published' => true,
+        'withdrawn' => true
+      ),
       'sub_page_id' => null,
       'sub_guide_id' => null,
       'seo_url' => null,
@@ -155,13 +171,25 @@ class HeyPublisherXML {
     $this->config["$key"] = $val;
   }
 
+  // set the attributes of the $config var in bulk
   public function set_config_option_bulk($hash){
-    $allowed = array_keys($this->config_options_definition());
+    $this->log(sprintf("HeyPublisherXML#set_config_option_bulk():\n\tPre Call = %s",print_r($this->config,1)));
+    $this->log(sprintf("HeyPublisherXML#set_config_option_bulk():\n\tHASH = %s",print_r($hash,1)));
+    $allowed = $this->config_options_definition();
     foreach ($hash as $key=>$val) {
-      if (in_array($key,$allowed)) {
-        $this->config["$key"] = $val;
+      if (array_key_exists($key,$allowed)) {
+        if ( is_array($val)  ) {
+          foreach ($val as $key2=>$val2) {
+            if (array_key_exists($key2,$allowed["$key"])) {
+              $this->config["$key"]["$key2"] = $val2;
+            }
+          }
+        } else {
+          $this->config["$key"] = $val;
+        }
       }
     }
+    $this->log(sprintf("HeyPublisherXML#set_config_option_bulk():\n\Post Call = %s",print_r($this->config,1)));
   }
 
   public function get_config_option($key){
@@ -169,6 +197,13 @@ class HeyPublisherXML {
       return $this->config["$key"];
     }
     return false;
+  }
+
+  // Remove config keys before they are saved
+  public function kill_config_option($key){
+    if ($this->config["$key"]) {
+      unset($this->config["$key"]);
+    }
   }
 
   public function set_is_validated() {
@@ -228,6 +263,7 @@ class HeyPublisherXML {
       'token'         => HEYPUB_SVC_TOKEN_VALUE,
       # no htmlentities here, otherwise " becomes %quote; and cronks the seo name
       'publishername' => stripslashes($this->get_config_option('name')),
+      // TODO: Fix this!! url is now a nested var
       'url'           => htmlentities(stripslashes($this->get_config_option('url'))),
       'email'         => htmlentities(stripslashes($user['username'])),
       'password'      => htmlentities(stripslashes($user['password'])),
@@ -358,7 +394,7 @@ EOF;
 EOF;
     return $ret;
   }
-
+  // TODO: Fix this - or delete if were no longer using
   // When uninstalling plugin we also supress errors.
   function update_publisher($post,$uninstall_plugin=false) {
     $categories = $this->update_publisher_categories($post);

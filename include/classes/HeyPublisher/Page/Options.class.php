@@ -432,7 +432,7 @@ EOF;
     $has_genres = array_map(function($var){ return $var['id']; }, $my_genres);
     $all_genres = $this->api->get_genres();
     // Not sure of the value of this - but keeping reference for now
-    // $saved_genres = $this->xml->get_category_mapping();
+    $saved_genres = $this->xml->get_category_mapping();
     $map = array();
     foreach ($all_genres as $key=>$hash) {
       $name = $hash['name'];

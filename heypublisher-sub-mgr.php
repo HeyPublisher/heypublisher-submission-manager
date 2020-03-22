@@ -279,7 +279,7 @@ Initialize / Upgrade
 */
 function heypub_init(){
   global $hp_xml;
-
+  $hp_xml->log("heypub_init()");
   // we're referencing the old key names here directly - as we no longer need the defines in the system
   // and this is simply for backwards upgrade compatibility
   if (get_option('_heypub_opt_plugin_version_current') != false) {
@@ -345,6 +345,7 @@ function heypub_init(){
     $hp_xml->initialize_plugin();
     if (function_exists('get_bloginfo')) {
       $hp_xml->set_config_option('name',get_bloginfo('name'));
+      // TODO: these need to change
       $hp_xml->set_config_option('url',get_bloginfo('url'));
       $hp_xml->set_config_option('editor_email',get_bloginfo('admin_email'));
       if (function_exists('get_feed_permastruct')) {
@@ -358,6 +359,7 @@ function heypub_init(){
   // now check for a normal upgrade path
   $opts = $hp_xml->install;
   if ($opts['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
+    $hp_xml->log("heypub_init() - upgrading plugin");
     // this is the 'normal' upgrade path.
     if ($opts['version_current'] < 40) {  // upgrade to 1.3.0 options
       $hp_xml->set_config_option('notify_submitted','1');
@@ -389,8 +391,22 @@ function heypub_init(){
     if ($opts['version_current'] < 65) {  // upgrade to 2.4.0 options
       $hp_xml->set_config_option('notify_withdrawn','1');
     }
-
-
+    // Upgraded to the 2.9.0 vesion of options
+    if ($opts['version_current'] < 76) {
+      $hp_xml->log("heypub_init() - upgrading to version 76");
+      // we no longer need these keys set in config
+      $hp_xml->kill_config_option('city');
+      $hp_xml->kill_config_option('state');
+      $hp_xml->kill_config_option('zipcode');
+      $hp_xml->kill_config_option('country');
+      $hp_xml->kill_config_option('notify_submitted');
+      $hp_xml->kill_config_option('notify_read');
+      $hp_xml->kill_config_option('notify_rejected');
+      $hp_xml->kill_config_option('notify_accepted');
+      $hp_xml->kill_config_option('notify_published');
+      $hp_xml->kill_config_option('notify_under_consideration');
+      $hp_xml->kill_config_option('notify_withdrawn');
+    }
 
     // For future reference, just keep adding new hash keys that are version specific by following same logic
     // if ($opts['version_current'] < 50) {  // upgrade to 1.4.x options
