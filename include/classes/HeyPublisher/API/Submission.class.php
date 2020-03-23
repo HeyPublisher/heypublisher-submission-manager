@@ -18,13 +18,6 @@ class Submission extends \HeyPublisher\API {
   	parent::__destruct();
   }
 
-  public function get_editor_history(){
-    $path = 'v2/editors/history';
-    $result = $this->get($path);
-    $this->logger->debug(sprintf("get_editor_history():\n\tResults: %s",print_r($result,1)));
-    return $result;
-  }
-
   public function get_submission_history($id,$order){
     $path = sprintf('v2/submissions/%s/history',$id);
     $opts = array('order'=>$order);

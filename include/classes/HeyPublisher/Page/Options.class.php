@@ -604,6 +604,9 @@ EOF;
     $opts = $this->xml->config;
     // Load the data from HeyPublisher db
     $settings = $this->api->get_publisher_info();
+    // update the configs with latest parsing data from server
+    $this->xml->sync_publisher_info($settings);
+
     $this->log(sprintf("Options::options_capture_form() \$opts = %s",print_r($opts,1)));
     $this->log(sprintf("Options::options_capture_form() \$settings = %s",print_r($settings,1)));
     // $this->log(" => dislaying Options page");
@@ -710,17 +713,19 @@ EOF;
     $this->log(sprintf("\t\$opts = %s",print_r($opts,1)));
     //  Bulk update the form post
     $this->xml->set_config_option_bulk($opts);
+
+    // TODO: Are these still necessary?
     // update the category mapping
-    $cats = $this->set_category_mapping($opts);
-    $this->xml->set_config_option('categories',$cats);
-    if ($cats) {
-      $this->xml->set_config_option('accepting_subs','1');
-    }
 
-    if (!$opts['paying_market']) {
-      $this->xml->set_config_option('paying_market_range',null);
-    }
-
+    // $cats = $this->set_category_mapping($opts);
+    // $this->xml->set_config_option('categories',$cats);
+    // if ($cats) {
+    //   $this->xml->set_config_option('accepting_subs','1');
+    // }
+    //
+    // if (!$opts['paying_market']) {
+    //   $this->xml->set_config_option('paying_market_range',null);
+    // }
     // get the URL for the sub guidelines
     $opts['urls']['guideline'] = get_permalink($opts['sub_guide_id']);
     // get the URL for the sub form itself
@@ -729,10 +734,6 @@ EOF;
     $opts['urls']['rss'] = get_bloginfo('rss2_url');
     // now attempt to sync with HeyPublisher.com
     $success = $this->api->update_publisher($opts);
-    // $success = $this->xml->update_publisher($opts);
-    // fetch the info back because we want to store seo_url and other stats locally.
-    // TODO: Call the JSON feed
-    $this->xml->sync_publisher_info();
     if ($success) {
       $message = 'Your changes have been saved and syncronized with HeyPublisher.';
     }

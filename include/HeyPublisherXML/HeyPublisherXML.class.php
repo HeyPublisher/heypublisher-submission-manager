@@ -147,13 +147,6 @@ class HeyPublisherXML {
       'guide_first_validated_at' => null,
       'guide_last_validated_at' => null,
       // need to match default config in DB
-      'notify_submitted' => true,
-      'notify_read' => true,
-      'notify_rejected' => true,
-      'notify_published' => true,
-      'notify_accepted' => true,
-      'notify_under_consideration' => true,
-      'notify_withdrawn' => true,
       'turn_off_tidy' => false,
       'link_sub_to_edit' => true,           # don't think we're using this one??
       'display_download_link' => false,      # this is a local-only config
@@ -833,22 +826,25 @@ EOF;
   // Called after calling HeyPublisher.  This will ensure whatever data is on
   // remote server is synced locally 'after' a save with remote server.
   // only select fields are synced this way
-  public function sync_publisher_info() {
-    // TODO: Change this to call the statistics endpoint
-    $p = $this->get_publisher_info();
-    if ($p) {
-      $this->set_config_option('seo_url',$p['seo_url']);
-      $this->set_config_option('homepage_first_validated_at',$p['homepage_first_validated_at']);
-      $this->set_config_option('homepage_last_validated_at',$p['homepage_last_validated_at']);
-      $this->set_config_option('guide_first_validated_at',$p['guide_first_validated_at']);
-      $this->set_config_option('guide_last_validated_at',$p['guide_last_validated_at']);
-      // we won't store total subs and open subs
-      // xml.avg_response_days(-1)   # we'll calculate this later
-      // xml.avg_acceptance_rate(-1) # we'll calculate this later
-      // xml.writer_comments(@pub.comments.count(:include => [:comment_type],:conditions=>["comment_types.name = 'public'"]))
-      // xml.writer_favorites(@pub.user_publishers.count)
+  public function sync_publisher_info($stats) {
+    // TODO: reorganize these keys
+    // TODO: These are NOT referenced anywhere in code??
+    if ($statistics['homepage']) {
+      if ($statistics['homepage']['added']) {
+        $this->set_config_option('homepage_first_validated_at',$statistics['homepage']['added']);
+      }
+      if ($statistics['homepage']['updated']) {
+        $this->set_config_option('homepage_last_validated_at',$statistics['homepage']['updated']);
+      }
     }
-    return $p;
+    if ($statistics['guidelines']) {
+      if ($statistics['guidelines']['added']) {
+        $this->set_config_option('guide_first_validated_at',$statistics['guidelines']['added']);
+      }
+      if ($statistics['guidelines']['updated']) {
+        $this->set_config_option('guide_last_validated_at',$statistics['guidelines']['updated']);
+      }
+    }
   }
 }
 ?>

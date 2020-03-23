@@ -394,11 +394,30 @@ function heypub_init(){
     // Upgraded to the 2.9.0 vesion of options
     if ($opts['version_current'] < 76) {
       $hp_xml->log("heypub_init() - upgrading to version 76");
+      // need to migrate keys
+      $address = array(
+        'street'  => $hp_xml->get_config_option('address'),
+        'city'    => $hp_xml->get_config_option('city'),
+        'state'   => $hp_xml->get_config_option('state'),
+        'country'   => $hp_xml->get_config_option('country'),
+        'zipcode'   => $hp_xml->get_config_option('zipcode')
+      );
+      $hp_xml->set_config_option('address',$address);
       // we no longer need these keys set in config
       $hp_xml->kill_config_option('city');
       $hp_xml->kill_config_option('state');
       $hp_xml->kill_config_option('zipcode');
       $hp_xml->kill_config_option('country');
+      $notifications = array(
+        'read'        => $hp_xml->get_config_option('notify_read'),
+        'considered'  => $hp_xml->get_config_option('notify_under_consideration'),
+        'accepted'    => $hp_xml->get_config_option('notify_accepted'),
+        'rejected'    => $hp_xml->get_config_option('notify_rejected'),
+        'published'   => $hp_xml->get_config_option('notify_published'),
+        'withdrawn'   => $hp_xml->get_config_option('notify_withdrawn'),
+      );
+      $hp_xml->set_config_option('notifications',$notifications);
+      // we no longer need these keys set in config
       $hp_xml->kill_config_option('notify_submitted');
       $hp_xml->kill_config_option('notify_read');
       $hp_xml->kill_config_option('notify_rejected');

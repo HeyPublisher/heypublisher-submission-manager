@@ -61,6 +61,23 @@ class Publisher extends \HeyPublisher\API {
     return;
   }
 
+  public function get_editor_history(){
+    $path = 'v2/editors/history';
+    $result = $this->get($path);
+    $this->logger->debug(sprintf("get_editor_history():\n\tResults: %s",print_r($result,1)));
+    return $result;
+  }
+  // Get the statistics for a publishers
+  public function get_publisher_stats() {
+    $this->logger->debug("API::Publisher#get_publisher_stats()");
+    $path = sprintf('publishers/%s/statistics',$this->poid);
+    $result = $this->get($path);
+    if ($result && key_exists('statistics',$result)) {
+      $this->logger->debug(sprintf("\tResults: %s",print_r($result,1)));
+      return $result['statistics'];
+    }
+    return;
+  }
 }
 
 ?>
