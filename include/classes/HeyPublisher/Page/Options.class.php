@@ -53,6 +53,7 @@ class Options extends \HeyPublisher\Page {
 
   protected function content() {
   	global $wpdb,$wp_roles,$hp_base;
+    $html = '';
     $nonce = wp_nonce_field('heypub-save-options');
     if (!$this->xml->is_validated) {
       // Display the form to register the plugin
@@ -71,14 +72,16 @@ class Options extends \HeyPublisher\Page {
     }
 
     $this->print_message_if_exists();
-    $html = <<<EOF
-      <form method="post" action="{$action}">
-        {$nonce}
-        {$content}
-        <input type="hidden" name="save_settings" value="0" />
-        <input type="submit" class="heypub-button button-primary" name="save_button" id="save_button" value="{$button} &raquo;" />
-      </form>
+    if ($content) {
+      $html = <<<EOF
+        <form method="post" action="{$action}">
+          {$nonce}
+          {$content}
+          <input type="hidden" name="save_settings" value="0" />
+          <input type="submit" class="heypub-button button-primary" name="save_button" id="save_button" value="{$button} &raquo;" />
+        </form>
 EOF;
+    }
     return $html;
   }
 
@@ -426,25 +429,36 @@ EOF;
 EOF;
     return $html;
   }
-  // Map the list of all genres with the local list of genres
+
+  // Marries the list of HP genres to the ones that have been activated in plugin
+  // Returns array where key is the HP genre ID and val is the WP category id
+  // @updated 2020-03-25
   private function merged_genre_map($my_genres) {
-    // Extract the ids from the genres passed in by publisher data
-    $has_genres = array_map(function($var){ return $var['id']; }, $my_genres);
     $all_genres = $this->api->get_genres();
-    // Not sure of the value of this - but keeping reference for now
-    $saved_genres = $this->xml->get_category_mapping();
+    // Extract the ids from the genres passed in by publisher data
+    $has = array_reduce($my_genres, function($accumulator,$item) {
+      $id = $item['id'];
+      $accumulator[$id] = $item['wp_id'];
+      return $accumulator;
+    });
+    $this->log(sprintf("Options::merged_genre_map() \n\t\$my_genres (reduced) = %s",print_r($has,1)));
+
+    // We should have local and remote mapping
+    // $saved_genres = $this->xml->get_category_mapping();
     $map = array();
     foreach ($all_genres as $key=>$hash) {
       $name = $hash['name'];
-      $has = in_array($hash['id'],$has_genres) ? true : false;
-      $map[$name] = array('name' => $name, 'id' => $hash['id'], 'has' => $has);
+      $id = $hash['id'];
+      //  the value may be null - so don't use isset() here!!
+      // TODO: this errors if $has is empty
+      $was = isset($has) && array_key_exists($id,$has) ? true : false;
+      $map[$name] = array('name' => $name, 'id' => $id, 'has' => $was, 'wp_id' => $has[$id]);
     }
     return $map;
   }
 
 
   // Map internal categories to HeyPublisher Genres
-  // TODO: FIX THIS to use the JSON api
   private function genre_map($data) {
     $cols = 2; // colums for mapping table
     // Get the full list of HP genres from the API
@@ -471,10 +485,10 @@ EOF;
         $mapping .= sprintf("</tr><tr class='%s'>",$class);
       }
       $mapping .= sprintf('
-        <td>%s &nbsp; <input id="cat_%s"type="checkbox" name="heypub_opt[genres][][id]" value="%s" %s onclick="HeyPublisher.clickCheck(this,\'chk_%s\');"/></td>
+        <td>%s &nbsp; <input id="cat_%s"type="checkbox" name="heypub_opt[genres][%s]" value="1" %s onclick="HeyPublisher.clickCheck(this,\'chk_%s\');"/></td>
         <td>%s</td>',
           $hash['name'],$hash['id'],$hash['id'],($hash['has']) ? "checked=checked" : null,$hash['id'],
-          $this->get_wp_category_dropdown($hash['id'],$hash['has'])
+          $this->get_wp_category_dropdown($hash['id'],$hash['has'],$hash['wp_id'])
       );
       $cnt ++;
     }
@@ -598,6 +612,7 @@ EOF;
 
   // Display the form that captures all of the options.
   private function options_capture_form() {
+    $html = '';
     // load the existing configuration
     // Need this for submission form and guidelines page IDs
     // TODO: Move config into a base class so XML can be deprecated
@@ -610,21 +625,22 @@ EOF;
     $this->log(sprintf("Options::options_capture_form() \$opts = %s",print_r($opts,1)));
     $this->log(sprintf("Options::options_capture_form() \$settings = %s",print_r($settings,1)));
     // $this->log(" => dislaying Options page");
-    $html = <<<EOF
-      <input type="hidden" name="heypub_opt[isvalidated]" value="1" />
-      <input type="hidden" name="save_settings" value="0" />
-      {$this->publication_block($settings)}
-      {$this->contact_information($settings)}
-      {$this->social_media($settings)}
-      {$this->submission_guidelines($opts,$settings)}
-      {$this->submission_page($opts)}
-      {$this->submission_criteria($settings)}
-      {$this->writer_notifications($settings)}
-      {$this->integrations($settings)}
-      {$this->experimental_options($settings)}
+    if ($settings) {
+      $html = <<<EOF
+        <input type="hidden" name="heypub_opt[isvalidated]" value="1" />
+        <input type="hidden" name="save_settings" value="0" />
+        {$this->publication_block($settings)}
+        {$this->contact_information($settings)}
+        {$this->social_media($settings)}
+        {$this->submission_guidelines($opts,$settings)}
+        {$this->submission_page($opts)}
+        {$this->submission_criteria($settings)}
+        {$this->writer_notifications($settings)}
+        {$this->integrations($settings)}
+        {$this->experimental_options($settings)}
 
 EOF;
-
+    }
     return $html;
   }
 
@@ -711,13 +727,18 @@ EOF;
     // Get options from the post
     $opts = $post['heypub_opt'];
     $this->log(sprintf("\t\$opts = %s",print_r($opts,1)));
-    //  Bulk update the form post
+    // Need to delect the values in category_map where:
+    //  a) value is < 0
+    //  b) key is not present in genres array
+    $this->clean_genres_category_map($opts);
+
+    //  Bulk update the form post, saving into local WP db
     $this->xml->set_config_option_bulk($opts);
+    // This does not update the category map, because we lock down only permitted keys
+    $this->xml->set_config_option('category_map',$opts['category_map']);
 
     // TODO: Are these still necessary?
-    // update the category mapping
-
-    // $cats = $this->set_category_mapping($opts);
+    // $cats = $this->set_category_mapping($opts); // this function is gone now
     // $this->xml->set_config_option('categories',$cats);
     // if ($cats) {
     //   $this->xml->set_config_option('accepting_subs','1');
@@ -726,6 +747,7 @@ EOF;
     // if (!$opts['paying_market']) {
     //   $this->xml->set_config_option('paying_market_range',null);
     // }
+
     // get the URL for the sub guidelines
     $opts['urls']['guideline'] = get_permalink($opts['sub_guide_id']);
     // get the URL for the sub form itself
@@ -733,6 +755,7 @@ EOF;
     // Blog's RSS feed is:
     $opts['urls']['rss'] = get_bloginfo('rss2_url');
     // now attempt to sync with HeyPublisher.com
+    unset($opts['category_map']);
     $success = $this->api->update_publisher($opts);
     if ($success) {
       $message = 'Your changes have been saved and syncronized with HeyPublisher.';
@@ -740,20 +763,6 @@ EOF;
     return $message;
   }
 
-  // map the internal categories to HeyPub categories
-  private function set_category_mapping($post) {
-    $result = array();
-    if ($post['accepting_subs'] && $post['genres_list']) {
-      $map = $post['category_map'];
-      $genres = $post['genres_list'];
-      foreach ($genres as $x) {
-        if ($map["$x"]) {
-          $result["$x"] = $map["$x"];
-        }
-      }
-    }
-    return $result;
-  }
   private function publication_types() {
     $pub_types = $this->xml->get_my_publisher_types_as_hash();
     $html = '';
@@ -765,16 +774,14 @@ EOF;
   }
 
   // Generate the dropdown of all categories in this WP install
-  // With the passed in selected ID
-  private function get_wp_category_dropdown($id,$show) {
-    // global $hp_base;
-    // $id is the remote category id from HP
-    // All categories for this install:
-    // $categories =  $hp_base->get_categories();
-    $map = $this->xml->get_category_mapping();
+  // vars:
+  //  id: HP genre ID
+  //  show: boolean simply to control whether or not to display
+  //  wp_id: WordPress category id (may be null)
+  private function get_wp_category_dropdown($id,$show,$wp_id) {
     $list = wp_dropdown_categories(
       array(
-        'selected' => ($map["$id"]) ? $map["$id"] : 0,
+        'selected' => ($wp_id) ? $wp_id : 0,
         'id' => "chk_$id",
         'hide_empty' => 0,
         'name' => "heypub_opt[category_map][$id]",
@@ -847,6 +854,27 @@ EOF;
     </p>
 EOF;
     return $html;
+  }
+
+  // Need to delete the values in category_map where:
+  //  a) value is < 0
+  //  b) key is not present in genres array
+  private function clean_genres_category_map(&$opts){
+    // get all HP ids we may have - this is the keys from the category_map as it will include ALL on a form post
+    $all_keys = array_keys($opts['category_map']);
+    $cats = array();
+    $genres = array();
+    $this->log(sprintf("Options#clean_genres_category_map()\n\t\$all_keys = %s",print_r($all_keys,1)));
+    foreach ($all_keys as $id) {
+      if (isset($opts['genres'][$id]) && isset($opts['category_map'][$id]) && $opts['category_map'][$id] > 0) {
+        $cats[$id] = $opts['category_map'][$id];
+        $g = array('id' => $id, 'wp_id' => $opts['category_map'][$id]);
+        array_push($genres,$g);
+      }
+    }
+    $this->log(sprintf("\n\t\$category_map = %s\n\t\$genres = %s",print_r($cats,1),print_r($genres,1) ));
+    $opts['category_map'] = $cats;
+    $opts['genres'] = $genres;
   }
 
 }

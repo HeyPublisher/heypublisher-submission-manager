@@ -59,6 +59,7 @@ class HeyPublisherXML {
     }
   }
 
+  //  fetch the mapping of categories to genres from local db
   public function get_category_mapping() {
     if ($this->config['categories']) {
       return $this->config['categories'];
@@ -104,7 +105,7 @@ class HeyPublisherXML {
   // Defines all of the allowable option keys
   private function config_options_definition() {
     $hash = array(
-      'categories' => array(),
+      'category_map' => array(),
       'name'  => null,
       'readership' => null,
       'issn' => null,
@@ -166,7 +167,7 @@ class HeyPublisherXML {
 
   // set the attributes of the $config var in bulk
   public function set_config_option_bulk($hash){
-    $this->log(sprintf("HeyPublisherXML#set_config_option_bulk():\n\tPre Call = %s",print_r($this->config,1)));
+    $this->log(sprintf("HeyPublisherXML#set_config_option_bulk():\n\tPre Call \$config = %s",print_r($this->config,1)));
     $this->log(sprintf("HeyPublisherXML#set_config_option_bulk():\n\tHASH = %s",print_r($hash,1)));
     $allowed = $this->config_options_definition();
     foreach ($hash as $key=>$val) {

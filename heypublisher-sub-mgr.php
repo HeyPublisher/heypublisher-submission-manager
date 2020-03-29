@@ -425,6 +425,10 @@ function heypub_init(){
       $hp_xml->kill_config_option('notify_published');
       $hp_xml->kill_config_option('notify_under_consideration');
       $hp_xml->kill_config_option('notify_withdrawn');
+
+      //  Need to migrate from $saved_genres = $this->xml->get_category_mapping(); to remote mapping
+      $hp_xml->set_config_option('category_map',$hp_xml->get_config_option('categories'));
+
     }
 
     // For future reference, just keep adding new hash keys that are version specific by following same logic
