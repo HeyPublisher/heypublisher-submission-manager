@@ -177,10 +177,7 @@ EOF;
         if (FALSE != $hash->author->email) {
           $contact = sprintf('<a title="Email the Author"  href="mailto:%s?subject=Your%%20submission%%20to%%20%s">%s</a>',$hash->author->email,get_bloginfo('name'),$hp_base->truncate($hash->author->email));
         }
-        $word_count = '?';
-        if (FALSE != $hash->word_count) {
-          $word_count = number_format((float)"$hash->word_count");
-        }
+        $word_count = $this->normalize_word_count($hash);
         $status = $this->xml->normalize_submission_status($hash->status);
         $link = $status; // default
         if ($accepted["$x"] || "$hash->status" == 'accepted') {
@@ -529,11 +526,9 @@ EOF;
     return $html;
   }
   private function word_count($sub) {
-    $html = null;
-    if (FALSE != $sub->word_count) {
-      // getting weird errors about the type of val for word_count, so explicitly cast here
-      $html = sprintf('<dt>Word Count:</dt><dd>%s words</dd>',number_format("$sub->word_count"));
-    }
+    $wc = $this->normalize_word_count($sub);
+    // getting weird errors about the type of val for word_count, so explicitly cast here
+    $html = sprintf('<dt>Word Count:</dt><dd>%s words</dd>',$wc);
     return $html;
   }
   // Take in a submission id and return a formatted submission block as string
@@ -1030,5 +1025,17 @@ EOF;
     wp_list_post_revisions( $post );
 
   }
+  // Normalize the word count, dependent on where it comes in from
+  private function normalize_word_count($obj) {
+    $wc = '?';
+    if (FALSE != $obj->s_word_count && $obj->s_word_count > 0) {
+      $wc = number_format((float)"$obj->s_word_count");
+    }
+    elseif (FALSE != $obj->word_count && $obj->word_count > 0) {
+      $wc = number_format((float)"$obj->word_count");
+    }
+    return $wc;
+  }
+
 }
 ?>

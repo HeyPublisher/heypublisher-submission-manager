@@ -81,6 +81,8 @@ class Options extends \HeyPublisher\Page {
           <input type="submit" class="heypub-button button-primary" name="save_button" id="save_button" value="{$button} &raquo;" />
         </form>
 EOF;
+    } else {
+      $html = "<h2>We're currently experiencing issues.  Please check back again in a few minutes.</h2>";
     }
     return $html;
   }
@@ -282,7 +284,7 @@ EOF;
       </li>
       <li>
         <label class='heypub' for='hp_sub_guide_text_active'>Customize Submission Guidelines?</label>
-        <select name="heypub_opt[guidelines_custom]" id="hp_guidelines_custom" onchange="HeyPublisher.selectToggle(this,'#heypub_show_guidelines_text');">
+        <select name="heypub_opt[guidelines][custom]" id="hp_guidelines_custom" onchange="HeyPublisher.selectToggle(this,'#heypub_show_guidelines_text');">
           {$this->boolean_options('custom',@$data['guidelines'])}
         </select>
       </li>
@@ -293,7 +295,7 @@ EOF;
           <ul>
           <li>
             <label class='heypub' for='hp_sub_guide_text'>Submission Guidelines to Display</label>
-            <textarea name="heypub_opt[sub_guide_text]" id="hp_body" class='heypub'>{$this->strip(@$data['guidelines']['text'])}</textarea>
+            <textarea name="heypub_opt[guidelines][text]" id="hp_body" class='heypub'>{$this->strip(@$data['guidelines']['text'])}</textarea>
             {$text}
           </li>
           </ul>

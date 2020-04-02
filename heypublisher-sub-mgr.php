@@ -444,7 +444,7 @@ function heypub_init(){
   }
   // otherwise we keep chugging along
 }
-
+// TODO: This needs to be fixed for new API support
 function heypub_uninit() {
   global $hp_xml;
   $opts = $hp_xml->config;
