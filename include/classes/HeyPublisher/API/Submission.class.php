@@ -11,7 +11,8 @@ require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API.class.p
 class Submission extends \HeyPublisher\API {
 
   public function __construct() {
-  	parent::__construct();
+    parent::__construct();
+    $this->logger->debug("API::Submission#__construct()");
   }
 
   public function __destruct() {

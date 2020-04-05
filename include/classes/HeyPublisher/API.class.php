@@ -20,11 +20,11 @@ class API {
   var $poid = '';
 
   public function __construct() {
-    $this->logger = new \HeyPublisher\Log();
-    $install = get_option(HEYPUB_PLUGIN_OPT_INSTALL);
-    $this->uoid = $install['user_oid'];
-    $this->poid = $install['publisher_oid'];
-    // $this->curl = curl_init();
+    global $hp_config;
+    $this->uoid = $hp_config->uoid;
+    $this->poid = $hp_config->poid;
+    $this->logger = $hp_config->logger;
+    $this->logger->debug("API#__construct");
     register_shutdown_function(array($this,'shutdown'));
   }
 
@@ -34,6 +34,7 @@ class API {
 
   // Register the shutdown functions
   public function shutdown() {
+    $this->logger->debug("API#shutdown");
     // http://stackoverflow.com/questions/33231656/register-static-class-method-as-shutdown-function-in-php
     // http://us.php.net/manual/en/function.register-shutdown-function.php
     // curl_close($this->curl);

@@ -21,17 +21,22 @@ class Page extends \Loudlever\Loudlever {
   var $message = '';
   var $warning = '';
   var $additional_side_nav = null;
-
+  var $config = null;
+  var $options = null;
 
   public function __construct() {
-    global $hp_xml;
+    global $hp_xml,$hp_config;
   	parent::__construct();
     $this->plugin['home'] = 'https://wordpress.org/plugins/heypublisher-submission-manager/';
     $this->plugin['support'] = 'https://wordpress.org/support/plugin/heypublisher-submission-manager';
     $this->plugin['contact'] = 'mailto:support@heypublisher.com';
-    $this->log_file = HEYPUB_PLUGIN_FULLPATH . '/error.log';
+    $this->logger = $hp_config->logger;
+    $this->config = $hp_config;
     $this->xml = $hp_xml;
     $this->nonce = sprintf('hp_nonce%s',$this->page);
+
+    // TODO: Deprecate this!
+    $this->log_file = HEYPUB_PLUGIN_FULLPATH . '/error.log';
   }
 
   public function __destruct() {

@@ -12,7 +12,8 @@ class Publisher extends \HeyPublisher\API {
   var $publisher = false;
 
   public function __construct() {
-  	parent::__construct();
+    parent::__construct();
+    $this->logger->debug("API::Publisher#__construct()");
   }
 
   public function __destruct() {
@@ -36,7 +37,7 @@ class Publisher extends \HeyPublisher\API {
     return;
   }
 
-  // get the Genres HeyPublisher supports
+  // get the Genres data
   public function get_genres() {
     $this->logger->debug("API::Publisher#get_genres()");
     $path = 'genres';
@@ -44,6 +45,18 @@ class Publisher extends \HeyPublisher\API {
     if ($result && key_exists('genres',$result)) {
       $this->logger->debug(sprintf("\tResults: %s",print_r($result,1)));
       return $result['genres'];
+    }
+    return;
+  }
+
+  // get the Publisher Types data
+  public function get_publisher_types() {
+    $this->logger->debug("API::Publisher#get_publisher_types()");
+    $path = 'publishers/types';
+    $result = $this->get($path);
+    if ($result && key_exists('publisher_types',$result)) {
+      $this->logger->debug(sprintf("\tResults: %s",print_r($result,1)));
+      return $result['publisher_types'];
     }
     return;
   }

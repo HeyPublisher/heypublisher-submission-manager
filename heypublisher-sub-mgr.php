@@ -86,9 +86,9 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2020-03-20");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2020-04-03");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "76");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "79");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_VERSION", "2.9.0");
 
 # Base domain
@@ -128,7 +128,9 @@ define('HEYPUB_SVC_READ_SUBMISSION','submissions/show');                      # 
 # if this changes, plugin will not work.  You have been warned
 define('HEYPUB_SVC_TOKEN_VALUE','534ba1c699ca9310d7acf4832e12bed87c4d5917c5063c58382e9766bca11800');
 
-// Locally stored option keys
+// Locally stored in database
+// install key contains info about the install iteself
+// config key contains cached responses from server for faster page loads
 define('HEYPUB_PLUGIN_OPT_INSTALL', '_heypub_plugin_opt_install');
 define('HEYPUB_PLUGIN_OPT_CONFIG', '_heypub_plugin_options');
 
@@ -150,10 +152,14 @@ define('HEYPUB_POST_META_KEY_SUB_ID','_heypub_post_meta_key_sub_id');
 /**
 * Load all of the plugin files
 */
-global $hp_xml;
-global $hp_base;
+global $hp_xml, $hp_base, $hp_config;
+// This class fetches data from and stores data in WP db
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Config.class.php');
+// XML api v1
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/HeyPublisherXML/HeyPublisherXML.class.php');
+// dunno ?!
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/HeyPublisher/HeyPublisher.class.php');
+$hp_config = new \HeyPublisher\Config;
 $hp_xml = new HeyPublisherXML;
 $hp_base = new HeyPublisher;
 $hp_xml->debug = $debug;
@@ -211,7 +217,7 @@ add_action( 'do_meta_boxes', array($hp_subs,'revisions_meta_box'));
 
 // Ensure we go through the upgrade path even if the user simply installs
 // a new version of the plugin over top of the old plugin.
-if ($hp_xml->install['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
+if ($hp_config->install['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
   heypub_init();
 }
 
@@ -272,151 +278,93 @@ function HeyPublisherAdminInit() {
 //   $hp_res->handler();
 // }
 
-/*
--------------------------------------------------------------------------------
-Initialize / Upgrade
--------------------------------------------------------------------------------
-*/
+// -----------------------------------------------------------------------------
+// Initialize / Upgrade
+// -----------------------------------------------------------------------------
 function heypub_init(){
-  global $hp_xml;
+  global $hp_xml, $hp_config;
   $hp_xml->log("heypub_init()");
-  // we're referencing the old key names here directly - as we no longer need the defines in the system
-  // and this is simply for backwards upgrade compatibility
-  if (get_option('_heypub_opt_plugin_version_current') != false) {
-    // this user is upgrading from build version <= 28
-    $hp_xml->initialize_plugin();
-    // need to transfer over all of their install configs to the new hash and clean the db:
-    // plugin version and install date
-    $hp_xml->set_install_option('version_current',get_option('_heypub_opt_plugin_version_current'));
-    delete_option('_heypub_opt_plugin_version_current');
-    $hp_xml->set_install_option('version_current_date',get_option('_heypub_opt_plugin_version_date'));
-    delete_option('_heypub_opt_plugin_version_date');
-    delete_option('_heypub_opt_plugin_version_last');
 
-    // plugin / publisher oid info
-    $hp_xml->set_install_option('is_validated',get_option('_heypub_opt_svc_isvalidated'));
-    delete_option('_heypub_opt_svc_isvalidated');
-    $hp_xml->set_install_option('user_oid',get_option('_heypub_opt_svc_user_oid'));
-    delete_option('_heypub_opt_svc_user_oid');
-    $hp_xml->set_install_option('publisher_oid',get_option('_heypub_opt_svc_publisher_oid'));
-    delete_option('_heypub_opt_svc_publisher_oid');
-    // This key was never used in the code and can simply be cleaned up
-    delete_option('_heypub_opt_svc_publisher');
-
-
-    //  NEED to migrate these CONFIG options
-    $hp_xml->set_config_option('name',get_option('_heypub_opt_publication_name'));
-    delete_option('_heypub_opt_publication_name');
-    $hp_xml->set_config_option('url',get_option('_heypub_opt_publication_url'));
-    delete_option('_heypub_opt_publication_url');
-    $hp_xml->set_config_option('editor_name',get_option('_heypub_opt_editor_name'));
-    delete_option('_heypub_opt_editor_name');
-    $hp_xml->set_config_option('editor_email',get_option('_heypub_opt_editor_email'));
-    delete_option('_heypub_opt_editor_email');
-    $hp_xml->set_config_option('accepting_subs',get_option('_heypub_opt_accepting_subs'));
-    delete_option('_heypub_opt_accepting_subs');
-    $hp_xml->set_config_option('reading_period',get_option('_heypub_opt_reading_period'));
-    delete_option('_heypub_opt_reading_period');
-    $hp_xml->set_config_option('simu_subs',get_option('_heypub_opt_simultaneous_sumbmissions'));
-    delete_option('_heypub_opt_simultaneous_sumbmissions');
-    $hp_xml->set_config_option('multi_subs',get_option('_heypub_opt_multiple_sumbmissions'));
-    delete_option('_heypub_opt_multiple_sumbmissions');
-    $hp_xml->set_config_option('paying_market',get_option('_heypub_opt_paying_market'));
-    delete_option('_heypub_opt_paying_market');
-    $hp_xml->set_config_option('address',get_option('_heypub_opt_publication_address'));
-    delete_option('_heypub_opt_publication_address');
-    $hp_xml->set_config_option('city',get_option('_heypub_opt_publication_city'));
-    delete_option('_heypub_opt_publication_city');
-    $hp_xml->set_config_option('state',get_option('_heypub_opt_publication_state'));
-    delete_option('_heypub_opt_publication_state');
-    $hp_xml->set_config_option('zipcode',get_option('_heypub_opt_publication_zip'));
-    delete_option('_heypub_opt_publication_zip');
-    $hp_xml->set_config_option('country',get_option('_heypub_opt_publication_country'));
-    delete_option('_heypub_opt_publication_country');
-    $hp_xml->set_config_option('sub_page_id',get_option('_heypub_opt_submission_page_id'));
-    delete_option('_heypub_opt_submission_page_id');
-    $hp_xml->set_config_option('sub_guide_id',get_option('_heypub_opt_submission_guide_id'));
-    delete_option('_heypub_opt_submission_guide_id');
-    delete_option('_heypub_opt_sub_guide_url');
-    $hp_xml->set_is_validated();
-  }
-  elseif (get_option(HEYPUB_PLUGIN_OPT_INSTALL) == false) {
-    // NEW Install Path
-    $hp_xml->initialize_plugin();
+  // NEW Install Path
+  if (get_option(HEYPUB_PLUGIN_OPT_INSTALL) == false) {
+    $hp_config->initialize();
     if (function_exists('get_bloginfo')) {
-      $hp_xml->set_config_option('name',get_bloginfo('name'));
+      $hp_config->set_config_option('name',get_bloginfo('name'));
       // TODO: these need to change
-      $hp_xml->set_config_option('url',get_bloginfo('url'));
-      $hp_xml->set_config_option('editor_email',get_bloginfo('admin_email'));
+      $hp_config->set_config_option('url',get_bloginfo('url'));
+      $hp_config->set_config_option('editor_email',get_bloginfo('admin_email'));
       if (function_exists('get_feed_permastruct')) {
-        $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
+        $hp_config->set_config_option('rss',get_bloginfo('rss2_url'));
       }
     }
-    $hp_xml->set_install_option('version_current_date',null);
-    $hp_xml->set_config_option('editor_name','Editor');
+    $hp_config->set_config_option('editor_name','Editor');
   }
 
   // now check for a normal upgrade path
-  $opts = $hp_xml->install;
+  $opts = $hp_config->install;
   if ($opts['version_current'] != HEYPUB_PLUGIN_BUILD_NUMBER) {
-    $hp_xml->log("heypub_init() - upgrading plugin");
+    $hp_config->logger->debug("\tupgrading plugin");
     // this is the 'normal' upgrade path.
     if ($opts['version_current'] < 40) {  // upgrade to 1.3.0 options
-      $hp_xml->set_config_option('notify_submitted','1');
-      $hp_xml->set_config_option('notify_read','1');
-      $hp_xml->set_config_option('notify_rejected','1');
-      $hp_xml->set_config_option('notify_published','1');
-      $hp_xml->set_config_option('notify_accepted','1');
-      $hp_xml->set_config_option('notify_under_consideration','1');
-      $hp_xml->set_config_option('reprint_subs','0');
+      $hp_config->logger->debug("\tupgrading to 40");
+      $hp_config->set_config_option('notify_submitted','1');
+      $hp_config->set_config_option('notify_read','1');
+      $hp_config->set_config_option('notify_rejected','1');
+      $hp_config->set_config_option('notify_published','1');
+      $hp_config->set_config_option('notify_accepted','1');
+      $hp_config->set_config_option('notify_under_consideration','1');
+      $hp_config->set_config_option('reprint_subs','0');
       if (function_exists('get_bloginfo')) {
         // for feed info, also need to test for 'get_feed_permastruct()')
         if (function_exists('get_feed_permastruct')) {
-          $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
+          $hp_config->set_config_option('rss',get_bloginfo('rss2_url'));
         }
       }
     }
     // not all of our 1.3.1 version users have the bloginfo for rss set, upgrade them
     if ($opts['version_current'] < 42) {  // upgrade to 1.3.2 options
+      $hp_config->logger->debug("\tupgrading to 42");
       if (function_exists('get_bloginfo') && function_exists('get_feed_permastruct')) {
-          $hp_xml->set_config_option('rss',get_bloginfo('rss2_url'));
+          $hp_config->set_config_option('rss',get_bloginfo('rss2_url'));
       }
     }
     // ensure 2.3.0 versons have base config for mailchimp, even if not used
     if ($opts['version_current'] < 64) {  // upgrade to 2.3.0 options
-      $hp_xml->set_config_option('mailchimp_active', false);
-      $hp_xml->set_config_option('mailchimp_api_key', null);
-      $hp_xml->set_config_option('mailchimp_list_id', null);
+      $hp_config->logger->debug("\tupgrading to 64");
+      $hp_config->set_config_option('mailchimp_active', false);
+      $hp_config->set_config_option('mailchimp_api_key', null);
+      $hp_config->set_config_option('mailchimp_list_id', null);
     }
     if ($opts['version_current'] < 65) {  // upgrade to 2.4.0 options
-      $hp_xml->set_config_option('notify_withdrawn','1');
+      $hp_config->logger->debug("\tupgrading to 65");
+      $hp_config->set_config_option('notify_withdrawn','1');
     }
     // Upgraded to the 2.9.0 vesion of options
     if ($opts['version_current'] < 76) {
-      $hp_xml->log("heypub_init() - upgrading to version 76");
+      $hp_config->logger->debug("\tupgrading to 76");
       // need to migrate keys
       $address = array(
-        'street'  => $hp_xml->get_config_option('address'),
-        'city'    => $hp_xml->get_config_option('city'),
-        'state'   => $hp_xml->get_config_option('state'),
-        'country'   => $hp_xml->get_config_option('country'),
-        'zipcode'   => $hp_xml->get_config_option('zipcode')
+        'street'  => $hp_config->get_config_option('address'),
+        'city'    => $hp_config->get_config_option('city'),
+        'state'   => $hp_config->get_config_option('state'),
+        'country'   => $hp_config->get_config_option('country'),
+        'zipcode'   => $hp_config->get_config_option('zipcode')
       );
-      $hp_xml->set_config_option('address',$address);
+      $hp_config->set_config_option('address',$address);
       // we no longer need these keys set in config
       $hp_xml->kill_config_option('city');
       $hp_xml->kill_config_option('state');
       $hp_xml->kill_config_option('zipcode');
       $hp_xml->kill_config_option('country');
       $notifications = array(
-        'read'        => $hp_xml->get_config_option('notify_read'),
-        'considered'  => $hp_xml->get_config_option('notify_under_consideration'),
-        'accepted'    => $hp_xml->get_config_option('notify_accepted'),
-        'rejected'    => $hp_xml->get_config_option('notify_rejected'),
-        'published'   => $hp_xml->get_config_option('notify_published'),
-        'withdrawn'   => $hp_xml->get_config_option('notify_withdrawn'),
+        'read'        => $hp_config->get_config_option('notify_read'),
+        'considered'  => $hp_config->get_config_option('notify_under_consideration'),
+        'accepted'    => $hp_config->get_config_option('notify_accepted'),
+        'rejected'    => $hp_config->get_config_option('notify_rejected'),
+        'published'   => $hp_config->get_config_option('notify_published'),
+        'withdrawn'   => $hp_config->get_config_option('notify_withdrawn'),
       );
-      $hp_xml->set_config_option('notifications',$notifications);
+      $hp_config->set_config_option('notifications',$notifications);
       // we no longer need these keys set in config
       $hp_xml->kill_config_option('notify_submitted');
       $hp_xml->kill_config_option('notify_read');
@@ -427,7 +375,7 @@ function heypub_init(){
       $hp_xml->kill_config_option('notify_withdrawn');
 
       //  Need to migrate from $saved_genres = $this->xml->get_category_mapping(); to remote mapping
-      $hp_xml->set_config_option('category_map',$hp_xml->get_config_option('categories'));
+      $hp_config->set_config_option('category_map',$hp_config->get_config_option('categories'));
 
     }
 
@@ -437,10 +385,13 @@ function heypub_init(){
     // }
 
     // finally - ensure that the last version and current version are set
-    $hp_xml->set_install_option('version_last',$opts['version_current']);
-    $hp_xml->set_install_option('version_last_date',$opts['version_current_date']);
-    $hp_xml->set_install_option('version_current',HEYPUB_PLUGIN_BUILD_NUMBER);
-    $hp_xml->set_install_option('version_current_date',date('Y-m-d'));
+    $data = array(
+      'version_last'      => $opts['version_current'],
+      'version_last_date' => $opts['version_current_date'],
+      'version_current'   => HEYPUB_PLUGIN_BUILD_NUMBER,
+      'version_current_date' => date('Y-m-d')
+    );
+    $hp_config->set_install_options($data);
   }
   // otherwise we keep chugging along
 }

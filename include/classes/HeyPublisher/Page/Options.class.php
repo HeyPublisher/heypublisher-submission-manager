@@ -24,6 +24,7 @@ class Options extends \HeyPublisher\Page {
 
   public function __construct() {
   	parent::__construct();
+    // TODO: Move this to a global so we're not instantiating multiple times
     $this->api = new \HeyPublisher\API\Publisher;
     $this->slug .= $this->page;
   }
@@ -65,7 +66,7 @@ class Options extends \HeyPublisher\Page {
       $button = 'Update';
     }
     $action = $this->form_action();
-    $this->log(sprintf("in pageprep\n\terrors = %\n\tmessage = %s",$this->api->error,$this->message));
+    $this->logger->debug(sprintf("in pageprep\n\terrors = %\n\tmessage = %s",$this->api->error,$this->message));
     if ($this->api->error) {
       $this->xml->error = $this->api->error; # TODO: Fix this!!
       $this->xml->print_webservice_errors(true);
@@ -103,8 +104,8 @@ EOF;
 
   // Display form for non-validated plugins for publisher to register publication and editor contact info
   private function not_validated_form() {
-    $opts = $this->xml->config;
-    // $this->log(sprintf("not_validated_form opts: %s",print_r($opts,1)));
+    $opts = $this->config->get_config_options();
+    // $this->logger->debug(sprintf("not_validated_form opts: %s",print_r($opts,1)));
     $searchable = sprintf('%s',$this->xml->searchable($opts['name']));
 
     $html = <<<EOF
@@ -138,7 +139,7 @@ EOF;
 
   // TODO: fix call to `publication_types`
   private function publication_block($data) {
-    // $this->log(sprintf("$results publication_block: %s",print_r($data,1)));
+    // $this->logger->debug(sprintf("$results publication_block: %s",print_r($data,1)));
     $name = htmlentities($this->strip(@$data['name']));
     $years = $this->get_years_for_select($this->strip(@$data['established']));
     // $this->warning = "This stuff don't match";
@@ -443,7 +444,7 @@ EOF;
       $accumulator[$id] = $item['wp_id'];
       return $accumulator;
     });
-    $this->log(sprintf("Options::merged_genre_map() \n\t\$my_genres (reduced) = %s",print_r($has,1)));
+    $this->logger->debug(sprintf("Options::merged_genre_map() \n\t\$my_genres (reduced) = %s",print_r($has,1)));
 
     // We should have local and remote mapping
     // $saved_genres = $this->xml->get_category_mapping();
@@ -466,10 +467,10 @@ EOF;
     // Get the full list of HP genres from the API
     $genres = $this->merged_genre_map($data['genres']);
 
-    $this->log(sprintf("Options::genre_map() \n\tMapped genres = %s",print_r($genres,1)));
+    $this->logger->debug(sprintf("Options::genre_map() \n\tMapped genres = %s",print_r($genres,1)));
 
     // $cats = $this->xml->get_my_categories_as_hash();
-    // $this->log(sprintf("Options::genre_map() \$cats = %s",print_r($cats,1)));
+    // $this->logger->debug(sprintf("Options::genre_map() \$cats = %s",print_r($cats,1)));
     if (empty($genres)) { return ''; }
     $header = '';
     for ($x=0;$x<$cols;$x++) {
@@ -617,16 +618,16 @@ EOF;
     $html = '';
     // load the existing configuration
     // Need this for submission form and guidelines page IDs
-    // TODO: Move config into a base class so XML can be deprecated
-    $opts = $this->xml->config;
+    $opts = $this->config->get_config_options();
+
     // Load the data from HeyPublisher db
     $settings = $this->api->get_publisher_info();
     // update the configs with latest parsing data from server
     $this->xml->sync_publisher_info($settings);
 
-    $this->log(sprintf("Options::options_capture_form() \$opts = %s",print_r($opts,1)));
-    $this->log(sprintf("Options::options_capture_form() \$settings = %s",print_r($settings,1)));
-    // $this->log(" => dislaying Options page");
+    $this->logger->debug(sprintf("Options::options_capture_form() \$opts = %s",print_r($opts,1)));
+    $this->logger->debug(sprintf("Options::options_capture_form() \$settings = %s",print_r($settings,1)));
+    // $this->logger->debug(" => dislaying Options page");
     if ($settings) {
       $html = <<<EOF
         <input type="hidden" name="heypub_opt[isvalidated]" value="1" />
@@ -650,26 +651,26 @@ EOF;
    * Process the form post options, if present
    */
   function process_options() {
-    // $this->log(sprintf("POST = %s",print_r($_POST,1)));
-    $this->log("Page:Options #process_option()");
+    // $this->logger->debug(sprintf("POST = %s",print_r($_POST,1)));
+    $this->logger->debug("Page:Options #process_option()");
     $message = null; // default is null message
     if(isset($_REQUEST['save_settings']) && check_admin_referer('heypub-save-options')) {
-      $this->log("\tSaving Settings from form POST");
+      $this->logger->debug("\tSaving Settings from form POST");
       if (isset($_POST['hp_user'])) {
-        $this->log("\tcalling validate_user()");
+        $this->logger->debug("\tcalling validate_user()");
         $message = $this->validate_user($_POST);
       }
       elseif (isset($_POST['heypub_opt']) && $_POST['heypub_opt']['isvalidated'] == '1') {
-        $this->log("\tcalling update_options()");
+        $this->logger->debug("\tcalling update_options()");
         $message = $this->update_options($_POST);
       }
     }
     elseif(isset($_REQUEST['action']) && ($_REQUEST['action'] == 'create_form_page')) {
-      $this->log('creating the POST form!');
+      $this->logger->debug('creating the POST form!');
        check_admin_referer('create_form');
        $page_id = $this->heypub_create_submission_page();
        // Ensure this id is saved to db
-       $this->xml->set_config_option('sub_page_id',$page_id);
+       $this->config->set_config_option('sub_page_id',$page_id);
        $message = sprintf("A Submission Form page has been created for you. <a href='%s' target='_blank'>View page &raquo;</a><br/>",get_permalink($page_id));
     }
     return $message;
@@ -680,13 +681,16 @@ EOF;
     $message = null;
     $user = $post['hp_user'];
     // store the username and password they provided
-    $this->xml->set_config_option('name',$user['name']);
-    $this->xml->set_config_option('url',$user['url']);
+    $this->config->set_config_option('name',$user['name']);
+    $this->config->set_config_option('url',$user['url']);
     // Call out to the the webservice to validate
     if ($this->xml->authenticate($user)) {
-      $this->xml->set_install_option('is_validated',date('Y-m-d'));
-      $this->xml->set_install_option('user_oid',$this->xml->user_oid);
-      $this->xml->set_install_option('publisher_oid',$this->xml->pub_oid);
+      $data = array(
+        'is_validated'  => date('Y-m-d'),
+        'user_oid'      => $this->xml->user_oid,
+        'publisher_oid' => $this->xml->pub_oid
+      );
+      $this->config->set_install_options($data);
       $this->xml->set_is_validated();  // ensures that this page load has correct value
 
       // Fetch Publisher INFO from HeyPublisher API and pre-populate the layout, if we can
@@ -705,13 +709,14 @@ EOF;
         }
 
         $message .= "<br/><br/>To help you get started we've pre-populated the form with information we already have.";
-        $this->xml->set_config_option_bulk($pub);
+        $this->config->set_config_options($pub);
         // now only the boolean overrides
-        $this->xml->set_config_option('accepting_subs',$has_genres);
+        // TODO: this key can't be set as it's nested
+        $this->config->set_config_option('accepting_subs',$has_genres);
 
         // need to hack this for now
         if (!$pub['paying_market'] == '0') {
-          $this->xml->set_config_option('paying_market_range',null);
+          $this->config->set_config_option('paying_market_range',null);
         } // end is paying market
       } // end has publisher info
     }  // end successful auth
@@ -723,31 +728,31 @@ EOF;
   // TODO: Make this use JSON endpoint
   // TODO: ensure we're only saving items that are a MUST for makiing plugin work -- everything else is remotely accessed
   private function update_options($post) {
-    $this->log(sprintf("Page::Options#update_options(): \n\t\$post = %s",print_r($post,1)));
+    $this->logger->debug(sprintf("Page::Options#update_options(): \n\t\$post = %s",print_r($post,1)));
     $message = null;
     // Processing a form post of Option Updates
     // Get options from the post
     $opts = $post['heypub_opt'];
-    $this->log(sprintf("\t\$opts = %s",print_r($opts,1)));
+    $this->logger->debug(sprintf("\t\$opts = %s",print_r($opts,1)));
     // Need to delect the values in category_map where:
     //  a) value is < 0
     //  b) key is not present in genres array
     $this->clean_genres_category_map($opts);
 
     //  Bulk update the form post, saving into local WP db
-    $this->xml->set_config_option_bulk($opts);
+    $this->config->set_config_options($opts);
     // This does not update the category map, because we lock down only permitted keys
-    $this->xml->set_config_option('category_map',$opts['category_map']);
+    $this->config->set_config_option('category_map',$opts['category_map']);
 
     // TODO: Are these still necessary?
     // $cats = $this->set_category_mapping($opts); // this function is gone now
-    // $this->xml->set_config_option('categories',$cats);
+    // $this->config->set_config_option('categories',$cats);
     // if ($cats) {
-    //   $this->xml->set_config_option('accepting_subs','1');
+    //   $this->config->set_config_option('accepting_subs','1');
     // }
     //
     // if (!$opts['paying_market']) {
-    //   $this->xml->set_config_option('paying_market_range',null);
+    //   $this->config->set_config_option('paying_market_range',null);
     // }
 
     // get the URL for the sub guidelines
@@ -814,7 +819,7 @@ EOF;
       "post_type"      => "page"
     );
     $post_ID = wp_insert_post($post);
-    $this->log(sprintf("the POST_ID is %s",$post_ID));
+    $this->logger->debug(sprintf("the POST_ID is %s",$post_ID));
     return $post_ID;
   }
 
@@ -866,7 +871,7 @@ EOF;
     $all_keys = array_keys($opts['category_map']);
     $cats = array();
     $genres = array();
-    $this->log(sprintf("Options#clean_genres_category_map()\n\t\$all_keys = %s",print_r($all_keys,1)));
+    $this->logger->debug(sprintf("Options#clean_genres_category_map()\n\t\$all_keys = %s",print_r($all_keys,1)));
     foreach ($all_keys as $id) {
       if (isset($opts['genres'][$id]) && isset($opts['category_map'][$id]) && $opts['category_map'][$id] > 0) {
         $cats[$id] = $opts['category_map'][$id];
@@ -874,7 +879,7 @@ EOF;
         array_push($genres,$g);
       }
     }
-    $this->log(sprintf("\n\t\$category_map = %s\n\t\$genres = %s",print_r($cats,1),print_r($genres,1) ));
+    $this->logger->debug(sprintf("\n\t\$category_map = %s\n\t\$genres = %s",print_r($cats,1),print_r($genres,1) ));
     $opts['category_map'] = $cats;
     $opts['genres'] = $genres;
   }

@@ -31,9 +31,10 @@ class HeyPublisherXML {
   * Ensure the CURL constructor is getting created/destroyed properly
   */
   public function __construct() {
+    global $hp_config;
     $this->curl = curl_init();
-    $this->config = get_option(HEYPUB_PLUGIN_OPT_CONFIG);
-    $this->install = get_option(HEYPUB_PLUGIN_OPT_INSTALL);
+    $this->config = $hp_config->config;
+    $this->install = $hp_config->install;
     $this->set_is_validated();
     // $this->log(sprintf("construct INSTALL Opts: %s",print_r($this->install,1)));
     // $this->log(sprintf("construct CONFIG Opts: %s",print_r($this->config,1)));
@@ -49,14 +50,6 @@ class HeyPublisherXML {
     // http://stackoverflow.com/questions/33231656/register-static-class-method-as-shutdown-function-in-php
     // http://us.php.net/manual/en/function.register-shutdown-function.php
     curl_close($this->curl);
-    // Saves the install options (see: init_install_options() for definition)
-    if ($this->install) {
-      update_option(HEYPUB_PLUGIN_OPT_INSTALL,$this->install);
-    }
-    // Saves the configuration options (see: config_options_definition() for definition)
-    if ($this->config) {
-      update_option(HEYPUB_PLUGIN_OPT_CONFIG,$this->config);
-    }
   }
 
   //  fetch the mapping of categories to genres from local db
@@ -74,124 +67,6 @@ class HeyPublisherXML {
     return;
   }
 
-  public function initialize_plugin() {
-    $this->init_install_options();
-    add_option(HEYPUB_PLUGIN_OPT_INSTALL,$this->install);
-    $this->init_config_options();
-    add_option(HEYPUB_PLUGIN_OPT_CONFIG,$this->config);
-  }
-
-  private function init_install_options(){
-    $this->install = array(
-      'version_last'    => 0,
-      'version_current' => 0,
-      'is_validated'    => null,
-      'user_oid'        => null,
-      'publisher_oid'   => null
-    );
-  }
-
-  public function set_install_option($key,$val){
-    $this->install["$key"] = $val;
-  }
-
-  public function get_install_option($key){
-    if ($this->install["$key"]) {
-      return $this->install["$key"];
-    }
-    return false;
-  }
-
-  // Defines all of the allowable option keys
-  private function config_options_definition() {
-    $hash = array(
-      'category_map' => array(),
-      'name'  => null,
-      'readership' => null,
-      'issn' => null,
-      'established' => null,
-      'editor_name' => null,
-      'editor_email' => null,
-      'accepting_subs' => true,
-      'reading_period' => null,
-      'simu_subs' => true,
-      'multi_subs' => true,
-      'reprint_subs' => true,
-      'paying_market' => false,
-      'paying_market_range' => null,
-      'address' => array(
-        'street'  => null,
-        'city'    => null,
-        'state'   => null,
-        'country' => null,
-        'zipcode' => null
-      ),
-      'urls'  => array (
-        'website' => null,
-        'twitter' => null,
-        'facebook' => null,
-        'rss' => null
-      ),
-      'notifications' => array(
-        'read' => true,
-        'considered' => true,
-        'accepted' => true,
-        'rejected' => true,
-        'published' => true,
-        'withdrawn' => true
-      ),
-      'sub_page_id' => null,
-      'sub_guide_id' => null,
-      'seo_url' => null,
-      'homepage_first_validated_at' => null,
-      'homepage_last_validated_at' => null,
-      'guide_first_validated_at' => null,
-      'guide_last_validated_at' => null,
-      // need to match default config in DB
-      'turn_off_tidy' => false,
-      'link_sub_to_edit' => true,           # don't think we're using this one??
-      'display_download_link' => false,      # this is a local-only config
-      'mailchimp_active' => false,
-      'mailchimp_api_key' => null,
-      'mailchimp_list_id' => null
-    );
-    return $hash;
-  }
-  private function init_config_options() {
-    $this->config = $this->config_options_definition();
-  }
-
-  public function set_config_option($key,$val){
-    $this->config["$key"] = $val;
-  }
-
-  // set the attributes of the $config var in bulk
-  public function set_config_option_bulk($hash){
-    $this->log(sprintf("HeyPublisherXML#set_config_option_bulk():\n\tPre Call \$config = %s",print_r($this->config,1)));
-    $this->log(sprintf("HeyPublisherXML#set_config_option_bulk():\n\tHASH = %s",print_r($hash,1)));
-    $allowed = $this->config_options_definition();
-    foreach ($hash as $key=>$val) {
-      if (array_key_exists($key,$allowed)) {
-        if ( is_array($val)  ) {
-          foreach ($val as $key2=>$val2) {
-            if (array_key_exists($key2,$allowed["$key"])) {
-              $this->config["$key"]["$key2"] = $val2;
-            }
-          }
-        } else {
-          $this->config["$key"] = $val;
-        }
-      }
-    }
-    $this->log(sprintf("HeyPublisherXML#set_config_option_bulk():\n\Post Call = %s",print_r($this->config,1)));
-  }
-
-  public function get_config_option($key){
-    if ($this->config["$key"]) {
-      return $this->config["$key"];
-    }
-    return false;
-  }
 
   // Remove config keys before they are saved
   public function kill_config_option($key){
@@ -200,6 +75,9 @@ class HeyPublisherXML {
     }
   }
 
+  // TODO: Fix this -
+  // this has a circular reference where user_oid is set from install ,
+  // but elsewhere install is set from this->user-oid
   public function set_is_validated() {
     $this->user_oid = $this->install['user_oid'];
     $this->pub_oid = $this->install['publisher_oid'];
@@ -251,14 +129,15 @@ class HeyPublisherXML {
   * This is the only method which does not call prepare_request_xml - as we have a custom <account> section
   */
   function authenticate($user) {
+    global $hp_config;
     $return = false;
     // authentication is based upon username, password, and token
     $xml_ops = array(
       'token'         => HEYPUB_SVC_TOKEN_VALUE,
       # no htmlentities here, otherwise " becomes %quote; and cronks the seo name
-      'publishername' => stripslashes($this->get_config_option('name')),
+      'publishername' => stripslashes($hp_config->get_config_option('name')),
       // TODO: Fix this!! url is now a nested var
-      'url'           => htmlentities(stripslashes($this->get_config_option('url'))),
+      'url'           => htmlentities(stripslashes($hp_config->get_config_option('url'))),
       'email'         => htmlentities(stripslashes($user['username'])),
       'password'      => htmlentities(stripslashes($user['password'])),
       'version'       => HEYPUB_PLUGIN_VERSION,

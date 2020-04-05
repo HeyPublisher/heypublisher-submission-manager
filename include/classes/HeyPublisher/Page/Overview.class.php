@@ -149,7 +149,7 @@ EOF;
     }
     $ver = HEYPUB_PLUGIN_VERSION;
     $blog = get_bloginfo('name');
-    $verdate = date('F jS, Y',strtotime($this->xml->get_install_option('version_current_date')));
+    $verdate = date('F jS, Y',strtotime($this->config->get_install_option('version_current_date')));
     $editors = $this->get_editor_history(); // this can only be launched after 1.6.0 has been live 30 days
     $stats = $this->api->get_publisher_stats();
     // ensure they're saved locally for posterity ... for some reason, though not sure why
@@ -174,7 +174,7 @@ EOF;
         <tbody id='the-list'>
           <tr>
             <td>{$ver}</td>
-            <td>{$this->xml->get_install_option('version_current')}</td>
+            <td>{$this->config->get_install_option('version_current')}</td>
             <td>{$verdate}</td>
             <td>{$val}</td>
           </tr>

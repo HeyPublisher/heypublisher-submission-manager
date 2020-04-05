@@ -347,7 +347,7 @@ EOF;
 
     /*
     // Future functionality - downloads of original docs are coming....
-    if ($this->xml->get_config_option('display_download_link')) {
+    if ($this->config->get_config_option('display_download_link')) {
     <a class='heypub_smart_button' href='<?php echo $sub->document->url; ?>' title="Download '<?php echo $sub->title; ?>'">Download Original Document</a>
     */
 
