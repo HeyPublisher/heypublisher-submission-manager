@@ -374,6 +374,8 @@ function heypub_init(){
       $hp_xml->kill_config_option('notify_under_consideration');
       $hp_xml->kill_config_option('notify_withdrawn');
 
+      // TODO: Migrate the 'accepts'
+
       //  Need to migrate from $saved_genres = $this->xml->get_category_mapping(); to remote mapping
       $hp_config->set_config_option('category_map',$hp_config->get_config_option('categories'));
 

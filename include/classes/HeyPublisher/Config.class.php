@@ -109,15 +109,25 @@ class Config {
     if ($this->config) {
       $config = array();
       $allowed = $this->config_hash_init();
+      $override = $this->config_hash_override();
+
+      // $this->logger->debug(sprintf("\tpre-save config : %s",print_r($this->config,1)));
+
       foreach ($this->config as $key=>$val) {
-        if (array_key_exists($key,$allowed)) {
+        if (in_array($key,$override)) { // stuff it in
+          // $this->logger->debug(sprintf("\tkey '%s' in override",$key));
+          $config["$key"] = $val;
+        }
+        elseif (array_key_exists($key,$allowed)) {
           if ( is_array($val)  ) {
             foreach ($val as $key2=>$val2) {
               if (array_key_exists($key2,$allowed["$key"])) {
+                // $this->logger->debug(sprintf("\tkey '%s' in nested hash",$key2));
                 $config["$key"]["$key2"] = $val2;
               }
             }
           } else {
+            // $this->logger->debug(sprintf("\tkey '%s' in main hash",$key));
             $config["$key"] = $val;
           }
         }
@@ -144,10 +154,21 @@ class Config {
     );
     return $install;
   }
-  // Defines all of the allowable option keys
-  public function config_hash_init() {  // Change this to p[rivate when xml is updated]
+
+  // Defines hash keys we won't check when saving (used for caching)
+  private function config_hash_override() {
     $hash = array(
-      'category_map' => array(),
+      'category_map',
+      'genre_types',
+      'publication_types'
+    );
+    return $hash;
+  }
+
+
+  // Defines all of the allowable option keys
+  private function config_hash_init() {
+    $hash = array(
       'name'  => null,
       'readership' => null,
       'issn' => null,

@@ -62,11 +62,6 @@ class HeyPublisherXML {
     }
   }
 
-  public function set_category_mapping($map) {
-    $this->config['categories'] = $map;
-    return;
-  }
-
 
   // Remove config keys before they are saved
   public function kill_config_option($key){
@@ -369,36 +364,36 @@ EOF;
     return $return;
   }
 
-function get_publisher_info() {
-  $post = '';
-  $return = array();
-  $ret = $this->send(HEYPUB_SVC_URL_GET_PUBLISHER,$this->prepare_request_xml($post));
-  // $this->log(sprintf("get_publisher_info() params = \n%s\nget_publisher_info() RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
-  if (FALSE == $ret) {
-    $this->print_webservice_errors();
-  }
-  else {
-    $xml = new SimpleXMLElement($ret);
-    // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
-    # this is an object, convert to string
-    if ($xml->success->message) {
-      foreach ($xml->publisher->children() as $x) {
-        $name = $x->getName();
-        $return["$name"] = "$x";
-      }
-    }
-    else {
-      $err = $xml->error->message;
-      if ($err) {
-        $this->error = "$err";
-      } else {
-        $this->error = 'Error retrieving publisher info from HeyPublisher.com';
-      }
-      $this->print_webservice_errors();
-    }
-  }
-  return $return;
-}
+// function get_publisher_info() {
+//   $post = '';
+//   $return = array();
+//   $ret = $this->send(HEYPUB_SVC_URL_GET_PUBLISHER,$this->prepare_request_xml($post));
+//   // $this->log(sprintf("get_publisher_info() params = \n%s\nget_publisher_info() RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
+//   if (FALSE == $ret) {
+//     $this->print_webservice_errors();
+//   }
+//   else {
+//     $xml = new SimpleXMLElement($ret);
+//     // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
+//     # this is an object, convert to string
+//     if ($xml->success->message) {
+//       foreach ($xml->publisher->children() as $x) {
+//         $name = $x->getName();
+//         $return["$name"] = "$x";
+//       }
+//     }
+//     else {
+//       $err = $xml->error->message;
+//       if ($err) {
+//         $this->error = "$err";
+//       } else {
+//         $this->error = 'Error retrieving publisher info from HeyPublisher.com';
+//       }
+//       $this->print_webservice_errors();
+//     }
+//   }
+//   return $return;
+// }
 
 
   function normalize_submission_status($val) {
@@ -530,65 +525,12 @@ EOF;
     return false;
   }
 
-
-  /**
-  * Fetch the hash of 'all' publisher types, plus the publisher type associated with this publication suitable for making drop-down list with.
-  */
-  function get_my_publisher_types_as_hash() {
-      $return = array();
-      $post = <<<EOF
-<publisher_types>
-    <sort>name</sort>
-    <sort_direction>ASC</sort_direction>
-    <filter>both</filter>
-</publisher_types>
-EOF;
-    $ret = $this->send(HEYPUB_SVC_URL_GET_PUB_TYPES,$this->prepare_request_xml($post));
-    if (FALSE == $ret) {
-      $this->print_webservice_errors();
-    }
-    else {
-      $xml = new SimpleXMLElement($ret);
-      // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
-      # this is an object, convert to string
-        if ($xml->success->message) {
-          // First get ALL of the possible categories
-          foreach ($xml->all->publisher_type as $x) {
-            $id = $this->get_attribute_value_by_name($x,'id');
-            if ($id) {
-              $return["$x"] = array('name' => "$x", 'id' => "$id");
-            }
-          }
-          // We man not yet have submission categories defined remotely (if this is an initial install) - so account for that.
-          if ($xml->mine->publisher_type) {
-            foreach ($xml->mine->publisher_type as $x) {
-              $id = $this->get_attribute_value_by_name($x,'id');
-              if ($id) {
-                $return["$x"]['has'] = 1;
-              }
-            }
-          }
-        }
-        else {
-          $err = $xml->error->message;
-          if ($err) {
-            $this->error = "$err";
-          } else {
-            $this->error = 'Error getting publisher data from HeyPublisher.com';
-          }
-          $this->print_webservice_errors();
-        }
-      }
-      ksort($return);
-      // printf("<pre>Hash = %s</pre>",print_r($return,1));
-      return $return;
-  }
-
   /**
   * Fetch the hash of 'all' categories, plus the categories this publisher belongs to, and return as a hash
   * suitable for making checkboxes with.
   */
   // Deprecated with 3.0
+  // TODO: Need to remove all calls to this function
   function get_my_categories_as_hash() {
       $return = false;
       $post = <<<EOF

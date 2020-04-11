@@ -40,10 +40,13 @@ class Publisher extends \HeyPublisher\API {
   // get the Genres data
   public function get_genres() {
     $this->logger->debug("API::Publisher#get_genres()");
+    $result = $this->get_from_cache('genre_types');
+    if ($result) { return $result; }
     $path = 'genres';
     $result = $this->get($path);
     if ($result && key_exists('genres',$result)) {
       $this->logger->debug(sprintf("\tResults: %s",print_r($result,1)));
+      $this->set_to_cache('genre_types',$result['genres']);
       return $result['genres'];
     }
     return;
@@ -52,10 +55,14 @@ class Publisher extends \HeyPublisher\API {
   // get the Publisher Types data
   public function get_publisher_types() {
     $this->logger->debug("API::Publisher#get_publisher_types()");
+    $result = $this->get_from_cache('publication_types');
+    if ($result) { return $result; }
+    // otherwise, fetch the data remotely
     $path = 'publishers/types';
     $result = $this->get($path);
     if ($result && key_exists('publisher_types',$result)) {
       $this->logger->debug(sprintf("\tResults: %s",print_r($result,1)));
+      $this->set_to_cache('publication_types',$result['publisher_types']);
       return $result['publisher_types'];
     }
     return;

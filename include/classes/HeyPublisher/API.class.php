@@ -16,11 +16,13 @@ class API {
   var $api = HEYPUB_API;
   var $error = false;
   var $timeout = 4;
+  var $config = null;
   var $uoid = '';
   var $poid = '';
 
   public function __construct() {
     global $hp_config;
+    $this->config = $hp_config;
     $this->uoid = $hp_config->uoid;
     $this->poid = $hp_config->poid;
     $this->logger = $hp_config->logger;
@@ -205,6 +207,26 @@ class API {
       }
     }
     return $tmp;
+  }
+
+  protected function get_from_cache($key) {
+    $this->logger->debug("\tget_from_cache '{$key}' from cache");
+    $hash = $this->config->get_config_option($key);
+    $expry = date('U');
+    if ($hash && ($hash['cache_date'] + 86400) > $expry) { // 1 day cache only
+      unset($hash['cache_date']);
+      $this->logger->debug(sprintf("\tcache is FRESH\n\tcache = %s",print_r($hash,1)));
+      return $hash;
+    }
+    // $this->logger->debug(sprintf("\tcache date = %s\n\texpiry = %s\n\tdiff = %s",$hash['cache_date'],$expry,($hash['cache_date']- $expry)));
+    $this->logger->debug("\tcache is OLD '{$key}'");
+    return;
+  }
+
+  protected function set_to_cache($key,$hash) {
+    $this->logger->debug(sprintf("\tset_to_cache '%s' to cache %s",$key,print_r($hash,1)));
+    $hash['cache_date'] = date('U');
+    $hash = $this->config->set_config_option($key,$hash);
   }
 }
 ?>

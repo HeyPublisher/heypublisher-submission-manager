@@ -153,7 +153,7 @@ EOF;
       <li>
         <label class='heypub' for='hp_type'>Publication Type</label>
         <select name="heypub_opt[publisher_type][id]" id="hp_type">
-        {$this->publication_types()}
+        {$this->publication_types(@$data['publisher_type']['id'])}
         </select>
       </li>
       <li>
@@ -438,6 +438,7 @@ EOF;
   // @updated 2020-03-25
   private function merged_genre_map($my_genres) {
     $all_genres = $this->api->get_genres();
+    $this->logger->debug(sprintf("Options::merged_genre_map() \n\t\$all_genres = %s",print_r($all_genres,1)));
     // Extract the ids from the genres passed in by publisher data
     $has = array_reduce($my_genres, function($accumulator,$item) {
       $id = $item['id'];
@@ -745,7 +746,6 @@ EOF;
     $this->config->set_config_option('category_map',$opts['category_map']);
 
     // TODO: Are these still necessary?
-    // $cats = $this->set_category_mapping($opts); // this function is gone now
     // $this->config->set_config_option('categories',$cats);
     // if ($cats) {
     //   $this->config->set_config_option('accepting_subs','1');
@@ -770,12 +770,12 @@ EOF;
     return $message;
   }
 
-  private function publication_types() {
-    $pub_types = $this->xml->get_my_publisher_types_as_hash();
+  private function publication_types($pid=null) {
+    $pub_types = $this->api->get_publisher_types();
     $html = '';
     if (empty($pub_types)) { return $html; }
     foreach ($pub_types as $id=>$hash){
-      $html .= sprintf('<option value="%s" %s>%s</option>',$hash['id'],($hash['has']) ? "selected=selected" : null, $hash['name']);
+      $html .= sprintf('<option value="%s" %s>%s</option>',$hash['id'],($pid == $hash['id']) ? "selected=selected" : null, $hash['name']);
     }
     return $html;
   }
