@@ -68,6 +68,13 @@ class Config {
     return $this->config;
   }
 
+  // Remove config keys before they are saved
+  public function kill_config_option($key){
+    if ($this->config["$key"]) {
+      unset($this->config["$key"]);
+    }
+  }
+
   // Set a single key in the config option hash
   // We don't care about validation here, as validation is done prior to save to DB
   public function set_config_option($key,$val){
@@ -167,6 +174,7 @@ class Config {
 
 
   // Defines all of the allowable option keys
+  // and their default settings for new plugin install
   private function config_hash_init() {
     $hash = array(
       'name'  => null,
@@ -175,11 +183,8 @@ class Config {
       'established' => null,
       'editor_name' => null,
       'editor_email' => null,
-      'accepting_subs' => true,
+      'accepting_subs' => true,   # this is 'active' in db
       'reading_period' => null,
-      'simu_subs' => true,
-      'multi_subs' => true,
-      'reprint_subs' => true,
       'paying_market' => false,
       'paying_market_range' => null,
       'address' => array(
@@ -203,6 +208,13 @@ class Config {
         'published' => true,
         'withdrawn' => true
       ),
+      'accepts' => array(
+        'reprints'      => true,
+        'simultaneous'  => true,
+        'email'         => false,
+        'multiple'      => true,
+        'multibyte'     => false
+      ),
       'sub_page_id' => null,
       'sub_guide_id' => null,
       'seo_url' => null,
@@ -210,8 +222,6 @@ class Config {
       'homepage_last_validated_at' => null,
       'guide_first_validated_at' => null,
       'guide_last_validated_at' => null,
-      // need to match default config in DB
-      'turn_off_tidy' => false,
       'link_sub_to_edit' => true,           # don't think we're using this one??
       'display_download_link' => false,     # this is a local-only config
       'mailchimp_active' => false,

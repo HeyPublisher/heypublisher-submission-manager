@@ -352,10 +352,10 @@ function heypub_init(){
       );
       $hp_config->set_config_option('address',$address);
       // we no longer need these keys set in config
-      $hp_xml->kill_config_option('city');
-      $hp_xml->kill_config_option('state');
-      $hp_xml->kill_config_option('zipcode');
-      $hp_xml->kill_config_option('country');
+      $hp_config->kill_config_option('city');
+      $hp_config->kill_config_option('state');
+      $hp_config->kill_config_option('zipcode');
+      $hp_config->kill_config_option('country');
       $notifications = array(
         'read'        => $hp_config->get_config_option('notify_read'),
         'considered'  => $hp_config->get_config_option('notify_under_consideration'),
@@ -366,15 +366,27 @@ function heypub_init(){
       );
       $hp_config->set_config_option('notifications',$notifications);
       // we no longer need these keys set in config
-      $hp_xml->kill_config_option('notify_submitted');
-      $hp_xml->kill_config_option('notify_read');
-      $hp_xml->kill_config_option('notify_rejected');
-      $hp_xml->kill_config_option('notify_accepted');
-      $hp_xml->kill_config_option('notify_published');
-      $hp_xml->kill_config_option('notify_under_consideration');
-      $hp_xml->kill_config_option('notify_withdrawn');
+      $hp_config->kill_config_option('notify_submitted');
+      $hp_config->kill_config_option('notify_read');
+      $hp_config->kill_config_option('notify_rejected');
+      $hp_config->kill_config_option('notify_accepted');
+      $hp_config->kill_config_option('notify_published');
+      $hp_config->kill_config_option('notify_under_consideration');
+      $hp_config->kill_config_option('notify_withdrawn');
 
       // TODO: Migrate the 'accepts'
+      $accepts = array(
+        'reprints'      => $hp_config->get_config_option('reprint_subs'),
+        'simultaneous'  => $hp_config->get_config_option('simu_subs'),
+        'email'         => false,  # we didn't have a default for this
+        'multiple'      => $hp_config->get_config_option('multi_subs'),
+        'multibyte'     => $hp_config->get_config_option('turn_off_tidy')
+      );
+      $hp_config->set_config_option('accepts',$accepts);
+      $hp_config->kill_config_option('reprint_subs');
+      $hp_config->kill_config_option('simu_subs');
+      $hp_config->kill_config_option('multi_subs');
+      $hp_config->kill_config_option('turn_off_tidy');
 
       //  Need to migrate from $saved_genres = $this->xml->get_category_mapping(); to remote mapping
       $hp_config->set_config_option('category_map',$hp_config->get_config_option('categories'));

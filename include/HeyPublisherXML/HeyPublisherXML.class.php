@@ -63,13 +63,6 @@ class HeyPublisherXML {
   }
 
 
-  // Remove config keys before they are saved
-  public function kill_config_option($key){
-    if ($this->config["$key"]) {
-      unset($this->config["$key"]);
-    }
-  }
-
   // TODO: Fix this -
   // this has a circular reference where user_oid is set from install ,
   // but elsewhere install is set from this->user-oid
