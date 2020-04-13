@@ -81,7 +81,7 @@ EOF;
 
   protected function get_editor_history() {
     $html = '';
-    if ($this->xml->is_validated) {
+    if ($this->config->is_validated) {
       $args = array('role__in' => array('Editor', 'Administrator'), 'orderby' => 'display_name');
       $editors = get_users( $args );
       $history = $this->api->get_editor_history();
@@ -142,10 +142,10 @@ EOF;
 
   protected function content() {
     global $hp_base;
-    if (!$this->xml->is_validated) {
+    if (!$this->config->is_validated) {
       $val = "<a href='". heypub_get_authentication_url() . "'>CLICK HERE to VALIDATE</a>";
     } else {
-      $val = date('F jS, Y',strtotime($this->xml->is_validated));
+      $val = date('F jS, Y',strtotime($this->config->is_validated));
     }
     $ver = HEYPUB_PLUGIN_VERSION;
     $blog = get_bloginfo('name');
@@ -183,7 +183,7 @@ EOF;
 
 EOF;
 
-      if ($this->xml->is_validated) {
+      if ($this->config->is_validated) {
         // fetch the publisher info and update the local db with latest stats
         $home_last = $stats['homepage']['updated'];
         $guide_last = $stats['guidelines']['updated'];

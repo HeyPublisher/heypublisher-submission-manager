@@ -16,6 +16,7 @@ class Config {
   var $error = false;
   var $uoid = null;
   var $poid = null;
+  var $is_validated = false;
 
   public function __construct() {
     $this->logger = new \HeyPublisher\Log();
@@ -27,6 +28,8 @@ class Config {
 
     $this->uoid = $this->install['user_oid'];
     $this->poid = $this->install['publisher_oid'];
+
+    $this->set_is_validated();
     $this->logger->debug(sprintf("\tuoid = %s\n\tpoid = %s",$this->uoid, $this->poid));
     register_shutdown_function(array($this,'shutdown'));
   }
@@ -45,6 +48,14 @@ class Config {
 
     $this->config = $this->config_hash_init();
     add_option(HEYPUB_PLUGIN_OPT_CONFIG,$this->config);
+  }
+
+  // Upon init, determine whether plugin is validated or not
+  public function set_is_validated() {
+    $this->logger->debug(sprintf("Config#set_is_validated\n\tuoid = %s\n\tpoid = %s",$this->uoid, $this->poid));
+    if ($this->uoid && $this->poid) {
+      $this->is_validated = $this->install['is_validated'];
+    }
   }
 
   // Get the requested key from the install hash

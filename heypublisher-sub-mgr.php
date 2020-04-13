@@ -170,6 +170,7 @@ require_once(HEYPUB_PLUGIN_FULLPATH.'/include/heypub-template-functions.php');
 
 // Load the classes
 // Main page
+// TODO: Convert this over to the normal way of doing things
 require_once(HEYPUB_PLUGIN_FULLPATH . '/admin/heypub-main.php');
 // load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Overview.class.php');
 // $hp_main = new \HeyPublisher\Page\Overview;
@@ -231,7 +232,7 @@ function RegisterHeyPublisherAdminStyle() {
 *  Invoke the hook, sending function name
 */
 function RegisterHeyPublisherAdminMenu(){
-  global $hp_xml, $hp_opt, $hp_subs, $hp_main, $hp_email;
+  global $hp_xml, $hp_opt, $hp_subs, $hp_main, $hp_email, $hp_config;
   // Initilise the plugin for the first time here. This gets called when you click the HeyPublisher link.
   $admin_menu = add_menu_page('HeyPublisher Stats','HeyPublisher', 8, HEY_DIR, array($hp_main,'page_prep'), 'dashicons-book-alt');
   add_action("admin_print_styles-$admin_menu", 'HeyPublisherAdminHeader' );
@@ -242,7 +243,7 @@ function RegisterHeyPublisherAdminMenu(){
   add_action("admin_print_styles-$admin_opts", 'HeyPublisherAdminHeader' );
   add_action("admin_print_scripts-$admin_opts", 'HeyPublisherAdminInit');
 
-  if ($hp_xml->is_validated) {
+  if ($hp_config->is_validated) {
     // Submission Queue
     $admin_sub = add_submenu_page(HEY_DIR , 'HeyPublisher Submissions', 'Submissions', 'edit_others_posts', $hp_subs->slug, array($hp_subs,'action_handler'));
     add_action("admin_print_styles-$admin_sub", 'HeyPublisherAdminHeader' );
@@ -411,19 +412,19 @@ function heypub_init(){
 }
 // TODO: This needs to be fixed for new API support
 function heypub_uninit() {
-  global $hp_xml;
-  $opts = $hp_xml->config;
-  $install = $hp_xml->install;
+  global $hp_xml, $hp_config, $hp_opt;
+  $opts = $hp_config->config;
+  $install = $hp_config->install;
   if ($install != FALSE && isset($install['user_oid']) ) {
     // disable the publisher in the db
     $opts['accepting_subs'] = false;
     $opts['genres_list'] = false;
     $opts['guide'] = get_permalink($opts['sub_guide_id']);
     // TODO: This should change to api->update_publisher();
-    $hp_xml->update_publisher($opts,true);
+    $hp_opt->api->deactivate();
   }
-  $hp_xml->install = false;
-  $hp_xml->config = false;
+  $hp_config->install = false;
+  $hp_config->config = false;
   delete_option(HEYPUB_PLUGIN_OPT_INSTALL);
   delete_option(HEYPUB_PLUGIN_OPT_CONFIG);
   return;

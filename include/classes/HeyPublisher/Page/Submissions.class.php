@@ -35,7 +35,7 @@ class Submissions extends \HeyPublisher\Page {
   public function action_handler() {
     // This is not possible as this sub-menu is not accessible if not validated
     // TODO: clean up this logic
-    if (!$this->xml->is_validated) {
+    if (!$this->config->is_validated) {
       // parent::page('Submissions', 'Submissions', 'heypub_list_submissions' );
       heypub_not_authenticated();
       return;

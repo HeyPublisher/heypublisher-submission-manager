@@ -56,7 +56,9 @@ class Options extends \HeyPublisher\Page {
   	global $wpdb,$wp_roles,$hp_base;
     $html = '';
     $nonce = wp_nonce_field('heypub-save-options');
-    if (!$this->xml->is_validated) {
+
+    $this->logger->debug(sprintf("Page::Options#content()\n\tis_validated = %",$this->config->is_validated));
+    if (!$this->config->is_validated) {
       // Display the form to register the plugin
       $content = $this->not_validated_form();
       $button = "Create Account";
@@ -679,6 +681,7 @@ EOF;
 
   // process form post and validate user
   private function validate_user($post) {
+    $this->logger->debug("Page::Options#validate_user()");
     $message = null;
     $user = $post['hp_user'];
     // store the username and password they provided
@@ -691,8 +694,13 @@ EOF;
         'user_oid'      => $this->xml->user_oid,
         'publisher_oid' => $this->xml->pub_oid
       );
+      // TODO: Clean this up - but for now, need to be explicitly setting all instances of uoid/poid
+      $this->config->uoid = $this->xml->user_oid;
+      $this->config->poid = $this->xml->pub_oid;
       $this->config->set_install_options($data);
-      $this->xml->set_is_validated();  // ensures that this page load has correct value
+      $this->config->set_is_validated();  // ensures that this page load has correct value
+
+      $this->logger->debug(sprintf("\n\tinstall options now = %s\n\t is_validated = %s",print_r($this->config->install,1),$this->config->is_validated));
 
       // Fetch Publisher INFO from HeyPublisher API and pre-populate the layout, if we can
       // The options have not yet been loaded at this stage, so need to be explicitly set:
@@ -701,7 +709,7 @@ EOF;
 
       // This is happening in page prep
       $pub = $this->api->get_publisher_info();
-      $message = 'Account validation succeeded!<br/>You can now configure your account.';
+      $message = 'Account validation succeeded! You can now configure your account.';
       if ($pub) {
         $cats = $this->xml->get_my_categories_as_hash();
         $has_genres = '0';

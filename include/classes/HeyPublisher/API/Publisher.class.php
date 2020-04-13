@@ -98,6 +98,17 @@ class Publisher extends \HeyPublisher\API {
     }
     return;
   }
+  // Deactivate the publisher record
+  public function deactivate(){
+    $this->logger->debug("API::Publisher#put_publisher_deactivate()");
+    $path = sprintf('publishers/%s',$this->poid);
+    $result = $this->delete($path);
+    if ($result == 'deleted') {
+      return $result;
+    }
+    return;
+  }
+
 }
 
 ?>

@@ -23,7 +23,6 @@ class HeyPublisherXML {
     'writer_revision_provided' => 'Revised by Author',
     'publisher_withdrew' => 'Withdrawn by Author',
     );
-  var $is_validated = false;
 
   var $config = array();
   var $install = array();
@@ -33,9 +32,10 @@ class HeyPublisherXML {
   public function __construct() {
     global $hp_config;
     $this->curl = curl_init();
+    // TODO: Remove this!!
     $this->config = $hp_config->config;
     $this->install = $hp_config->install;
-    $this->set_is_validated();
+
     // $this->log(sprintf("construct INSTALL Opts: %s",print_r($this->install,1)));
     // $this->log(sprintf("construct CONFIG Opts: %s",print_r($this->config,1)));
     register_shutdown_function(array($this,'save_option_state'));
@@ -62,15 +62,6 @@ class HeyPublisherXML {
     }
   }
 
-
-  // TODO: Fix this -
-  // this has a circular reference where user_oid is set from install ,
-  // but elsewhere install is set from this->user-oid
-  public function set_is_validated() {
-    $this->user_oid = $this->install['user_oid'];
-    $this->pub_oid = $this->install['publisher_oid'];
-    if ($this->user_oid && $this->pub_oid) { $this->is_validated = $this->install['is_validated']; }
-  }
 
   public function send($path,$post) {
     $return = false;
