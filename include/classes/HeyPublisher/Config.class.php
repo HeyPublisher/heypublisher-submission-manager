@@ -176,6 +176,7 @@ class Config {
   // Defines hash keys we won't check when saving (used for caching)
   private function config_hash_override() {
     $hash = array(
+      'categories',  // this is a holdover from pre- version 3.0.0 and will break upgrades if removed
       'category_map',
       'genre_types',
       'publication_types'
