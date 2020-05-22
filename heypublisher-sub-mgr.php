@@ -392,6 +392,8 @@ function heypub_init(){
 
       //  Need to migrate from $saved_genres = $this->xml->get_category_mapping(); to remote mapping
       // $hp_config->set_config_option('category_map',$hp_config->get_config_option('categories'));
+      $map = $hp_xml->get_category_mapping();
+      $hp_xml->log(sprintf("heypub_init() \$map = \n\t%s",print_r($map,1)));
 
     }
 
