@@ -146,6 +146,13 @@ EOF;
     $years = $this->get_years_for_select($this->strip(@$data['established']));
     // $this->warning = "This stuff don't match";
     $link = $this->get_external_url_with_icon($this->strip(@$data['urls']['website']));
+    $pid = null;
+    // $this->logger->debug("Options::publication_block()");
+    // $this->logger->debug(sprintf("\npublication_block() mediums= \n%s",print_r($data['mediums']['data'][0]['id'],1)));
+
+    if ($data['mediums']['data'][0]['id']) {
+      $pid = $data['mediums']['data'][0]['id'];
+    }
 
     $html = <<<EOF
     <!-- Publication Block -->
@@ -155,7 +162,7 @@ EOF;
       <li>
         <label class='heypub' for='hp_type'>Publication Type</label>
         <select name="heypub_opt[publisher_type][id]" id="hp_type">
-        {$this->publication_types(@$data['publisher_type']['id'])}
+        {$this->publication_types($pid)}
         </select>
       </li>
       <li>
@@ -213,6 +220,8 @@ EOF;
 
   // TODO: Multiple editors management - should pull from the editors user table
   private function contact_information($data){
+
+    $editors = $data['editors']['data'][0];
     require_once(HEYPUB_PLUGIN_FULLPATH.'/include/country_list.php');
     $country = $this->strip(@$data['address']['country']);
     $options = '';
@@ -230,11 +239,11 @@ EOF;
     <ul>
       <li>
         <label class='heypub' for='hp_editor_name'>Managing Editor Name</label>
-        <input type="text" name="heypub_opt[editors][0][name]" id="hp_editor_name" class='heypub' value="{$this->strip(@$data['editors'][0]['name'])}" />
+        <input type="text" name="heypub_opt[editors][0][name]" id="hp_editor_name" class='heypub' value="{$this->strip($editors['name'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_editor_email'>Email Address</label>
-        <input type="text" name="heypub_opt[editors][0][email]" id="hp_editor_email" class='heypub' value="{$this->strip(@$data['editors'][0]['email'])}" />
+        <input type="text" name="heypub_opt[editors][0][email]" id="hp_editor_email" class='heypub' value="{$this->strip($editors['email'])}" />
       </li>
       <li>
         <label class='heypub' for='hp_address'>Street Address</label>
@@ -399,7 +408,7 @@ EOF;
 
   private function submission_criteria($data) {
     $hidden = (@$data['active']) ? null : "style='display:none;' ";
-    $mapped_genres = $this->genre_map(@$data);
+    $mapped_genres = $this->genre_map(@$data['genres']);
 
     $html = <<<EOF
       <h3>Submission Criteria</h3>
@@ -439,15 +448,17 @@ EOF;
   // Returns array where key is the HP genre ID and val is the WP category id
   // @updated 2020-03-25
   private function merged_genre_map($my_genres) {
+    $this->logger->debug("Options::merged_genre_map()");
     $all_genres = $this->api->get_genres();
-    $this->logger->debug(sprintf("Options::merged_genre_map() \n\t\$all_genres = %s",print_r($all_genres,1)));
+    // $this->logger->debug(sprintf("\tmerged_genre_map() \$my_genres = \n%s",print_r($my_genres,1)));
+    // $this->logger->debug(sprintf("\tmerged_genre_map() \$all_genres = \n%s",print_r($all_genres,1)));
     // Extract the ids from the genres passed in by publisher data
     $has = array_reduce($my_genres, function($accumulator,$item) {
       $id = $item['id'];
       $accumulator[$id] = $item['wp_id'];
       return $accumulator;
     });
-    $this->logger->debug(sprintf("Options::merged_genre_map() \n\t\$my_genres (reduced) = %s",print_r($has,1)));
+    $this->logger->debug(sprintf("\tmerged_genre_map() \$my_genres (reduced) = \n%s",print_r($has,1)));
 
     // We should have local and remote mapping
     // $saved_genres = $this->xml->get_category_mapping();
@@ -465,10 +476,11 @@ EOF;
 
 
   // Map internal categories to HeyPublisher Genres
+  // includes the sub object 'genres'
   private function genre_map($data) {
     $cols = 2; // colums for mapping table
     // Get the full list of HP genres from the API
-    $genres = $this->merged_genre_map($data['genres']);
+    $genres = $this->merged_genre_map($data['data']);
 
     $this->logger->debug(sprintf("Options::genre_map() \n\tMapped genres = %s",print_r($genres,1)));
 
@@ -628,8 +640,8 @@ EOF;
     // update the configs with latest parsing data from server
     $this->xml->sync_publisher_info($settings);
 
-    $this->logger->debug(sprintf("Options::options_capture_form() \$opts = %s",print_r($opts,1)));
-    $this->logger->debug(sprintf("Options::options_capture_form() \$settings = %s",print_r($settings,1)));
+    // $this->logger->debug(sprintf("Options::options_capture_form() \$opts = %s",print_r($opts,1)));
+    // $this->logger->debug(sprintf("Options::options_capture_form() \$settings = %s",print_r($settings,1)));
     // $this->logger->debug(" => dislaying Options page");
     if ($settings) {
       $html = <<<EOF

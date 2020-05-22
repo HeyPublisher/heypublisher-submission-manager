@@ -2,10 +2,11 @@
 namespace HeyPublisher\API;
 if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyPublisher: Illegal Page Call!'); }
 
-/**
-* Publisher class for JSON API calls related to the Publisher object
-*
-*/
+//
+// Publisher class for JSON API calls related to the Publisher object
+//
+// This class is built against version v20200520 of HeyPublisher API
+// and responds to JSON::API spec
 
 require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API.class.php');
 class Publisher extends \HeyPublisher\API {
@@ -29,10 +30,10 @@ class Publisher extends \HeyPublisher\API {
       return $this->publisher;
     }
     $result = $this->get($path);
-    if ($result && key_exists('publisher',$result)) {
-      $this->logger->debug(sprintf("\tResults: %s",print_r($result,1)));
-      $this->publisher = $result['publisher'];
-      return $result['publisher'];
+    $this->logger->debug(sprintf("\t#get_publisher_info() results: %s",print_r($result,1)));
+    if ($result && key_exists('object',$result) && $result['object'] == 'publisher' ) {
+      $this->publisher = $result;
+      return $result;
     }
     return;
   }
@@ -40,14 +41,14 @@ class Publisher extends \HeyPublisher\API {
   // get the Genres data
   public function get_genres() {
     $this->logger->debug("API::Publisher#get_genres()");
-    $result = $this->get_from_cache('genre_types');
+    // $result = $this->get_from_cache('genre_types');
     if ($result) { return $result; }
     $path = 'genres';
     $result = $this->get($path);
-    if ($result && key_exists('genres',$result)) {
-      $this->logger->debug(sprintf("\tResults: %s",print_r($result,1)));
-      $this->set_to_cache('genre_types',$result['genres']);
-      return $result['genres'];
+    if ($result && key_exists('object',$result) && $result['object'] == 'list' ) {
+      $this->logger->debug(sprintf("\t#get_genres() results: %s",print_r($result,1)));
+      // $this->set_to_cache('genre_types',$result['data']);
+      return $result['data'];
     }
     return;
   }
@@ -55,15 +56,15 @@ class Publisher extends \HeyPublisher\API {
   // get the Publisher Types data
   public function get_publisher_types() {
     $this->logger->debug("API::Publisher#get_publisher_types()");
-    $result = $this->get_from_cache('publication_types');
+    // $result = $this->get_from_cache('publication_types');
     if ($result) { return $result; }
     // otherwise, fetch the data remotely
-    $path = 'publishers/types';
+    $path = 'mediums';
     $result = $this->get($path);
-    if ($result && key_exists('publisher_types',$result)) {
-      $this->logger->debug(sprintf("\tResults: %s",print_r($result,1)));
-      $this->set_to_cache('publication_types',$result['publisher_types']);
-      return $result['publisher_types'];
+    if ($result && key_exists('object',$result) && $result['object'] == 'list' ) {
+      $this->logger->debug(sprintf("\t#get_publisher_types() results: %s",print_r($result,1)));
+      // $this->set_to_cache('publication_types',$result['data']);
+      return $result['data'];
     }
     return;
   }
