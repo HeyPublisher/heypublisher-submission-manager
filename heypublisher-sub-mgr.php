@@ -341,9 +341,9 @@ function heypub_init(){
       $hp_config->logger->debug("\tupgrading to 65");
       $hp_config->set_config_option('notify_withdrawn','1');
     }
-    // Upgraded to the 2.9.0 vesion of options
-    if ($opts['version_current'] < 76) {
-      $hp_config->logger->debug("\tupgrading to 76");
+    // Upgraded to the 3.0.0 vesion of options
+    if ($opts['version_current'] < 80) {
+      $hp_config->logger->debug("\tupgrading to 80");
       // need to migrate keys
       $address = array(
         'street'  => $hp_config->get_config_option('address'),
@@ -391,14 +391,10 @@ function heypub_init(){
       $hp_config->kill_config_option('turn_off_tidy');
 
       //  Need to migrate from $saved_genres = $this->xml->get_category_mapping(); to remote mapping
-      $hp_config->set_config_option('category_map',$hp_config->get_config_option('categories'));
+      // $hp_config->set_config_option('category_map',$hp_config->get_config_option('categories'));
 
     }
 
-    // For future reference, just keep adding new hash keys that are version specific by following same logic
-    // if ($opts['version_current'] < 50) {  // upgrade to 1.4.x options
-    //    ... do something here
-    // }
 
     // finally - ensure that the last version and current version are set
     $data = array(
