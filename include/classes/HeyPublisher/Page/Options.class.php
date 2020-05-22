@@ -450,9 +450,12 @@ EOF;
   private function merged_genre_map($my_genres) {
     $this->logger->debug("Options::merged_genre_map()");
     $all_genres = $this->api->get_genres();
-    // $this->logger->debug(sprintf("\tmerged_genre_map() \$my_genres = \n%s",print_r($my_genres,1)));
+    $this->logger->debug(sprintf("\tmerged_genre_map() \$my_genres = \n%s",print_r($my_genres,1)));
     // $this->logger->debug(sprintf("\tmerged_genre_map() \$all_genres = \n%s",print_r($all_genres,1)));
     // Extract the ids from the genres passed in by publisher data
+    $saved_genres = $this->xml->get_category_mapping();
+    $this->logger->debug(sprintf("\tmerged_genre_map() \$saved_genres = \n%s",print_r($saved_genres,1)));
+    
     $has = array_reduce($my_genres, function($accumulator,$item) {
       $id = $item['id'];
       $accumulator[$id] = $item['wp_id'];
@@ -461,7 +464,6 @@ EOF;
     $this->logger->debug(sprintf("\tmerged_genre_map() \$my_genres (reduced) = \n%s",print_r($has,1)));
 
     // We should have local and remote mapping
-    // $saved_genres = $this->xml->get_category_mapping();
     $map = array();
     foreach ($all_genres as $key=>$hash) {
       $name = $hash['name'];
