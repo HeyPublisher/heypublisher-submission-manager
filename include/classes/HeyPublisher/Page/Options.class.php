@@ -453,15 +453,24 @@ EOF;
     $this->logger->debug(sprintf("\tmerged_genre_map() \$my_genres = \n%s",print_r($my_genres,1)));
     // $this->logger->debug(sprintf("\tmerged_genre_map() \$all_genres = \n%s",print_r($all_genres,1)));
     // Extract the ids from the genres passed in by publisher data
-    $saved_genres = $this->xml->get_category_mapping();
-    $this->logger->debug(sprintf("\tmerged_genre_map() \$saved_genres = \n%s",print_r($saved_genres,1)));
-    
     $has = array_reduce($my_genres, function($accumulator,$item) {
       $id = $item['id'];
-      $accumulator[$id] = $item['wp_id'];
+      $accumulator[$id] = ($item['wp_id']) ? $item['wp_id'] : $saved_genres["$id"];
       return $accumulator;
     });
-    $this->logger->debug(sprintf("\tmerged_genre_map() \$my_genres (reduced) = \n%s",print_r($has,1)));
+    $test = array_filter($has);
+    // $this->logger->debug(sprintf("\t\$test = \n%s\n\t\$has = \n%s",print_r($test,1),print_r($has,1)));
+    if (count($has) != count($test)) {
+      // need to grab the saved category mapping and set properly - this is a one-off
+      $saved_genres = $this->xml->get_category_mapping();
+      // $this->logger->debug(sprintf("\tmerged_genre_map() \$saved_genres = \n%s",print_r($saved_genres,1)));
+      foreach ($saved_genres as $id=>$val) {
+        if (array_key_exists($id,$has)) {
+          $has[$id] = $val;
+        }
+      }
+    }
+    $this->logger->debug(sprintf("\tmerged_genre_map() \$has (reduced) = \n%s",print_r($has,1)));
 
     // We should have local and remote mapping
     $map = array();
