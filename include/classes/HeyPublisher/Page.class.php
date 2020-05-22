@@ -27,8 +27,8 @@ class Page extends \Loudlever\Loudlever {
   public function __construct() {
     global $hp_xml,$hp_config;
   	parent::__construct();
-    $this->plugin['home'] = 'https://wordpress.org/plugins/heypublisher-submission-manager/';
-    $this->plugin['support'] = 'https://wordpress.org/support/plugin/heypublisher-submission-manager';
+    $this->plugin['home'] = 'https://github.com/HeyPublisher/heypublisher-submission-manager';
+    $this->plugin['support'] = 'https://github.com/HeyPublisher/heypublisher-submission-manager/issues';
     $this->plugin['contact'] = 'mailto:support@heypublisher.com';
     $this->logger = $hp_config->logger;
     $this->config = $hp_config;

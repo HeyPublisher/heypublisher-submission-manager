@@ -93,9 +93,9 @@ class Publisher extends \HeyPublisher\API {
     $this->logger->debug("API::Publisher#get_publisher_stats()");
     $path = sprintf('publishers/%s/statistics',$this->poid);
     $result = $this->get($path);
-    if ($result && key_exists('statistics',$result)) {
-      $this->logger->debug(sprintf("\tResults: %s",print_r($result,1)));
-      return $result['statistics'];
+    if ($result && key_exists('object',$result) && $result['object'] == 'list' ) {
+      $this->logger->debug(sprintf("\t#get_publisher_stats() results: %s",print_r($result['data'],1)));
+      return $result['data'];
     }
     return;
   }
