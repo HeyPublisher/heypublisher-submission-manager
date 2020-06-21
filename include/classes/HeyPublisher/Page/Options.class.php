@@ -1,9 +1,9 @@
 <?php
 namespace HeyPublisher\Page;
 
-// TODO: Research metaboxes : http://www.themoyles.co.uk/2013/03/using-meta-boxes-on-plugin-admin-pages/
+// TODO: Research metaboxes : https://www.themoyles.co.uk/2013/03/using-meta-boxes-on-plugin-admin-pages/
 // https://shellcreeper.com/wp-settings-meta-box/
-// useful info but not recent: http://www.onextrapixel.com/2009/07/01/how-to-design-and-style-your-wordpress-plugin-admin-panel/
+// useful info but not recent: https://www.onextrapixel.com/2009/07/01/how-to-design-and-style-your-wordpress-plugin-admin-panel/
 
 if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyPublisher: Illegal Page Call!'); }
 
@@ -335,7 +335,7 @@ EOF;
   //       </ul>
   //       <div id='heypub_show_mailchimp_list' {$hidden}>
   //         <!-- Content Specific for the MailChimp Config -->
-  //         <p>Read more on how to <a href='http://kb.mailchimp.com/integrations/api-integrations/about-api-keys' target='_blank'>Find or Generate Your API Key</a> and how to <a href='http://kb.mailchimp.com/lists/manage-contacts/find-your-list-id' target="_blank">Find Your List ID</a> before continuing.
+  //         <p>Read more on how to <a href='https://kb.mailchimp.com/integrations/api-integrations/about-api-keys' target='_blank'>Find or Generate Your API Key</a> and how to <a href='https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id' target="_blank">Find Your List ID</a> before continuing.
   //         </p>
   //         <ul>
   //           <li>
@@ -606,7 +606,7 @@ EOF;
       </ul>
       <div id='heypub_show_mailchimp_list' {$hidden}>
         <!-- Content Specific for the MailChimp Config -->
-        <p>Read more on how to <a href='http://kb.mailchimp.com/integrations/api-integrations/about-api-keys' target='_blank'>Find or Generate Your API Key</a> and how to <a href='http://kb.mailchimp.com/lists/manage-contacts/find-your-list-id' target="_blank">Find Your List ID</a> before continuing.
+        <p>Read more on how to <a href='https://kb.mailchimp.com/integrations/api-integrations/about-api-keys' target='_blank'>Find or Generate Your API Key</a> and how to <a href='https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id' target="_blank">Find Your List ID</a> before continuing.
         </p>
         <ul>
           <li>

@@ -20,12 +20,16 @@ class Submissions extends \HeyPublisher\Page {
   var $has_voted = false;
   var $editors = array();
   var $page = '_submissions';
+  var $wp_categories = array();
 
   public function __construct() {
   	parent::__construct();
     $this->sub_class = new \HeyPublisherSubmission;
     $this->api = new \HeyPublisher\API\Submission;
     $this->slug .= $this->page;
+
+    // All categories for this install - move this up so it';'s a one-time call:
+    $this->wp_categories =  get_categories(array('orderby' => 'name','order' => 'ASC'));
   }
 
   public function __destruct() {
@@ -90,7 +94,11 @@ class Submissions extends \HeyPublisher\Page {
     // This is a SimpleXML object being returned, with key the sub-id
     $subs = $this->xml->get_recent_submissions();
     $cats = $this->xml->get_my_categories_as_hash();
-    $publication = get_bloginfo('name');
+    $opts = $this->config->get_config_options();
+    $this->logger->debug("Submission#list_submissions");
+    $this->logger->debug(sprintf("\t\$cats = %s",print_r($cats,1)));
+    $this->logger->debug(sprintf("\t\$opts = %s",print_r($opts,1)));
+    $publication = $opts['name'];
     $html .= <<<EOF
       <script type='text/javascript'>
         jQuery(function() {
@@ -876,18 +884,19 @@ EOF;
     return $ids;
   }
 
-  /**
-  * Display the 'Local' description for this category - or the HP value if the internal mapping has not been set
-  */
+  //
+  // Display the 'Local' description for this category - or the HP value if the internal mapping has not been set
+  // $id is the HP genre ID
+  // $default is the HP genre to display if we don't find a match
+  // otherwise, display the local WP category
   private function get_display_category($id,$default) {
     // $id is the remote category id from HP
-    // All categories for this install:
-    $categories =  get_categories(array('orderby' => 'name','order' => 'ASC'));
-    $map = $this->xml->get_category_mapping();
+    $map = $this->config->get_config_option('category_map');
+    // If we don't have an internal value, use the passed in one from HP
     $display = $default;
     if ($map) {
-      foreach ($categories as $cat=>$hash) {
-        if (($map["$id"]) && ($map["$id"] == $hash->cat_ID)) {
+      foreach ($this->wp_categories as $idx=>$hash) {
+        if (isset($map["$id"]) && ($map["$id"] == $hash->cat_ID)) {
           $display = $hash->cat_name;
         }
       }

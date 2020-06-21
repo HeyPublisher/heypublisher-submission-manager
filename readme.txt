@@ -6,7 +6,7 @@ Requires at least: 4.0
 Tested up to: 5.3
 Stable Tag: 2.8.3
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 HeyPublisher gives you a better way of managing submissions directly within WordPress.
 
@@ -184,7 +184,7 @@ Yes - you can define custom response templates that contain whatever message you
 
 * Released : 2017-03-23
 * You now can use [Username] and [UserID] keyword substitutions in email templates (thanks for the suggestion Andy!)
-* Even though Andy didn't ask for it, we also added the ability for publishers to include their [ISSN](http://www.issn.org/understanding-the-issn/the-issn-international-register/) in their HeyPublisher listing.
+* Even though Andy didn't ask for it, we also added the ability for publishers to include their [ISSN](https://www.issn.org/understanding-the-issn/the-issn-international-register/) in their HeyPublisher listing.
 
 = 2.0.1 =
 

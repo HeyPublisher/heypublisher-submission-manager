@@ -35,6 +35,8 @@ class HeyPublisherXML {
     // TODO: Remove this!!
     $this->config = $hp_config->config;
     $this->install = $hp_config->install;
+    $this->user_oid = $hp_config->uoid;
+    $this->pub_oid = $hp_config->poid;
 
     // $this->log(sprintf("construct INSTALL Opts: %s",print_r($this->install,1)));
     // $this->log(sprintf("construct CONFIG Opts: %s",print_r($this->config,1)));
@@ -47,8 +49,8 @@ class HeyPublisherXML {
   // saved in class var are saved to database
   public function save_option_state() {
     // Register the shutdown functions
-    // http://stackoverflow.com/questions/33231656/register-static-class-method-as-shutdown-function-in-php
-    // http://us.php.net/manual/en/function.register-shutdown-function.php
+    // https://stackoverflow.com/questions/33231656/register-static-class-method-as-shutdown-function-in-php
+    // https://us.php.net/manual/en/function.register-shutdown-function.php
     curl_close($this->curl);
   }
 

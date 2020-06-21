@@ -37,8 +37,8 @@ class API {
   // Register the shutdown functions
   public function shutdown() {
     $this->logger->debug("API#shutdown");
-    // http://stackoverflow.com/questions/33231656/register-static-class-method-as-shutdown-function-in-php
-    // http://us.php.net/manual/en/function.register-shutdown-function.php
+    // https://stackoverflow.com/questions/33231656/register-static-class-method-as-shutdown-function-in-php
+    // https://us.php.net/manual/en/function.register-shutdown-function.php
     // curl_close($this->curl);
   }
 

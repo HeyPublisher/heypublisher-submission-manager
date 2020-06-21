@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: HeyPublisher Submission Manager
-Plugin URI: https://www.heypublisher.com
+Plugin URI: https://github.com/HeyPublisher/heypublisher-submission-manager
 Description: HeyPublisher is a better way of managing unsolicited submissions directly within WordPress.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
@@ -87,7 +87,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2020-05-22");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2020-06-20");
 // Version Number (can be text)
 define("HEYPUB_PLUGIN_BUILD_NUMBER", "80");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_VERSION", "3.0.0");
@@ -106,9 +106,8 @@ define('HEYPUB_DONATE_URL','https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&
 define('HEYPUB_PLUGIN_FULLPATH', dirname(__FILE__));
 // How to connect to the service
 define('HEYPUB_FEEDBACK_EMAIL_VALUE','support@heypublisher.com?subject=HeyPublisher%20Wordpress%20Plugin');
-// define('HEYPUB_FEEDBACK_GETSATISFACTION','http://getsatisfaction.com/hey');
 define('HEYPUB_FEEDBACK_GETSATISFACTION','mailto:support@heypublisher.com?Subject=HeyPublisher%20Submission%20Manager');
-// define('HEYPUB_SVC_URL_STYLE_GUIDE','http://blog.heypublisher.com/docs/plugins/wordpress/style_guide/');     # designates the URL of the style guide
+// define('HEYPUB_SVC_URL_STYLE_GUIDE','https://blog.heypublisher.com/docs/plugins/wordpress/style_guide/');     # designates the URL of the style guide
 # designates the base URL and version of API
 define('HEYPUB_SVC_URL_BASE', $domain . '/api/v1');
 define('HEYPUB_API', $domain . '/api');

@@ -79,7 +79,7 @@
 ### 2.1.0
 + Released : 2017-03-23
 + You now can use [Username] and [UserID] keyword substitutions in email templates (thanks for the suggestion Andy!)
-+ Even though Andy didn't ask for it, we also added the ability for publishers to include their [ISSN](http://www.issn.org/understanding-the-issn/the-issn-international-register/) in their HeyPublisher listing.
++ Even though Andy didn't ask for it, we also added the ability for publishers to include their [ISSN](https://www.issn.org/understanding-the-issn/the-issn-international-register/) in their HeyPublisher listing.
 
 ### 2.0.1
 + Released : 2017-02-20
