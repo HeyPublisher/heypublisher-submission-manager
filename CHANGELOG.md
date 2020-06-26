@@ -1,5 +1,16 @@
 ## Changelog
 
+### 3.0.0
++ Released: 2019-06-25
++ Reworked plugin to leverage new HeyPublisher JSON API.
++ [[#102](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/102) : Publishers can now set custom submission guidelines to be displayed on HeyPublisher.com.  Before, HeyPublisher would pull these guidelines directly from the publisher website, but that sometimes resulted in marketing text getting included when it should not have been.
++ [[#69](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/69) : Introduced a new Config class that handles all configuration parameter settings throughout the code base.
++ [[#61](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/61)] : Better error messaging when HeyPublisher.com is undergoing maintenance.
++ Implemented caching of publication types and genres to speed up loading time.
++ Fixed references to non-secure URLs that were throwing errors in the console log, but did not affect performance.
++ Plugin is now hosted on [GitHub](https://github.com/HeyPublisher/heypublisher-submission-manager).
+
+
 ### 2.8.3
 + Released: 2019-12-06
 + [[#98](https://github.com/aguywithanidea/heypublisher-submission-manager/issues/98)] : Added link to the Statuscake status page, in cases where errors are thrown.
