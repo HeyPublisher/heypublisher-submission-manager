@@ -148,6 +148,8 @@ class API {
   }
 
   // Execute the curl command
+  // 2nd parameter `$desired` indicates the value expected to be returned.
+  // This is used in PUT an DELETE calls when a 204 is the status, so we can differentiate between the two returns.
   private function send($curl, $desired = false) {
     $this->logger->debug("send()");
     $return = false;
