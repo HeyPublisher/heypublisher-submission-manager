@@ -5,7 +5,9 @@ Plugin URI: https://github.com/HeyPublisher/heypublisher-submission-manager
 Description: HeyPublisher is a better way of managing unsolicited submissions directly within WordPress.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 3.0.0
+Version: 3.0.1
+Requires at least: 4.0
+
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
   Copyright 2014-2018 Richard Luck (https://github.com/aguywithanidea/)
@@ -80,6 +82,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.8.3 => 75
   2.9.0 => 76
   3.0.0 => 80
+  3.0.1 => 81
 
 ---------------------------------------------------------------------------------
 */
@@ -87,10 +90,11 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2020-06-20");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2020-06-27");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "80");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "3.0.0");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "81");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "3.0.1");
+define("HEYPUB_PLUGIN_TESTED", "5.3.0");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
@@ -126,6 +130,7 @@ define('HEYPUB_SVC_URL_RESPOND_TO_SUBMISSION','submissions/submission_action'); 
 define('HEYPUB_SVC_READ_SUBMISSION','submissions/show');                      # fetch a single submission for reading.  also sets the 'read' status
 
 # if this changes, plugin will not work.  You have been warned
+// TODO: tie token value to version / host
 define('HEYPUB_SVC_TOKEN_VALUE','534ba1c699ca9310d7acf4832e12bed87c4d5917c5063c58382e9766bca11800');
 
 // Locally stored in database
@@ -153,6 +158,14 @@ define('HEYPUB_POST_META_KEY_SUB_ID','_heypub_post_meta_key_sub_id');
 * Load all of the plugin files
 */
 global $hp_xml, $hp_base, $hp_config;
+global $hp_updater;
+
+include_once(HEYPUB_PLUGIN_FULLPATH . '/updater.php');
+$hp_updater = new HeyPublisherUpdater( __FILE__ ); // instantiate our class
+$hp_updater->set_username( 'HeyPublisher' ); // set username
+$hp_updater->set_repository( 'heypublisher-submission-manager' ); // set repo
+$hp_updater->initialize(HEYPUB_PLUGIN_TESTED); // initialize the updater
+
 // This class fetches data from and stores data in WP db
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Config.class.php');
 // XML api v1
@@ -164,7 +177,7 @@ $hp_xml = new HeyPublisherXML;
 $hp_base = new HeyPublisher;
 $hp_xml->debug = $debug;
 $hp_xml->log("Loading plugin::");
-
+$hp_xml->log(sprintf("\n HEYPUB_PLUGIN_FULLPATH = %s",HEYPUB_PLUGIN_FULLPATH));
 // These files are required for basic functions
 require_once(HEYPUB_PLUGIN_FULLPATH.'/include/heypub-template-functions.php');
 
