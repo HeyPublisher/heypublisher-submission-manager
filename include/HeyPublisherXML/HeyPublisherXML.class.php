@@ -384,6 +384,7 @@ EOF;
   */
   // Deprecated with 3.0
   // TODO: Need to remove all calls to this function
+  // Remove prior to 3.0.1
   function get_my_categories_as_hash() {
       $return = false;
       $post = <<<EOF
@@ -498,12 +499,12 @@ EOF;
       error_log(sprintf("%s\n",$msg),3,HEYPUB_PLUGIN_FULLPATH . '/error.log');
     }
   }
+  // TODO: reorganize these keys and deprecate prior to 3.0.1
+  // These are referenced in 2 places in code??
   // Called after calling HeyPublisher.  This will ensure whatever data is on
   // remote server is synced locally 'after' a save with remote server.
   // only select fields are synced this way
   public function sync_publisher_info($stats) {
-    // TODO: reorganize these keys
-    // TODO: These are NOT referenced anywhere in code??
     if ($statistics['homepage']) {
       if ($statistics['homepage']['added']) {
         $this->set_config_option('homepage_first_validated_at',$statistics['homepage']['added']);
