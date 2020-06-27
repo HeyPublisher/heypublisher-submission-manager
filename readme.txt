@@ -6,7 +6,7 @@ Requires at least: 4.0
 Tested up to: 5.3
 Stable Tag: 2.8.3
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 HeyPublisher gives you a better way of managing submissions directly within WordPress.
 
@@ -111,6 +111,16 @@ Yes - you can define custom response templates that contain whatever message you
 
 == Changelog ==
 
+= 3.0.0 =
+* Released: 2019-06-25
+* Reworked plugin to leverage new HeyPublisher JSON API.
+* Publishers can now set custom submission guidelines to be displayed on HeyPublisher.com.  Before, HeyPublisher would pull these guidelines directly from the publisher website, but that sometimes resulted in marketing text getting included when it should not have been.
+* Better error messaging when HeyPublisher.com is undergoing maintenance.
+* Implemented caching of publication types and genres to speed up loading time
+* Fixed references to non-secure URLs that were throwing errors in the console log, but did not affect performance.
+* Introduced a new Config class that handles all configuration parameter settings throughout the code base.
+* Plugin is now hosted on GitHub at https://github.com/HeyPublisher.
+
 = 2.8.3 =
 * Released: 2019-12-06
 * Added link to the Statuscake status page, in cases where errors are thrown.
@@ -184,7 +194,7 @@ Yes - you can define custom response templates that contain whatever message you
 
 * Released : 2017-03-23
 * You now can use [Username] and [UserID] keyword substitutions in email templates (thanks for the suggestion Andy!)
-* Even though Andy didn't ask for it, we also added the ability for publishers to include their [ISSN](http://www.issn.org/understanding-the-issn/the-issn-international-register/) in their HeyPublisher listing.
+* Even though Andy didn't ask for it, we also added the ability for publishers to include their [ISSN](https://www.issn.org/understanding-the-issn/the-issn-international-register/) in their HeyPublisher listing.
 
 = 2.0.1 =
 

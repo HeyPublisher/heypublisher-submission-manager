@@ -20,12 +20,16 @@ class Submissions extends \HeyPublisher\Page {
   var $has_voted = false;
   var $editors = array();
   var $page = '_submissions';
+  var $wp_categories = array();
 
   public function __construct() {
   	parent::__construct();
     $this->sub_class = new \HeyPublisherSubmission;
     $this->api = new \HeyPublisher\API\Submission;
     $this->slug .= $this->page;
+
+    // All categories for this install - move this up so it';'s a one-time call:
+    $this->wp_categories =  get_categories(array('orderby' => 'name','order' => 'ASC'));
   }
 
   public function __destruct() {
@@ -35,7 +39,7 @@ class Submissions extends \HeyPublisher\Page {
   public function action_handler() {
     // This is not possible as this sub-menu is not accessible if not validated
     // TODO: clean up this logic
-    if (!$this->xml->is_validated) {
+    if (!$this->config->is_validated) {
       // parent::page('Submissions', 'Submissions', 'heypub_list_submissions' );
       heypub_not_authenticated();
       return;
@@ -90,7 +94,11 @@ class Submissions extends \HeyPublisher\Page {
     // This is a SimpleXML object being returned, with key the sub-id
     $subs = $this->xml->get_recent_submissions();
     $cats = $this->xml->get_my_categories_as_hash();
-    $publication = get_bloginfo('name');
+    $opts = $this->config->get_config_options();
+    $this->logger->debug("Submission#list_submissions");
+    $this->logger->debug(sprintf("\t\$cats = %s",print_r($cats,1)));
+    $this->logger->debug(sprintf("\t\$opts = %s",print_r($opts,1)));
+    $publication = $opts['name'];
     $html .= <<<EOF
       <script type='text/javascript'>
         jQuery(function() {
@@ -177,10 +185,7 @@ EOF;
         if (FALSE != $hash->author->email) {
           $contact = sprintf('<a title="Email the Author"  href="mailto:%s?subject=Your%%20submission%%20to%%20%s">%s</a>',$hash->author->email,get_bloginfo('name'),$hp_base->truncate($hash->author->email));
         }
-        $word_count = '?';
-        if (FALSE != $hash->word_count) {
-          $word_count = number_format((float)"$hash->word_count");
-        }
+        $word_count = $this->normalize_word_count($hash);
         $status = $this->xml->normalize_submission_status($hash->status);
         $link = $status; // default
         if ($accepted["$x"] || "$hash->status" == 'accepted') {
@@ -252,7 +257,7 @@ EOF;
         $hblock = $this->submission_history_block($id);
         $editor_id = get_current_user_id();
         $token = $this->api->authentication_token();
-        $domain = HEYPUB_API;
+        $domain = sprintf('%s/v2',HEYPUB_API);
         $votes = $this->get_votes($id,$editor_id);
         $vote_buttons = $this->vote_buttons_block($votes);
         $vote_summary = $this->get_vote_summary_block($votes);
@@ -350,7 +355,7 @@ EOF;
 
     /*
     // Future functionality - downloads of original docs are coming....
-    if ($this->xml->get_config_option('display_download_link')) {
+    if ($this->config->get_config_option('display_download_link')) {
     <a class='heypub_smart_button' href='<?php echo $sub->document->url; ?>' title="Download '<?php echo $sub->title; ?>'">Download Original Document</a>
     */
 
@@ -529,11 +534,9 @@ EOF;
     return $html;
   }
   private function word_count($sub) {
-    $html = null;
-    if (FALSE != $sub->word_count) {
-      // getting weird errors about the type of val for word_count, so explicitly cast here
-      $html = sprintf('<dt>Word Count:</dt><dd>%s words</dd>',number_format("$sub->word_count"));
-    }
+    $wc = $this->normalize_word_count($sub);
+    // getting weird errors about the type of val for word_count, so explicitly cast here
+    $html = sprintf('<dt>Word Count:</dt><dd>%s words</dd>',$wc);
     return $html;
   }
   // Take in a submission id and return a formatted submission block as string
@@ -881,18 +884,19 @@ EOF;
     return $ids;
   }
 
-  /**
-  * Display the 'Local' description for this category - or the HP value if the internal mapping has not been set
-  */
+  //
+  // Display the 'Local' description for this category - or the HP value if the internal mapping has not been set
+  // $id is the HP genre ID
+  // $default is the HP genre to display if we don't find a match
+  // otherwise, display the local WP category
   private function get_display_category($id,$default) {
     // $id is the remote category id from HP
-    // All categories for this install:
-    $categories =  get_categories(array('orderby' => 'name','order' => 'ASC'));
-    $map = $this->xml->get_category_mapping();
+    $map = $this->config->get_config_option('category_map');
+    // If we don't have an internal value, use the passed in one from HP
     $display = $default;
     if ($map) {
-      foreach ($categories as $cat=>$hash) {
-        if (($map["$id"]) && ($map["$id"] == $hash->cat_ID)) {
+      foreach ($this->wp_categories as $idx=>$hash) {
+        if (isset($map["$id"]) && ($map["$id"] == $hash->cat_ID)) {
           $display = $hash->cat_name;
         }
       }
@@ -1030,5 +1034,17 @@ EOF;
     wp_list_post_revisions( $post );
 
   }
+  // Normalize the word count, dependent on where it comes in from
+  private function normalize_word_count($obj) {
+    $wc = '?';
+    if (FALSE != $obj->s_word_count && $obj->s_word_count > 0) {
+      $wc = number_format((float)"$obj->s_word_count");
+    }
+    elseif (FALSE != $obj->word_count && $obj->word_count > 0) {
+      $wc = number_format((float)"$obj->word_count");
+    }
+    return $wc;
+  }
+
 }
 ?>

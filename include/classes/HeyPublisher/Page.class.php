@@ -19,26 +19,32 @@ class Page extends \Loudlever\Loudlever {
   var $page = '';
   var $nonce = '';
   var $message = '';
+  var $warning = '';
   var $additional_side_nav = null;
-
+  var $config = null;
+  var $options = null;
 
   public function __construct() {
-    global $hp_xml;
+    global $hp_xml,$hp_config;
   	parent::__construct();
-    $this->plugin['home'] = 'https://wordpress.org/plugins/heypublisher-submission-manager/';
-    $this->plugin['support'] = 'https://wordpress.org/support/plugin/heypublisher-submission-manager';
+    $this->plugin['home'] = 'https://github.com/HeyPublisher/heypublisher-submission-manager';
+    $this->plugin['support'] = 'https://github.com/HeyPublisher/heypublisher-submission-manager/issues';
     $this->plugin['contact'] = 'mailto:support@heypublisher.com';
-    $this->log_file = HEYPUB_PLUGIN_FULLPATH . '/error.log';
+    $this->logger = $hp_config->logger;
+    $this->config = $hp_config;
     $this->xml = $hp_xml;
     $this->nonce = sprintf('hp_nonce%s',$this->page);
+
+    // TODO: Deprecate this!
+    $this->log_file = HEYPUB_PLUGIN_FULLPATH . '/error.log';
   }
 
   public function __destruct() {
   	parent::__destruct();
   }
 
-  protected function strip($var) {
-    return stripslashes($var);
+  protected function strip($var, $default = '') {
+    return isset($var) ? stripslashes($var) : $default;
   }
 
   // Page wrapper
@@ -120,10 +126,15 @@ EOF;
     return $html;
   }
   // Wrapper for these options when the select form is consistent
-  protected function boolean_select($label,$key,$opts,$alt=false) {
+  protected function boolean_select($label,$key,$opts,$pre=false,$alt=false) {
+    $name = 'heypub_opt';
+    if ($pre) {
+      $name = "heypub_opt[{$pre}]";
+    }
+
     $html = <<<EOF
       <label class='heypub' for='hp_{$key}'>{$label}</label>
-      <select name="heypub_opt[{$key}]" id="hp_{$key}">
+      <select name="{$name}[{$key}]" id="hp_{$key}">
       {$this->boolean_options($key,$opts)}
       </select>
 EOF;
@@ -134,17 +145,29 @@ EOF;
   }
 
   protected function print_message_if_exists() {
+    if (!empty($this->warning)) {
+      $this->display_message($this->warning,'warning');
+    }
     if (!empty($this->message)) {
-      $e = <<<EOF
-        <div id="message" class="notice updated">
-          <p>
-            {$this->message}
-          </p>
-        </div>
-EOF;
-      print($e);
+      $this->display_message($this->message,'success');
     }
   }
+
+  private function display_message($message,$class) {
+    $valid = array('success','error','warning');
+    if (!in_array($class,$valid)) {
+      $class = 'info';
+    }
+    $e = <<<EOF
+      <div class="notice notice-{$class} is-dismissible">
+        <p>
+          {$message}
+        </p>
+      </div>
+EOF;
+    print($e);
+  }
+
   protected function nonced_url($action=[],$nonce=null) {
     $url = sprintf('%s/wp-admin/admin.php?page=%s',get_bloginfo('wpurl'),$this->slug);
     if (is_array($action) && !empty($action)) {
@@ -182,5 +205,26 @@ EOF;
     }
     return $url;
   }
+  // Get the page edit url as a relative url
+  protected function get_edit_url_for_page($id){
+    $url = '';
+    if (!empty($id)) {
+      $edit = get_edit_post_link($id);
+      $view = get_permalink($id);
+      $link = $this->get_external_url_with_icon($view);
+      $url = sprintf(" <a href='%s' class='dashicons dashicons-edit
+' title='Edit this Page'> </a> %s",$edit,$link);
+    }
+    return $url;
+  }
+  // Get external URL as a link
+  protected function get_external_url_with_icon($link,$icon='dashicons-external'){
+    $url = '';
+    if (!empty($link)) {
+      $url = sprintf(" <a href='%s' class='dashicons {$icon}' title='Opens in new page' target='_new'> </a>",$link);
+    }
+    return $url;
+  }
+
 }
 ?>

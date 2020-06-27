@@ -10,14 +10,16 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
 
 // Load the class files and associated scoped functionality
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
-require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Submission.class.php');
+require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Publisher.class.php');
 class Overview extends \HeyPublisher\Page {
   var $api = null;
+  var $page = '-submission-manager';
 
   public function __construct() {
   	parent::__construct();
-    $this->api = new \HeyPublisher\API\Submission;
-    // $this->slug .= '_main';
+    $this->api = new \HeyPublisher\API\Publisher;
+    $this->slug .= $this->page;
+    $this->log("slug = {$this->slug}");
   }
 
   public function __destruct() {
@@ -79,7 +81,7 @@ EOF;
 
   protected function get_editor_history() {
     $html = '';
-    if ($this->xml->is_validated) {
+    if ($this->config->is_validated) {
       $args = array('role__in' => array('Editor', 'Administrator'), 'orderby' => 'display_name');
       $editors = get_users( $args );
       $history = $this->api->get_editor_history();
@@ -140,15 +142,18 @@ EOF;
 
   protected function content() {
     global $hp_base;
-    if (!$this->xml->is_validated) {
+    if (!$this->config->is_validated) {
       $val = "<a href='". heypub_get_authentication_url() . "'>CLICK HERE to VALIDATE</a>";
     } else {
-      $val = date('F jS, Y',strtotime($this->xml->is_validated));
+      $val = date('F jS, Y',strtotime($this->config->is_validated));
     }
     $ver = HEYPUB_PLUGIN_VERSION;
     $blog = get_bloginfo('name');
-    $verdate = date('F jS, Y',strtotime($this->xml->get_install_option('version_current_date')));
+    $verdate = date('F jS, Y',strtotime($this->config->get_install_option('version_current_date')));
     $editors = $this->get_editor_history(); // this can only be launched after 1.6.0 has been live 30 days
+    $stats = $this->api->get_publisher_stats();
+    // ensure they're saved locally for posterity ... for some reason, though not sure why
+    $this->xml->sync_publisher_info($stats);
 
     $html = <<<EOF
       <p>With HeyPublisher you can accept unsolicited submissions from writers without
@@ -169,7 +174,7 @@ EOF;
         <tbody id='the-list'>
           <tr>
             <td>{$ver}</td>
-            <td>{$this->xml->get_install_option('version_current')}</td>
+            <td>{$this->config->get_install_option('version_current')}</td>
             <td>{$verdate}</td>
             <td>{$val}</td>
           </tr>
@@ -178,11 +183,10 @@ EOF;
 
 EOF;
 
-      if ($this->xml->is_validated) {
+      if ($this->config->is_validated) {
         // fetch the publisher info and update the local db with latest stats
-        $p = $this->xml->sync_publisher_info();
-        $home_last = $this->xml->get_config_option('homepage_last_validated_at');
-        $guide_last = $this->xml->get_config_option('guide_last_validated_at');
+        $home_last = $stats['homepage']['updated'];
+        $guide_last = $stats['guidelines']['updated'];
         $hl = (!empty($home_last)) ? date('F jS, Y',strtotime($home_last)) : '--';
         $gl = (!empty($guide_last)) ? date('F jS, Y',strtotime($guide_last)) : '--';
         $html .= <<<EOF
@@ -198,20 +202,20 @@ EOF;
           <tr>
             <td>{$hl}</td>
             <td>{$gl}</td>
-            <td>{$p['writer_comments']}</td>
-            <td>{$p['writer_favorites']}</td>
+            <td>n/a</td>
+            <td>n/a</td>
           </tr>
           <tr class='header alternate'>
             <td>Submissions Received</td>
             <td>Pending Review</td>
-            <td>Publish %</td>
-            <td>Rejection %</td>
+            <td>Published</td>
+            <td>Rejected</td>
           </tr>
           <tr>
-            <td>{$p['total_subs']}</td>
-            <td>{$hp_base->submission_summary_link($p['total_open_subs'])}</td>
-            <td>{$p['published_rate']} %</td>
-            <td>{$p['rejected_rate']} %</td>
+            <td>{$stats['submissions']['total']}</td>
+            <td>{$hp_base->submission_summary_link($stats['submissions']['open'])}</td>
+            <td>{$stats['submissions']['published']}</td>
+            <td>{$stats['submissions']['rejected']}</td>
           </tr>
           <tr class='header alternate'>
             <td>Avg. Response Time</td>
@@ -220,10 +224,10 @@ EOF;
             <td>Subs Open 90 Days</td>
           </tr>
           <tr>
-            <td class='t'>{$p['avg_response_days']} Days</td>
-            <td class='approved'>{$p['total_thirty_late']}</td>
-            <td class='waiting'>{$p['total_sixty_late']}</td>
-            <td class='spam'>{$p['total_ninety_late']}</td>
+            <td class='t'>{$stats['response_time']['rejected']} Days</td>
+            <td class='approved'>{$stats['aging']['thirty']}</td>
+            <td class='waiting'>{$stats['aging']['sixty']}</td>
+            <td class='spam'>{$stats['aging']['ninety']}</td>
           </tr>
         </tbody>
       </table>

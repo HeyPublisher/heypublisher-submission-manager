@@ -14,10 +14,10 @@ class Loudlever {
   var $log_file = '';
   var $plugin = array(
     'url' => '',
-    'home' => 'https://wordpress.org/plugins/',
-    'support' => 'https://wordpress.org/support/',
-    'contact' => 'mailto:wordpress@loudlever.com',
-    'more' => 'https://profiles.wordpress.org/loudlever#content-plugins'
+    'home' => 'https://github.com/HeyPublisher/',
+    'support' => 'https://github.com/HeyPublisher/',
+    'contact' => 'mailto:support@heypublisher.com',
+    'more' => 'https://github.com/HeyPublisher'
   );
 
   public function __construct() {
