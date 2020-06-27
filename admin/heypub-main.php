@@ -30,7 +30,8 @@ function heypub_display_page_logo() {
     <div id='heypub_logo'><a href='https://heypublisher.com' target='_blank' title='Visit HeyPublisher.com'><img src='<?php echo HEY_BASE_URL.'/images/logo.jpg'; ?>' border='0'></a><br/>
     <a class='heypub_smart_button' href='<?php echo HEYPUB_FEEDBACK_GETSATISFACTION; ?>' target='_blank' title="Need Support?  We're here to help!">Questions?  Contact Us!</a>
 <?php
-    $seo = '';  // this value is incorrect and is referencing the domain of the publication - not the seo url in heypub :(
+    $seo = '';
+    // this value is incorrect and is referencing the domain of the publication - not the seo url in heypub :(
     // $seo = $hp_config->get_config_option('seo_url');
     if ($seo) {
 ?>

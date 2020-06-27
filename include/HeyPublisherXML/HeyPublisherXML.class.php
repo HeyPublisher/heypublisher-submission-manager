@@ -45,8 +45,7 @@ class HeyPublisherXML {
   public function __destruct() {
 
   }
-  // Prior to deconstruction, this function is called so that all options
-  // saved in class var are saved to database
+  // Ensure any open cUrl connections are closed
   public function save_option_state() {
     // Register the shutdown functions
     // https://stackoverflow.com/questions/33231656/register-static-class-method-as-shutdown-function-in-php
@@ -55,6 +54,7 @@ class HeyPublisherXML {
   }
 
   //  fetch the mapping of categories to genres from local db
+  // TODO: this is should be updated to pull from Config class configuration
   public function get_category_mapping() {
     if ($this->config['categories']) {
       return $this->config['categories'];
@@ -248,139 +248,6 @@ EOF;
 EOF;
     return $ret;
   }
-  // TODO: Fix this - or delete if were no longer using
-  // When uninstalling plugin we also supress errors.
-  function update_publisher($post,$uninstall_plugin=false) {
-    $categories = $this->update_publisher_categories($post);
-    $mailchimp = $this->update_publisher_mailchimp($post);
-    $reading = $this->update_publisher_reading_period($post);
-    $simulsubs = $this->boolean($post['simu_subs']);
-    $multisubs = $this->boolean($post['multi_subs']);
-    $reprints = $this->boolean($post['reprint_subs']);
-    $accepting_subs  = $this->boolean($post['accepting_subs']);
-    $paying = $this->update_publisher_paying_market($post);
-    # no htmlentities here, otherwise " becomes %quote; and cronks the seo name
-    $name = stripslashes($post['name']);
-    $issn = htmlentities(stripslashes($post['issn']));
-    $established = htmlentities(stripslashes($post['established']));
-    $editor = htmlentities(stripslashes($post['editor_name']));
-    $editor_email = htmlentities(stripslashes($post['editor_email']));
-    $address = htmlentities(stripslashes($post['address']));
-    $city = htmlentities(stripslashes($post['city']));
-    $state = htmlentities(stripslashes($post['state']));
-    $zipcode = htmlentities(stripslashes($post['zipcode']));
-    $country = htmlentities(stripslashes($post['country']));
-    $twitter = htmlentities(stripslashes($post['twitter']));
-    $facebook = htmlentities(stripslashes($post['facebook']));
-    $url = htmlentities(stripslashes($post['url']));
-
-    $uninstall = '';
-    if ($uninstall_plugin) {
-      $uninstall = '<uninstall_plugin>true</uninstall_plugin>';
-    }
-
-    $post = <<<EOF
-<publisher>
-    <oid>{$this->pub_oid}</oid>
-    <publishertype_id>{$post['pub_type']}</publishertype_id>
-    <name>{$name}</name>
-    <url>{$url}</url>
-    <issn>{$issn}</issn>
-    <established>{$established}</established>
-    <circulation>{$post['circulation']}</circulation>
-    <sub_guideline>{$post['guide']}</sub_guideline>
-    <editor>{$editor}</editor>
-    <editor_email>{$editor_email}</editor_email>
-    <accepts_simultaneous_submissions>{$simulsubs}</accepts_simultaneous_submissions>
-    <accepts_multiple_submissions>{$multisubs}</accepts_multiple_submissions>
-    <accepts_reprints>{$reprints}</accepts_reprints>
-    <now_accepting_submissions>{$accepting_subs}</now_accepting_submissions>
-    <address>{$address}</address>
-    <city>{$city}</city>
-    <state>{$state}</state>
-    <zipcode>{$zipcode}</zipcode>
-    <country>{$country}</country>
-    <twitter>{$twitter}</twitter>
-    <facebook>{$facebook}</facebook>
-    <submission_url>{$post['submission_url']}</submission_url>
-    <submission_product>HeyPublisher</submission_product>
-    <platform>wordpress</platform>
-    <turn_off_tidy>{$post['turn_off_tidy']}</turn_off_tidy>
-    <notify_submitted>1</notify_submitted>
-    <notify_read>{$post['notify_read']}</notify_read>
-    <notify_rejected>{$post['notify_rejected']}</notify_rejected>
-    <notify_published>{$post['notify_published']}</notify_published>
-    <notify_accepted>{$post['notify_accepted']}</notify_accepted>
-    <notify_under_consideration>{$post['notify_under_consideration']}</notify_under_consideration>
-    <notify_withdrawn>{$post['notify_withdrawn']}</notify_withdrawn>
-    {$categories}
-    {$reading}
-    {$paying}
-    {$uninstall}
-    {$mailchimp}
-</publisher>
-EOF;
-
-    $ret = $this->send(HEYPUB_SVC_URL_UPDATE_PUBLISHER,$this->prepare_request_xml($post,true));
-    $this->log(sprintf("updating publisher results = \n%s",print_r($ret,1)));
-    if (FALSE == $ret && FALSE == $uninstall_plugin) {
-      $this->print_webservice_errors();
-    }
-    else {
-      $xml = new SimpleXMLElement($ret);
-      // $this->log(sprintf("XML results from update_publisher() \n%s",print_r($xml,1)));
-      // printf( "<pre>XML = %s</pre>",print_r($xml,1));
-      # this is an object, convert to string
-      if ($xml->success->message) {
-        $ret = $xml->success->message;
-        $return = "$ret";
-      }
-      else {
-        $err = $xml->error->message;
-        if ($err) {
-          $this->error = "$err";
-        } else {
-          $this->error = 'Error updating publisher data at HeyPublisher.com';
-        }
-        if (FALSE == $uninstall_plugin) {
-          $this->print_webservice_errors();
-        }
-      }
-    }
-    return $return;
-  }
-
-// function get_publisher_info() {
-//   $post = '';
-//   $return = array();
-//   $ret = $this->send(HEYPUB_SVC_URL_GET_PUBLISHER,$this->prepare_request_xml($post));
-//   // $this->log(sprintf("get_publisher_info() params = \n%s\nget_publisher_info() RESULTS: %s",print_r($this->prepare_request_xml($post),1),$ret));
-//   if (FALSE == $ret) {
-//     $this->print_webservice_errors();
-//   }
-//   else {
-//     $xml = new SimpleXMLElement($ret);
-//     // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
-//     # this is an object, convert to string
-//     if ($xml->success->message) {
-//       foreach ($xml->publisher->children() as $x) {
-//         $name = $x->getName();
-//         $return["$name"] = "$x";
-//       }
-//     }
-//     else {
-//       $err = $xml->error->message;
-//       if ($err) {
-//         $this->error = "$err";
-//       } else {
-//         $this->error = 'Error retrieving publisher info from HeyPublisher.com';
-//       }
-//       $this->print_webservice_errors();
-//     }
-//   }
-//   return $return;
-// }
-
 
   function normalize_submission_status($val) {
     if ($this->submission_status["$val"]) {
