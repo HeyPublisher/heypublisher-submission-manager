@@ -5,38 +5,43 @@ HeyPublisher gives you a better way of managing submissions directly within Word
 
 ### Description
 
-This plugin allows you as to accept submissions from writers.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.  And there is no need to create user accounts for writers just so they can submit content to your publication.
+This plugin allows you to accept submissions from writers without creating accounts for them in WordPress.  You define categories and other filters to ensure you only receive the submissions that meet your publication's needs.
 
 #### How HeyPublisher Submission Manager Helps
 
 Normally if you wanted to allow readers to submit their writing to your publication you would need to create an account in WordPress for each writer, then educate them on how to write and edit Posts within the publishing tool.
 
-With the HeyPublisher Submission Manager plugin submissions to your publication are instead uploaded to the  [HeyPublisher](https://www.heypublisher.com) web-service.  You still review the submissions within WordPress.  But you no longer have to manage user accounts or worry about unwanted posts filling up your system.
+With this plugin, submissions to your publication are uploaded to the  [HeyPublisher](https://www.heypublisher.com) web-service.  The plugin gives you the ability to review the submissions within WordPress.  You no longer have to manage user accounts or worry about unwanted posts filling up your system.
 
-Mark submissions for review, accept submissions for publication, or reject submissions to remove them from your slush pile.  All acceptance/rejection communications with the writer are handled automatically by HeyPublisher, freeing you from the time-consuming task of having to respond to each submission individually.
+Mark submissions for review, accept submissions for publication, or reject submissions to remove them from your slush pile.  All acceptance/rejection communications with the writer are handled automatically by HeyPublisher using email templates you can easily manage from within WordPress.
 
-You define the type of writing you want to receive.  You control the flow of unsolicited content coming into your publication.  You have more time to run your publication.
+You define the type of writing you want to receive.  You control the flow of content coming into your publication.  You have more time to run your publication.
 
 ### Installation
 
 #### Install Plugin
 
-* Download the zip file and save it in your `WordPress/wp-content/plugins` directory.
+![Download Zip File](images/install-1.jpg)
 
-* Extract the files to a subdirectory called `heypublisher-submission-manager`.
+* Click on the Download ZIP link and save it in your `wp-content/plugins` directory.
+
+* Extract the files to a sub-directory called `heypublisher-submission-manager`.
+
+  *Using cURL, you can do:*
+
+  `curl -Lo heypub.zip https://github.com/HeyPublisher/heypublisher-submission-manager/archive/master.zip && unzip heypub.zip && mv heypublisher-submission-manager-master heypublisher-submission-manager`
 
 * Active the plugin via the WordPress plugin menu.
 
-Once activated you will need to 'validate' the plugin with the HeyPublisher web-service.  To do this click on the HeyPublisher link in the newly created menu and follow the on-screen instructions.
-
 #### Validate Plugin
+
+Once activated you will need to validate the plugin by clicking on the HeyPublisher link in the newly created menu and follow the on-screen instructions.
+
+![Validate Plugin](images/install-2.jpg)
 
 To validate the plugin you will need to provide basic information about your publication and yourself as the administrator of this publication:
 
-* Your publication name
-* Your publication url
-* Your email address
-* A password
+![Validate Plugin](images/install-3.jpg)
 
 If your publication already exists in the [HeyPublisher.com](https://heypublisher.com/publishers/search) database, enter the name _exactly as it appears_ in our database.  If it doesn't already exist, simply enter the name as you want it to appear within our database.
 
@@ -46,13 +51,19 @@ If you already have an account with HeyPublisher, enter the email address and pa
 
 After the plugin has been validated, you can configure it to meet your submission requirements.  All information entered on this screen is used by HeyPublisher to help filter the submissions you receive.  The configuration sections are:
 
-* **Publication Information:** this includes the name, URL, editor, and physical mailing address of your publication. (Screenshot 2)
+* **Publication Information:** this includes the name, URL, editor, and physical mailing address of your publication.
+![Publication Information screen](images/screenshot-2.jpg)
 
-* **Submission Form:** select or create the page that will contain your submission form on your website. (Screenshot 3)
+* **Contact Information:** tell us who to contact for your publication if we have questions.
+![Publication Information screen](images/screenshot-3.jpg)
 
-* **Submission Guidelines:** select the page that contains your submission guidelines (if applicable). (Screenshot 4)
+* **Submission Guidelines:** select the page that contains your submission guidelines (if applicable).
 
-* **Submission Criteria:** select which genres of work you will accept - and how those should map to your internal categories when you "accept" a work for publication.  Additionally, you can select whether or not to accept simultaneous submissions and multiple submissions. (Screenshot 5)
+* **Submission Form:** select or create the page that will contain your submission form on your website.
+![Submission Form Configuration](images/screenshot-4.jpg)
+
+* **Submission Criteria:** select which genres of work you will accept - and how those should map to your internal categories when you "accept" a work for publication.  Additionally, you can select whether or not to accept simultaneous submissions and multiple submissions.
+![Submission Categories](images/screenshot-5.jpg)
 
 * **Notification Options :** indicate the submission states where you want to send notifications to the writer.  This works in conjunction with the Response Templates feature, where you can customize the emails sent to writers.
 
@@ -86,16 +97,14 @@ Yes - you can define custom response templates that contain whatever message you
 
 ### Screenshots
 
-1. Plugin Validation Screen.  This is how you connect the plugin to HeyPublisher.  Input the username and password you want to create (if you don't already have a HeyPublisher account).
-![Plugin Validation Screen](screenshot-1.jpg)
 2. Publication Information screen.  Input how you want your publication to appear within HeyPublisher's database.
-![Publication Information screen](screenshot-2.jpg)
+
 3. Publication Contact information. Input the contact information for how writers should reach you if they have a question about their submission.
-![Publication Contact information](screenshot-3.jpg)
+
 4. Submission Form Configuration.  Create (or select) the page in your WordPress site that contains your Submission Guidelines and Submission Form.  If the Submission Form page does not already exist, click the link and the plugin will create it for you.
-![Submission Form Configuration](screenshot-4.jpg)
+
 5. Submission Categories. Select the types of work you want to accept, and how these correspond to the categories you've created in WordPress.
-![Submission Categories](screenshot-5.jpg)
+
 6. Writer Notifications.  Select YES for those notifications you want the writer to receive.
 ![Writer Notifications](screenshot-6.jpg)
 7. Miscellaneous.  You can probably keep this on the default setting.  Adjust only if  you accept submissions in languages and character sets different than the one you publish.
