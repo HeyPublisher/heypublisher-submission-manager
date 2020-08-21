@@ -21,9 +21,11 @@ You define the type of writing you want to receive.  You control the flow of con
 
 #### Install Plugin
 
-![Download Zip File](images/install-1.jpg)
+* Go to the [HeyPublisher GitHub repository](https://github.com/HeyPublisher/heypublisher-submission-manager) and download the plugin.
 
 * Click on the Download ZIP link and save it in your `wp-content/plugins` directory.
+![Download Zip File](images/install-1.jpg)
+
 
 * Extract the files to a sub-directory called `heypublisher-submission-manager`.
 
@@ -32,6 +34,10 @@ You define the type of writing you want to receive.  You control the flow of con
   `curl -Lo heypub.zip https://github.com/HeyPublisher/heypublisher-submission-manager/archive/master.zip && unzip heypub.zip && mv heypublisher-submission-manager-master heypublisher-submission-manager`
 
 * Active the plugin via the WordPress plugin menu.
+
+* Once installed and activated, you will be able to update the plugin within WordPress by clicking on the link provided.
+![Update Plugin](images/install-4.jpg)
+
 
 #### Validate Plugin
 
@@ -66,10 +72,15 @@ After the plugin has been validated, you can configure it to meet your submissio
 ![Submission Categories](images/screenshot-5.jpg)
 
 * **Notification Options :** indicate the submission states where you want to send notifications to the writer.  This works in conjunction with the Response Templates feature, where you can customize the emails sent to writers.
+![Writer Notifications](images/screenshot-6.jpg)
 
+
+<!--
 * **Payment Options :** indicate whether or not your publication pays writers for their work.
+-->
 
 * **Miscellaneous :** configuration to help you clean up bad HTML formatting.
+![Miscellaneous](images/screenshot-7.jpg)
 
 Once you have made the appropriate configurations, click the "Save" button.
 
@@ -87,44 +98,33 @@ When you accept a submission, a copy of that submission is inserted as a Post in
 When you reject a submission it is immediately removed from your slush pile and the writer is notified of your decision automatically.  If the work had previously been 'accepted' by you, then rejecting it would also remove it from your pending posts.
 
 * **Can I reject a published submission?**
-No - once you publish an accepted submission, the author is automatically notified that their work has been published by you and the work is removed from your "Submissions" administration  screen (Screenshot 7)
+No - once you publish an accepted submission, the author is automatically notified that their work has been published by you and the work is removed from your "Submissions" administration  screen.
 
-* **We don't have submission guidelines.  Should we create them?**
-Yes - absolutely.  HeyPublisher indexes and archives all publisher submission guidelines, making them immediately searchable by writers around the world.  It's important as a publisher to be very clear with writers beforehand about what you are looking for in terms of genre, length, quality and content.
+* **We don't have submission guidelines.  Can we still use HeyPublisher?**
+Yes - absolutely.  The plugin allows you to either select a Page in your WordPress publication, or input custom submission guidelines.  These guidelines will be made visible to writers who are interested in submitting to your publication.  
 
 * **Can we change the content of the emails sent to writers regarding their submissions?**
 Yes - you can define custom response templates that contain whatever message you want to send to your writers.  These emails are sent automatically whenever you reject, accept, or save a submission for later review.  An email is also sent the first time an editor reads a new submission.  Click on 'Response Templates' in the side-bar and follow the on-screen instructions.
 
-### Screenshots
+### Managing the Slushpile
+#### Open Submissions
 
-2. Publication Information screen.  Input how you want your publication to appear within HeyPublisher's database.
-
-3. Publication Contact information. Input the contact information for how writers should reach you if they have a question about their submission.
-
-4. Submission Form Configuration.  Create (or select) the page in your WordPress site that contains your Submission Guidelines and Submission Form.  If the Submission Form page does not already exist, click the link and the plugin will create it for you.
-
-5. Submission Categories. Select the types of work you want to accept, and how these correspond to the categories you've created in WordPress.
-
-6. Writer Notifications.  Select YES for those notifications you want the writer to receive.
-![Writer Notifications](screenshot-6.jpg)
-7. Miscellaneous.  You can probably keep this on the default setting.  Adjust only if  you accept submissions in languages and character sets different than the one you publish.
-![Miscellaneous](screenshot-7.jpg)
-8. Open Submissions.  From this screen you can view and manage the submissions received by your publication.  Clicking on the plus icon will display the author's bio, if they have provided one.  Clicking on the title of the submission will allow you to 'preview' the submission.
+From this screen you can view and manage the submissions received by your publication.  Clicking on the plus icon will display the author's bio, if they have provided one.  Clicking on the title of the submission will allow you to 'preview' the submission.
 ![Open Submissions](screenshot-8.jpg)
-9. Submission Status.  When 'previewing' a submission, the submission status side-bar will give you a quick status on the submission, including how many days it's been in your slushpile.  From this side-bar you can choose to accept or reject the submission.  Any note you add to the submission will be sent to the author if you have Writer Notifications turned on.
+
+#### Submission Status
+
+When 'previewing' a submission, the submission status will show up on the right side of the screen, giving you a quick overview of the status of the submission.  This status includes when the submission was submitted, when it was last viewed, and allows you to accept or reject the submission.  Any note you add to the submission here will be sent to the author if you have Writer Notifications turned on.
+
 ![Submission Status](screenshot-9.jpg)
-10. Statistics screen.  Provides a quick snapshot of your slushpile.
-![Statistics screen](screenshot-10.jpg)
-11. Reimport.  If a writer modifies a submission you have already 'Accepted' - you can re-import the submission into WordPress by selecting the "Reimport Into WordPress" value from the drop-down and clicking the "Update Submission" button.
+
+#### Reimport
+
+If for some reason you need a writer to submit an update to their submission after you have already accepted it, simply go to the submission in the Open Submissions screen and select "Reimport Into WordPress".  Once you click the "Update Submission" button the new version will be imported, overwriting the previous version of the Post.
+
 ![Reimport](screenshot-11.jpg)
 
-### About Us
+### Statistics
 
-HeyPublisher builds tools for writers and publishers.  Find out more by visiting our website [HeyPublisher.com](https://www.heypublisher.com).
-
-## About This Plugin
-
-+ WordPress minimum version: 4.0
-+ WordPress version tested up to: 5.3
-+ Current Stable Tag: 2.8.3
-+ License: GPLv2
+The homepage of the plugin will give you a quick snapshot of your slushpile.
+![Statistics screen](screenshot-10.jpg)
