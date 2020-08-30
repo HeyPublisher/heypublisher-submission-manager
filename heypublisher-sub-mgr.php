@@ -2,10 +2,10 @@
 /*
 Plugin Name: HeyPublisher Submission Manager
 Plugin URI: https://github.com/HeyPublisher/heypublisher-submission-manager
-Description: HeyPublisher is a better way of managing unsolicited submissions directly within WordPress.
+Description: HeyPublisher is a better way of managing submissions for your WordPress-powered publication.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 3.0.1
+Version: 3.1.0
 Requires at least: 4.0
 
 
@@ -83,6 +83,8 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   2.9.0 => 76
   3.0.0 => 80
   3.0.1 => 81
+  3.1.0 => 82
+
 
 ---------------------------------------------------------------------------------
 */
@@ -90,11 +92,11 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2020-06-27");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2020-08-30");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "81");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "3.0.1");
-define("HEYPUB_PLUGIN_TESTED", "5.3.0");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "82");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "3.1.0");
+define("HEYPUB_PLUGIN_TESTED", "5.5.0");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
@@ -157,9 +159,11 @@ define('HEYPUB_POST_META_KEY_SUB_ID','_heypub_post_meta_key_sub_id');
 global $hp_xml, $hp_base, $hp_config;
 global $hp_updater;
 
-include_once(HEYPUB_PLUGIN_FULLPATH . '/updater.php');
-$hp_updater = new HeyPublisherUpdater( __FILE__ ); // instantiate our class
-$hp_updater->set_username( 'HeyPublisher' ); // set username
+if (!class_exists("\HeyPublisher\Base\Updater")) {
+  require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Base/Updater.class.php');
+}
+// initialize the updater and test for update
+$hp_updater = new \HeyPublisher\Base\Updater( __FILE__ );
 $hp_updater->set_repository( 'heypublisher-submission-manager' ); // set repo
 $hp_updater->initialize(HEYPUB_PLUGIN_TESTED); // initialize the updater
 

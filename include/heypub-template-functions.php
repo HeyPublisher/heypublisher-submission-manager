@@ -20,7 +20,7 @@ function heypub_display_submission_form() {
   global $hp_xml, $hp_config;
   if ($hp_config->get_config_option('accepting_subs')) {
     $src = get_permalink($hp_config->get_config_option('sub_page_id'));
-    $url = sprintf("%s/%s/submit/%s",HEYPUB_SVC_URL_BASE, HEYPUB_SVC_URL_SUBMIT_FORM, $hp_config->get_install_option('publisher_oid'));
+    $url = sprintf("%s/api/v1/submissions/submit/%s",HEYPUB_DOMAIN, $hp_config->get_install_option('publisher_oid'));
     // $style = sprintf("<link rel='stylesheet' href='%sinclude/css/heypublisher.css' type='text/css' />", HEY_BASE_URL);
     $css = get_bloginfo('stylesheet_url');
     $css = urlencode($css);
