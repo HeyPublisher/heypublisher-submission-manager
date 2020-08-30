@@ -1,32 +1,35 @@
 <?php
-namespace HeyPublisher;
+namespace HeyPublisher\Base;
+global $HEYPUB_API;
 
-require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Log.class.php');
+if (!class_exists("\HeyPublisher\Base\Log")) {
+  require_once( dirname(__FILE__) . '/Log.class.php');
+}
 
 if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyPublisher: Illegal Page Call!'); }
 
-/**
- * HeyPublisher base class for all JSON API calls
- * TODO: https://stackoverflow.com/questions/13420952/php-curl-delete-request
- * Clean up this file to be more DRY
- */
+  // HeyPublisher base API class for all JSON API calls
+  // TODO: https://stackoverflow.com/questions/13420952/php-curl-delete-request
+  // This class is instantiated automatically when loaded and will be accessible
+  // via the global $HEYPUB_LOGGER
 
 class API {
-  var $debug = false;
-  var $api = HEYPUB_API;
-  var $error = false;
-  var $timeout = 4;
+  var $api   = null;
+  var $error  = false;
+  var $timeout = 3;
   var $config = null;
-  var $uoid = '';
-  var $poid = '';
+  var $uoid   = null;
+  var $poid   = null;
 
   public function __construct() {
-    global $hp_config;
-    $this->config = $hp_config;
-    $this->uoid = $hp_config->uoid;
-    $this->poid = $hp_config->poid;
-    $this->logger = $hp_config->logger;
-    $this->logger->debug("API#__construct");
+    // TODO: to make this generic, the uoid and poid need to be dynamic
+    // If HeyPublisher submission manager is installed, use those, else use plugin defaults
+    global $HEYPUB_LOGGER;
+    $this->logger = $HEYPUB_LOGGER;
+    $this->logger->debug("HeyPublisher::API loaded");
+
+    $this->initialize_api_url();
+    $this->initialize_oids();
     register_shutdown_function(array($this,'shutdown'));
   }
 
@@ -210,25 +213,39 @@ class API {
     }
     return $tmp;
   }
-
-  protected function get_from_cache($key) {
-    $this->logger->debug("\tget_from_cache '{$key}' from cache");
-    $hash = $this->config->get_config_option($key);
-    $expry = date('U');
-    if ($hash && ($hash['cache_date'] + 86400) > $expry) { // 1 day cache only
-      unset($hash['cache_date']);
-      $this->logger->debug(sprintf("\tcache is FRESH\n\tcache = %s",print_r($hash,1)));
-      return $hash;
+  // Set the API URL depending on whether we're in dev or prod
+  private function initialize_api_url() {
+    $domain = 'https://www.heypublisher.com';
+    $debug = (getenv('HEYPUB_DEBUG') === 'true');
+    if ($debug) {
+      $domain = 'http://127.0.0.1:3000';
     }
-    // $this->logger->debug(sprintf("\tcache date = %s\n\texpiry = %s\n\tdiff = %s",$hash['cache_date'],$expry,($hash['cache_date']- $expry)));
-    $this->logger->debug("\tcache is OLD '{$key}'");
-    return;
+    $this->api = sprintf("%s/api",$domain);
+    $this->logger->debug(sprintf("\tAPI URL: %s",$this->api));
   }
 
-  protected function set_to_cache($key,$hash) {
-    $this->logger->debug(sprintf("\tset_to_cache '%s' to cache %s",$key,print_r($hash,1)));
-    $hash['cache_date'] = date('U');
-    $hash = $this->config->set_config_option($key,$hash);
+  // Load the uoid and poid into memory
+  private function initialize_oids() {
+    global $hp_config;
+    $this->logger->debug("API#initialize_oids()");
+    if (is_object($hp_config) && strtolower(get_class($hp_config)) == strtolower("HeyPublisher\Config")) {
+      $this->uoid = $hp_config->uoid;
+      $this->poid = $hp_config->poid;
+      $this->logger->debug("\tloading from \$hp_confg global");
+    }
+    else {
+      $this->logger->debug("\tloading defaults");
+      // NOTE: These should never need to change
+      $this->uoid = "99f7c470-665d-0138-47c1-38f9d3071b82";
+      $this->poid = "9c0484c0-665d-0138-47c1-38f9d3071b82";
+    }
+    $this->logger->debug(sprintf("\tUOID: %s\n\tPOID: %s",$this->uoid,$this->poid));
   }
 }
+
+// This class sets a global accessor
+if (!isset($HEYPUB_API)) {
+  $HEYPUB_API  = new \HeyPublisher\Base\API();
+}
+
 ?>

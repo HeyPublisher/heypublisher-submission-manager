@@ -12,12 +12,12 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class.php');
 require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Publisher.class.php');
 class Overview extends \HeyPublisher\Page {
-  var $api = null;
+  var $pubapi = null;
   var $page = '-submission-manager';
 
   public function __construct() {
   	parent::__construct();
-    $this->api = new \HeyPublisher\API\Publisher;
+    $this->pubapi = new \HeyPublisher\API\Publisher;
     $this->slug .= $this->page;
     $this->log("slug = {$this->slug}");
   }
@@ -84,7 +84,7 @@ EOF;
     if ($this->config->is_validated) {
       $args = array('role__in' => array('Editor', 'Administrator'), 'orderby' => 'display_name');
       $editors = get_users( $args );
-      $history = $this->api->get_editor_history();
+      $history = $this->pubapi->get_editor_history();
       $this->log(sprintf("EDITORS: %s", print_r($editors,1)));
 
       $html .= <<<EOF
@@ -151,7 +151,7 @@ EOF;
     $blog = get_bloginfo('name');
     $verdate = date('F jS, Y',strtotime($this->config->get_install_option('version_current_date')));
     $editors = $this->get_editor_history(); // this can only be launched after 1.6.0 has been live 30 days
-    $stats = $this->api->get_publisher_stats();
+    $stats = $this->pubapi->get_publisher_stats();
     // ensure they're saved locally for posterity ... for some reason, though not sure why
     $this->xml->sync_publisher_info($stats);
 
