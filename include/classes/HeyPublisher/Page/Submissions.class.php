@@ -16,7 +16,7 @@ class Submissions extends \HeyPublisher\Page {
 
   var $disallowed_states = array('withdrawn','published','rejected');
   var $sub_class = null;
-  var $api = null;
+  var $subapi = null;
   var $has_voted = false;
   var $editors = array();
   var $page = '_submissions';
@@ -25,7 +25,7 @@ class Submissions extends \HeyPublisher\Page {
   public function __construct() {
   	parent::__construct();
     $this->sub_class = new \HeyPublisherSubmission;
-    $this->api = new \HeyPublisher\API\Submission;
+    $this->subapi = new \HeyPublisher\API\Submission;
     $this->slug .= $this->page;
 
     // All categories for this install - move this up so it';'s a one-time call:
@@ -256,8 +256,8 @@ EOF;
         }
         $hblock = $this->submission_history_block($id);
         $editor_id = get_current_user_id();
-        $token = $this->api->authentication_token();
-        $domain = sprintf('%s/v2',HEYPUB_API);
+        $token = $this->subapi->get_authentication_token();
+        $domain = sprintf('%s/api/v2',HEYPUB_DOMAIN);
         $votes = $this->get_votes($id,$editor_id);
         $vote_buttons = $this->vote_buttons_block($votes);
         $vote_summary = $this->get_vote_summary_block($votes);
@@ -420,7 +420,7 @@ EOF;
   // Get the notes for this submission
   //  @since 2.7.0
   private function get_notes($id,$editor_id) {
-    $notes = $this->api->get_submission_notes($id);
+    $notes = $this->subapi->get_submission_notes($id);
     $html =<<<EOF
     <table id='heypub-notes-list' class="widefat post fixed ll-plugin heypub-notes" cellspacing="0">
       <thead>
@@ -460,7 +460,7 @@ EOF;
   // @since  2.7.0
   private function get_votes($id,$editor_id){
     $this->xml->log("get_votes({$id},{$editor_id})");
-    $votes = $this->api->get_submission_votes($id,$editor_id);
+    $votes = $this->subapi->get_submission_votes($id,$editor_id);
     $this->xml->log(sprintf("votes: %s",print_r($votes,1)));
     if ($votes['meta']['returned'] == 1) {
       $this->has_voted = $votes['votes'][0]['vote'];
@@ -547,7 +547,7 @@ EOF;
 
   private function submission_history_content($sid,$order) {
     $this->xml->log("submission_history_content() SID: {$sid}");
-    $history = $this->api->get_submission_history($sid,$order);
+    $history = $this->subapi->get_submission_history($sid,$order);
     $this->xml->log(sprintf(" => history:\n%s",print_r($history,1)));
     $rows = '';
     foreach ($history['history'] as $item) {
@@ -826,7 +826,7 @@ EOF;
       $post['ID'] = $post_id;
     }
     $post_id = wp_insert_post( $post );
-    // ensure meta data is updated
+    // ensure meta data is updated - this is invisible to the editor, but allows us to find post later
     update_post_meta($post_id, HEYPUB_POST_META_KEY_SUB_ID, "$sub->id");
     return $post_id;
   }

@@ -112,14 +112,11 @@ define('HEYPUB_PLUGIN_FULLPATH', dirname(__FILE__));
 define('HEYPUB_FEEDBACK_EMAIL_VALUE','support@heypublisher.com?subject=HeyPublisher%20Wordpress%20Plugin');
 define('HEYPUB_FEEDBACK_GETSATISFACTION','mailto:support@heypublisher.com?Subject=HeyPublisher%20Submission%20Manager');
 // define('HEYPUB_SVC_URL_STYLE_GUIDE','https://blog.heypublisher.com/docs/plugins/wordpress/style_guide/');     # designates the URL of the style guide
-# designates the base URL and version of API
-define('HEYPUB_SVC_URL_BASE', $domain . '/api/v1');
-define('HEYPUB_API', $domain . '/api');
+define('HEYPUB_DOMAIN', $domain);
 # Stylesheet for plugin resides on HP server now
-define('HEYPUB_SVC_STYLESHEET_URL',$domain . '/stylesheets/wordpress/plugin.css?' . HEYPUB_PLUGIN_VERSION);
+define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugin.css?' . HEYPUB_PLUGIN_VERSION);
 
 // TODO: remove these defines and reference directly from XML code that makes query
-define('HEYPUB_SVC_URL_SUBMIT_FORM','submissions');
 define('HEYPUB_SVC_URL_AUTHENTICATE','publishers/fetch_or_create');           # initial plugin authentication
 define('HEYPUB_SVC_URL_GET_PUBLISHER','publishers/show');                     # update the options
 define('HEYPUB_SVC_URL_UPDATE_PUBLISHER','publishers/update_publisher');      # update the options
@@ -191,7 +188,6 @@ require_once(HEYPUB_PLUGIN_FULLPATH . '/admin/heypub-main.php');
 // Plugin configuration options
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Options.class.php');
 $hp_opt = new \HeyPublisher\Page\Options;
-$hp_opt->domain = $domain;
 
 // Submissions
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Submissions.class.php');
@@ -432,7 +428,7 @@ function heypub_uninit() {
     $opts['genres_list'] = false;
     $opts['guide'] = get_permalink($opts['sub_guide_id']);
     // TODO: This should change to api->update_publisher();
-    $hp_opt->api->deactivate();
+    $hp_opt->pubapi->deactivate();
   }
   $hp_config->install = false;
   $hp_config->config = false;
