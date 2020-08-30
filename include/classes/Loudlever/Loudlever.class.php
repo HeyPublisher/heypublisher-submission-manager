@@ -5,7 +5,7 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('Loud
 
 /**
 * Loudlever :  base class for all loudlever plugins.  provides common functionality.
-*
+* TODO: Convert this over to using HeyPublisher/Base class
 */
 class Loudlever {
   var $debug = true;

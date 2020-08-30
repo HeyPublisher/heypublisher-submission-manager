@@ -1,7 +1,18 @@
 ## Changelog
 
+### 3.1.0
++ Released: 2020-08-30
++ Fixed having the wrong year in the 2020 release notes.
++ Plugin is now based on the HeyPublisher/Base class that other plugins are based upon.
+  + Updated all code to ensure there are no conflicts with older versions
++ Validated functionality through [WordPress Version 5.5](https://wordpress.org/support/wordpress-version/version-5-5/).
+
+### 3.0.1
++ Released: 2020-06-27
++ Update to updater to fix issue related to updating from GitHub when plugin was manually updated to 3.0.0.
+
 ### 3.0.0
-+ Released: 2019-06-25
++ Released: 2020-06-25
 + Reworked plugin to leverage new HeyPublisher JSON API.
 + [[#102](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/102) : Publishers can now set custom submission guidelines to be displayed on HeyPublisher.com.  Before, HeyPublisher would pull these guidelines directly from the publisher website, but that sometimes resulted in marketing text getting included when it should not have been.
 + [[#69](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/69) : Introduced a new Config class that handles all configuration parameter settings throughout the code base.

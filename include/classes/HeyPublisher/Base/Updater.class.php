@@ -1,9 +1,34 @@
 <?php
 
-// courtesy of : https://www.smashingmagazine.com/2015/08/deploy-wordpress-plugins-with-github-using-transients/
-//
+// https://www.smashingmagazine.com/2015/08/deploy-wordpress-plugins-with-github-using-transients/
+// https://code.tutsplus.com/tutorials/distributing-your-plugins-in-github-with-automatic-updates--wp-34817
 // TODO: better organize this code
-class HeyPublisherUpdater {
+
+namespace HeyPublisher\Base;
+
+if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyPublisher: Illegal Page Call!'); }
+
+// Updater class for all HeyPublisher plugins.
+// This class should be included in plugins that are hosted on github.com/HeyPublisher
+//
+// This class should be loaded into the plugin main.php file only
+//  if (!class_exists("\HeyPublisher\Base\Updater")) {
+//    require_once(<PLUGIN_FULLPATH> . '/include/classes/HeyPublisher/Base/Updater.class.php');
+//  }
+// When loaded, it will NOT automatically be instantiated, as that would prevent multiple plugins from instantiating individually.
+// You will need to assign to a LOCAL variable to avoid overwriting the updater for other HeyPublsher plugins
+//
+// $hp_updater = new HeyPublisherUpdater( __FILE__ ); // instantiate our class
+// $hp_updater->set_username( 'NOt-HeyPublisher' ); // Only use this setter if plugin not hosted by 'HeyPublisher'
+// $hp_updater->set_repository( 'this-plugin-repo' ); // set repo
+// $hp_updater->initialize('vesion-tested'); // initialize the updater.
+//
+// The 'version-tested' is a string that allows you to display through which
+// version of WordPress this plugin has been tested through.
+// If the user's version is greater  than this version, they will get a
+// warning about plugin not having been tested through their version.
+
+class Updater {
 
   private $file;
 	private $plugin;
@@ -18,6 +43,7 @@ class HeyPublisherUpdater {
 	public function __construct( $file ) {
 
 		$this->file = $file;
+    $this->username = 'HeyPublisher';
 
 		add_action( 'admin_init', array( $this, 'set_plugin_properties' ) );
 
@@ -125,8 +151,8 @@ class HeyPublisherUpdater {
 					'slug'				=> $this->basename,
 					'requires'		=> $this->plugin["RequiresWP"],
 					'tested'			=> $this->tested_to,
-					'rating'			=> '90.0',
-					'num_ratings'	=> '23',
+					// 'rating'			=> '90.0',  /// need to figure out how to get this from github
+					// 'num_ratings'	=> '23',  /// need to figure out how to get this from github
 					'downloaded'	=> '8669',
 					'added'				=> '2016-01-05',
 					'version'			=> $this->github_response['tag_name'],

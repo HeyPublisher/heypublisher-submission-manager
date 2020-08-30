@@ -1,8 +1,9 @@
 <?php
 namespace HeyPublisher;
 
-require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Log.class.php');
-
+if (!class_exists("\HeyPublisher\Base\Log")) {
+  require_once( dirname(__FILE__) . '/Base/Log.class.php');
+}
 if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyPublisher: Illegal Page Call!'); }
 
 /**
@@ -19,7 +20,10 @@ class Config {
   var $is_validated = false;
 
   public function __construct() {
-    $this->logger = new \HeyPublisher\Log();
+    global $HEYPUB_LOGGER;
+    // this can't be instantiated in var declaration
+    // $this->plugin['url'] = plugins_url('../../',__FILE__);
+    $this->logger = $HEYPUB_LOGGER;
     $this->logger->debug("Config#__construct");
     $this->install = get_option(HEYPUB_PLUGIN_OPT_INSTALL);
     $this->logger->debug(sprintf("\tloading install options : %s",print_r($this->install,1)));

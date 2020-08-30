@@ -17,15 +17,16 @@ load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page.class
 require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Publisher.class.php');
 
 class Options extends \HeyPublisher\Page {
-  var $domain = '';
-  var $api = null;
+  var $domain = null;
+  var $pubapi = null;
   var $page = '_options';
 
 
   public function __construct() {
   	parent::__construct();
+    $this->domain = HEYPUB_DOMAIN;
     // TODO: Move this to a global so we're not instantiating multiple times
-    $this->api = new \HeyPublisher\API\Publisher;
+    $this->pubapi = new \HeyPublisher\API\Publisher;
     $this->slug .= $this->page;
   }
 
@@ -68,9 +69,9 @@ class Options extends \HeyPublisher\Page {
       $button = 'Update';
     }
     $action = $this->form_action();
-    $this->logger->debug(sprintf("in pageprep\n\terrors = %\n\tmessage = %s",$this->api->error,$this->message));
-    if ($this->api->error) {
-      $this->xml->error = $this->api->error; # TODO: Fix this!!
+    $this->logger->debug(sprintf("in pageprep\n\terrors = %\n\tmessage = %s",$this->pubapi->api->error,$this->message));
+    if ($this->pubapi->api->error) {
+      $this->xml->error = $this->pubapi->api->error; # TODO: Fix this!!
       $this->xml->print_webservice_errors(true);
     }
 
@@ -449,7 +450,7 @@ EOF;
   // @updated 2020-03-25
   private function merged_genre_map($my_genres) {
     $this->logger->debug("Options::merged_genre_map()");
-    $all_genres = $this->api->get_genres();
+    $all_genres = $this->pubapi->get_genres();
     $this->logger->debug(sprintf("\tmerged_genre_map() \$my_genres = \n%s",print_r($my_genres,1)));
     // $this->logger->debug(sprintf("\tmerged_genre_map() \$all_genres = \n%s",print_r($all_genres,1)));
     // Extract the ids from the genres passed in by publisher data
@@ -647,7 +648,7 @@ EOF;
     $opts = $this->config->get_config_options();
 
     // Load the data from HeyPublisher db
-    $settings = $this->api->get_publisher_info();
+    $settings = $this->pubapi->get_publisher_info();
     // update the configs with latest parsing data from server
     $this->xml->sync_publisher_info($settings);
 
@@ -727,11 +728,11 @@ EOF;
 
       // Fetch Publisher INFO from HeyPublisher API and pre-populate the layout, if we can
       // The options have not yet been loaded at this stage, so need to be explicitly set:
-      $this->api->uoid = $this->xml->user_oid;
-      $this->api->poid = $this->xml->pub_oid;
+      $this->pubapi->api->uoid = $this->xml->user_oid;
+      $this->pubapi->api->poid = $this->xml->pub_oid;
 
       // This is happening in page prep
-      $pub = $this->api->get_publisher_info();
+      $pub = $this->pubapi->get_publisher_info();
       $message = 'Account validation succeeded! You can now configure your account.';
       if ($pub) {
         $cats = $this->xml->get_my_categories_as_hash();
@@ -794,7 +795,7 @@ EOF;
     $opts['urls']['rss'] = get_bloginfo('rss2_url');
     // now attempt to sync with HeyPublisher.com
     unset($opts['category_map']);
-    $success = $this->api->update_publisher($opts);
+    $success = $this->pubapi->update_publisher($opts);
     if ($success) {
       $message = 'Your changes have been saved and syncronized with HeyPublisher.';
     }
@@ -802,7 +803,7 @@ EOF;
   }
 
   private function publication_types($pid=null) {
-    $pub_types = $this->api->get_publisher_types();
+    $pub_types = $this->pubapi->get_publisher_types();
     $html = '';
     if (empty($pub_types)) { return $html; }
     foreach ($pub_types as $id=>$hash){

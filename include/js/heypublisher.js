@@ -1,7 +1,8 @@
 // Javascript library for HeyPublisher Wordpress plugin
 // -----------------------------------
-// Copyright (c) 2010-2014 Loudlever, Inc.
-// Copyright (c) 2014-2018 Richard Luck, HeyPublisher
+// Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
+// Copyright 2014-2018 Richard Luck (https://github.com/aguywithanidea/)
+// Copyright 2019-2020 HeyPublisher, LLC (https://www.heypublisher.com/)
 // Author - Richard Luck <richard@heypublisher.com>
 // -----------------------------------
 

@@ -7,22 +7,30 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
 *
 */
 
-require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API.class.php');
-class Submission extends \HeyPublisher\API {
+if (!class_exists("\HeyPublisher\Base\API")) {
+  require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Base/API.class.php');
+}
+
+class Submission  {
+
+  var $api = null;
+  var $logger = null;
 
   public function __construct() {
-    parent::__construct();
+    global $HEYPUB_API, $HEYPUB_LOGGER;
+    $this->api = $HEYPUB_API;
+    $this->logger = $HEYPUB_LOGGER;
+
     $this->logger->debug("API::Submission#__construct()");
   }
 
   public function __destruct() {
-  	parent::__destruct();
   }
 
   public function get_submission_history($id,$order){
     $path = sprintf('v2/submissions/%s/history',$id);
     $opts = array('order'=>$order);
-    $result = $this->get($path,$opts);
+    $result = $this->api->get($path,$opts);
     $this->logger->debug(sprintf("get_submission_history():\n\tResults: %s",print_r($result,1)));
     return $result;
   }
@@ -32,7 +40,7 @@ class Submission extends \HeyPublisher\API {
   public function get_submission_votes($id,$ed_id){
     $path = sprintf('v2/submissions/%s/votes',$id);
     $opts = array('editor_id'=>$ed_id);
-    $result = $this->get($path,$opts);
+    $result = $this->api->get($path,$opts);
     $this->logger->debug(sprintf("get_submission_votes():\n\tResults: %s",print_r($result,1)));
     return $result;
   }
@@ -42,9 +50,15 @@ class Submission extends \HeyPublisher\API {
   public function get_submission_notes($id){
     $path = sprintf('v2/submissions/%s/notes',$id);
     $opts = array('order'=>'desc');
-    $result = $this->get($path,$opts);
+    $result = $this->api->get($path,$opts);
     $this->logger->debug(sprintf("get_submission_notes():\n\tResults: %s",print_r($result,1)));
     return $result;
+  }
+
+  // Get the authentication token from the base API call
+  public function get_authentication_token() {
+    $at = $this->api->authentication_token();
+    return $at;
   }
 
 }

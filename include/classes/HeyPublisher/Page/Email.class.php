@@ -11,13 +11,13 @@ require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/API/Email.c
 
 class Email extends \HeyPublisher\Page {
 
-  var $api = null;
+  var $emailapi = null;
   var $page = '_email';
 
   public function __construct() {
   	parent::__construct();
     $this->slug .= $this->page;
-    $this->api = new \HeyPublisher\API\Email;
+    $this->emailapi = new \HeyPublisher\API\Email;
 
   }
 
@@ -29,11 +29,11 @@ class Email extends \HeyPublisher\Page {
     if (isset($_REQUEST['action'])) {
       if ($_REQUEST['action'] == 'create' || $_REQUEST['action'] == 'update' ) {
         $this->validate_nonced_field();
-        $this->message = $this->api->update_template($_POST);
+        $this->message = $this->emailapi->update_template($_POST);
       }
       elseif ($_REQUEST['action'] == 'delete') {
         $this->validate_nonced_field();
-        $this->message = $this->api->delete_template($_REQUEST['delete']);
+        $this->message = $this->emailapi->delete_template($_REQUEST['delete']);
       }
       else {
         // Display the create / edit form
@@ -43,8 +43,8 @@ class Email extends \HeyPublisher\Page {
       }
     }
     if ($this->message) {
-      if ($this->api->error) {
-        $this->xml->error = $this->api->error; # TODO: Fix this!!
+      if ($this->emailapi->api->error) {
+        $this->xml->error = $this->emailapi->api->error; # TODO: Fix this!!
         $this->xml->print_webservice_errors(true);
       } else {
         $this->print_message_if_exists();
@@ -223,9 +223,9 @@ EOF;
         If the <b>Submission State</b> you want is not listed, ensure you have set the writer notification option to <code>YES</code> on the <b>Plugin Options</b> page.
       </p>
 EOF;
-      $submission_states = $this->api->get_submission_states();
-      if (!$submission_states && $this->api->error) {
-        $this->xml->error = $this->api->error; # TODO: Fix this!!
+      $submission_states = $this->emailapi->get_submission_states();
+      if (!$submission_states && $this->emailapi->api->error) {
+        $this->xml->error = $this->emailapi->api->error; # TODO: Fix this!!
         $this->xml->print_webservice_errors(true);
       }
       $options = '';
@@ -250,7 +250,7 @@ EOF;
       <input type="text" name="hp_email_disabled" id="hp_submission_state" class='heypub' value="{$state}" disabled="disabled" />
 EOF;
       $title = sprintf('Edit %s Template',$state);
-      $email = $this->api->get_email($id);
+      $email = $this->emailapi->get_email($id);
     }
 
     $nonce = $this->get_nonced_field();
@@ -285,9 +285,9 @@ EOF;
   }
 
   protected function list_emails() {
-    $res = $this->api->get_emails();
-    if (!$res && $this->api->error) {
-      $this->xml->error = $this->api->error; # TODO: Fix this!!
+    $res = $this->emailapi->get_emails();
+    if (!$res && $this->emailapi->api->error) {
+      $this->xml->error = $this->emailapi->api->error; # TODO: Fix this!!
       $this->xml->print_webservice_errors(true);
     }
     $emails = $res['email_templates'];

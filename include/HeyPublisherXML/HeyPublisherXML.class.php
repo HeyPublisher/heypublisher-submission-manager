@@ -6,7 +6,6 @@
 class HeyPublisherXML {
 
   var $debug = false;
-  var $svc_url = HEYPUB_SVC_URL_BASE;
   var $curl = false;
   var $error = false;
   var $user_oid = false;
@@ -67,7 +66,8 @@ class HeyPublisherXML {
 
   public function send($path,$post) {
     $return = false;
-    $url = sprintf("%s/%s",$this->svc_url,$path);
+    $svc_url = sprintf("%s/api/v1",HEYPUB_DOMAIN);
+        $url = sprintf("%s/%s",$svc_url,$path);
     curl_setopt($this->curl, CURLOPT_URL, $url);
     curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($this->curl, CURLOPT_TIMEOUT, 10);
