@@ -459,7 +459,8 @@ EOF;
       $accumulator[$id] = ($item['wp_id']) ? $item['wp_id'] : $saved_genres["$id"];
       return $accumulator;
     });
-    $test = array_filter($has);
+    $test = array();
+    if (is_array($has)) { $test = array_filter($has); }
     // $this->logger->debug(sprintf("\t\$test = \n%s\n\t\$has = \n%s",print_r($test,1),print_r($has,1)));
     if (count($has) != count($test)) {
       // need to grab the saved category mapping and set properly - this is a one-off
@@ -745,6 +746,7 @@ EOF;
         $this->config->set_config_options($pub);
         // now only the boolean overrides
         // TODO: this key can't be set as it's nested
+        // BUG: This is getting set to zero on new installs and never updated
         $this->config->set_config_option('accepting_subs',$has_genres);
 
         // need to hack this for now
@@ -759,7 +761,7 @@ EOF;
   // After form POST - sync all options into local WP database as well as push
   // to the remote server.  This keeps the two databases in sync
   // TODO: Make this use JSON endpoint
-  // TODO: ensure we're only saving items that are a MUST for makiing plugin work -- everything else is remotely accessed
+  // TODO: ensure we're only saving items that are a MUST for making plugin work -- everything else is remotely accessed
   private function update_options($post) {
     $this->logger->debug(sprintf("Page::Options#update_options(): \n\t\$post = %s",print_r($post,1)));
     $message = null;
@@ -767,22 +769,24 @@ EOF;
     // Get options from the post
     $opts = $post['heypub_opt'];
     $this->logger->debug(sprintf("\t\$opts = %s",print_r($opts,1)));
-    // Need to delect the values in category_map where:
+    // Need to detect the values in category_map where:
     //  a) value is < 0
     //  b) key is not present in genres array
     $this->clean_genres_category_map($opts);
+    // TODO: Tie this in with the form update so setting 'active' also sets this
+    // BUG: This is not getting set properly
+    $this->logger->debug(sprintf("\tabout to test accepting subs = %s\n\tactive = ",print_r($opts['category_map'],1),$opts['active']));
+    $opts['accepting_subs'] = false;
+    if (count(array_keys($opts['category_map'])) > 0 && $opts['active']) {
+       $opts['accepting_subs'] = true;
+    }
 
     //  Bulk update the form post, saving into local WP db
     $this->config->set_config_options($opts);
     // This does not update the category map, because we lock down only permitted keys
     $this->config->set_config_option('category_map',$opts['category_map']);
-
     // TODO: Are these still necessary?
     // $this->config->set_config_option('categories',$cats);
-    // if ($cats) {
-    //   $this->config->set_config_option('accepting_subs','1');
-    // }
-    //
     // if (!$opts['paying_market']) {
     //   $this->config->set_config_option('paying_market_range',null);
     // }

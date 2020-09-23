@@ -18,6 +18,9 @@ function heypub_display_form($content='') {
 
 function heypub_display_submission_form() {
   global $hp_xml, $hp_config;
+  $hp_config->logger->debug("PARSING THE_CONTENT: heypub_display_submission_form()");
+  $hp_config->logger->debug(sprintf("\tget_config_option('accepting_subs') = %s", print_r($hp_config->get_config_option('accepting_subs'),1)));
+  $hp_config->logger->debug(sprintf("\tget_config_options() = %s", print_r($hp_config->get_config_options(),1)));
   if ($hp_config->get_config_option('accepting_subs')) {
     $src = get_permalink($hp_config->get_config_option('sub_page_id'));
     $url = sprintf("%s/api/v1/submissions/submit/%s",HEYPUB_DOMAIN, $hp_config->get_install_option('publisher_oid'));
