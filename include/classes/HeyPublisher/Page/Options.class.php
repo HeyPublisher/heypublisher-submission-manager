@@ -704,7 +704,8 @@ EOF;
     return $message;
   }
 
-  // process form post and validate user
+  // New Install Path
+  // process the form post and validate the user and publisher
   private function validate_user($post) {
     $this->logger->debug("Page::Options#validate_user()");
     $message = null;
@@ -736,25 +737,26 @@ EOF;
       $pub = $this->pubapi->get_publisher_info();
       $message = 'Account validation succeeded! You can now configure your account.';
       if ($pub) {
+        // TODO: Change this to pull from JSON endpoint
         $cats = $this->xml->get_my_categories_as_hash();
-        $has_genres = '0';
+        $has_genres = false;
         foreach ($cats as $id=>$hash) {
-          if ($hash['has']) { $has_genres = '1'; }
+          if ($hash['has']) { $has_genres = true; }
         }
+        // For a re-install, this will be based on the categories returned from HP servers
+        $pub['accepting_subs'] = $has_genres;
 
         $message .= "<br/><br/>To help you get started we've pre-populated the form with information we already have.";
+
         $this->config->set_config_options($pub);
         // now only the boolean overrides
-        // TODO: this key can't be set as it's nested
-        // BUG: This is getting set to zero on new installs and never updated
-        $this->config->set_config_option('accepting_subs',$has_genres);
-
         // need to hack this for now
+        // TODO: Need to reintroduce this tracker or remove
         if (!$pub['paying_market'] == '0') {
           $this->config->set_config_option('paying_market_range',null);
-        } // end is paying market
-      } // end has publisher info
-    }  // end successful auth
+        }
+      }
+    }
     return $message;
   }
 
@@ -773,9 +775,7 @@ EOF;
     //  a) value is < 0
     //  b) key is not present in genres array
     $this->clean_genres_category_map($opts);
-    // TODO: Tie this in with the form update so setting 'active' also sets this
-    // BUG: This is not getting set properly
-    $this->logger->debug(sprintf("\tabout to test accepting subs = %s\n\tactive = ",print_r($opts['category_map'],1),$opts['active']));
+    // $this->logger->debug(sprintf("\tabout to test accepting subs = %s\n\tactive = ",print_r($opts['category_map'],1),$opts['active']));
     $opts['accepting_subs'] = false;
     if (count(array_keys($opts['category_map'])) > 0 && $opts['active']) {
        $opts['accepting_subs'] = true;
