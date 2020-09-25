@@ -1,5 +1,9 @@
 ## Changelog
 
+### 3.1.1
++ Released: 2020-09-25
++ [[#110](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/110) : Fix bug that prevented turning off the submissions form
+
 ### 3.1.0
 + Released: 2020-08-30
 + Fixed having the wrong year in the 2020 release notes.
