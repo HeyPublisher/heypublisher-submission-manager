@@ -184,7 +184,7 @@ class API {
             $data = json_decode($result, true);
             $message = $data['message'];
             $this->logger->debug(sprintf("\tdata = %s",print_r($data,1)));
-            $this->error = sprintf('HeyPublisher API Error : %s (%s)', $message, $status);
+            $this->error = sprintf('HeyPublisher API Error [%s]: <b>%s</b> ', $status, $message);
           } else {
             $this->error = sprintf('HeyPublisher API Return Status : %s', $status);
           }

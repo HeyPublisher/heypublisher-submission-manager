@@ -101,7 +101,9 @@ class Config {
   public function set_config_options($hash){
     $existing = $this->config;
     $new = array_merge($existing,$hash);
-    $this->logger->debug(sprintf("HeyPublisherXML#set_config_options():\n\texisting config %s\n\tnew config",print_r($existing,1),print_r($new,1)));
+    $this->logger->debug("HeyPublisher::Config#set_config_options():");
+    $this->logger->debug(sprintf("\texisting config %s\n\tnew config %s",print_r($existing,1),print_r($new,1)));
+    $this->logger->debug(sprintf("\thash %s",print_r($hash,1)));
     $this->config = $new;
   }
 
