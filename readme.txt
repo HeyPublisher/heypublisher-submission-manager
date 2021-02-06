@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
 Requires at least: 4.0
 Tested up to: 5.5
-Stable Tag: 3.1.1
+Stable Tag: 3.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,11 @@ This plugin allows you as to accept submissions from writers.  You define catego
 More information about this plugin can be found at: https://github.com/HeyPublisher/heypublisher-submission-manager
 
 == Changelog ==
+
+= 3.1.2 =
+* Released: 2021-02-06
+* Fixed issue #11 that was showing on new install first time options page is displayed.
+* Updated the options page to make use of the new 'accepting_subs' attribute in the JSON endpoint.  This is now being used to toggle the "Accepting Submissions" dropdown.
 
 = 3.1.1 =
 * Released: 2020-09-25

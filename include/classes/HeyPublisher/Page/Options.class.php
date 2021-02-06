@@ -408,7 +408,7 @@ EOF;
   }
 
   private function submission_criteria($data) {
-    $hidden = (@$data['active']) ? null : "style='display:none;' ";
+    $hidden = (@$data['accepting_subs']) ? null : "style='display:none;' ";
     $mapped_genres = $this->genre_map(@$data['genres']);
 
     $html = <<<EOF
@@ -416,8 +416,8 @@ EOF;
       <ul>
         <li>
           <label class='heypub' for='hp_accepting_subs'>Currently Accepting Submissions?</label>
-          <select name="heypub_opt[active]" id="hp_accepting_subs" onchange="HeyPublisher.selectToggle(this,'#heypub_show_genres_list');">
-            {$this->boolean_options('active',@$data)}
+          <select name="heypub_opt[accepting_subs]" id="hp_accepting_subs" onchange="HeyPublisher.selectToggle(this,'#heypub_show_genres_list');">
+            {$this->boolean_options('accepting_subs',@$data)}
           </select>
         </li>
       </ul>
@@ -460,8 +460,12 @@ EOF;
       return $accumulator;
     });
     $test = array();
-    if (is_array($has)) { $test = array_filter($has); }
-    // $this->logger->debug(sprintf("\t\$test = \n%s\n\t\$has = \n%s",print_r($test,1),print_r($has,1)));
+    if (is_array($has)) {
+      $test = array_filter($has);
+    } else {
+      $has = array();
+    }
+    $this->logger->debug(sprintf("\t\$test = \n%s\n\t\$has = \n%s",print_r($test,1),print_r($has,1)));
     if (count($has) != count($test)) {
       // need to grab the saved category mapping and set properly - this is a one-off
       $saved_genres = $this->xml->get_category_mapping();
@@ -775,12 +779,12 @@ EOF;
     //  a) value is < 0
     //  b) key is not present in genres array
     $this->clean_genres_category_map($opts);
-    // $this->logger->debug(sprintf("\tabout to test accepting subs = %s\n\tactive = ",print_r($opts['category_map'],1),$opts['active']));
+    $this->logger->debug(sprintf("\tabout to test accepting_subs = %s\n\tcategories = %s",$opts['accepting_subs'],print_r($opts['category_map'],1)));
     $opts['accepting_subs'] = false;
-    if (count(array_keys($opts['category_map'])) > 0 && $opts['active']) {
+    if (count(array_keys($opts['category_map'])) > 0) {
        $opts['accepting_subs'] = true;
     }
-
+    $this->logger->debug(sprintf("\taccepting_subs now equals = %s",$opts['accepting_subs']));
     //  Bulk update the form post, saving into local WP db
     $this->config->set_config_options($opts);
     // This does not update the category map, because we lock down only permitted keys

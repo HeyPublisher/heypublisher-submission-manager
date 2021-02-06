@@ -1,5 +1,10 @@
 ## Changelog
 
+### 3.1.2
++ Released: 2021-02-06
++ [[#111](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/111) : Fixed warning that was showing on new install first time options page is displayed.
++ Updated the options page to make use of the new 'accepting_subs' attribute in the JSON endpoint.  This is now being used to toggle the "Accepting Submissions" dropdown.
+
 ### 3.1.1
 + Released: 2020-09-25
 + [[#110](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/110) : Fix bug that prevented turning off the submissions form
