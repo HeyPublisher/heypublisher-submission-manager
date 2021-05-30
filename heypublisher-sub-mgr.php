@@ -98,7 +98,7 @@ define("HEYPUB_PLUGIN_BUILD_DATE", "2021-05-31");
 // Version Number (can be text)
 define("HEYPUB_PLUGIN_BUILD_NUMBER", "85");  // This controls whether or not we get upgrade prompt
 define("HEYPUB_PLUGIN_VERSION", "3.2.0");
-define("HEYPUB_PLUGIN_TESTED", "5.5.0");  // TODO Upgrade WP to validate
+define("HEYPUB_PLUGIN_TESTED", "5.7.2");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
