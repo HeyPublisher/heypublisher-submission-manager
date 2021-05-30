@@ -159,6 +159,8 @@ class API {
     $this->logger->debug(sprintf("send():\n\tuoid = %s\n\tpoid = %s",$this->uoid,$this->poid));
     // Authentication header!!
     curl_setopt($curl, CURLOPT_USERPWD, "{$this->uoid}:{$this->poid}");
+    // Version header
+    curl_setopt($curl,CURLOPT_HTTPHEADER,array("Accept: application/vnd.xm.device+json;version=".HEYPUB_PLUGIN_VERSION));
 
     $result = curl_exec($curl);
     $url = curl_getinfo($curl,CURLINFO_EFFECTIVE_URL);
