@@ -26,7 +26,7 @@ function heypub_display_submission_form() {
     $css = urlencode($css);
     $src = urlencode($src);
   $ret = <<<EOF
-<iframe id='heypub_submission_iframe' src='$url?css=$css&orig=$src' frameborder='0' scrolling='vertical' style='width: 98%;height: 500px;border: 1px solid silver;'></iframe>
+<iframe id='heypub_submission_iframe' src='$url?css=$css&orig=$src' frameborder='0' scrolling='vertical' style='width: 99%;height: 700px;border: 1px solid silver;'></iframe>
 
 EOF;
   }
