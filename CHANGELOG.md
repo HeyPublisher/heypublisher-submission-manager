@@ -3,9 +3,9 @@
 
 ### 3.2.0
 + Released: 2021-05-31
-+ Fixing issue where file upload errors so writer knows how to fix the problem.
++ [[#113](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/113)] : Plugin version is sent to the server with all requests, so appropriate data for that version can be returned.
++ [[#114](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/114)] : Fixing issue where file upload errors so writer knows how to fix the problem.
 + [[#116](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/116)] : Validated functionality through WordPress Version 5.7.2.
-
 
 ### 3.1.2
 + Released: 2021-02-06
