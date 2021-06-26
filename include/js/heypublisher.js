@@ -2,7 +2,7 @@
 // -----------------------------------
 // Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
 // Copyright 2014-2018 Richard Luck (https://github.com/aguywithanidea/)
-// Copyright 2019-2020 HeyPublisher, LLC (https://www.heypublisher.com/)
+// Copyright 2019-2021 HeyPublisher, LLC (https://www.heypublisher.com/)
 // Author - Richard Luck <richard@heypublisher.com>
 // -----------------------------------
 
@@ -150,8 +150,8 @@
 
   HeyPublisher.clickCheck = function(src,dest) {
     var elem = $('#' + dest);
-    console.log("src: ", $(src).attr('checked'), ": dest: ", dest);
-    if ($(src).attr('checked') == 'checked') {
+    // console.log("src: ", $(src), ": checked: ", $(src).checked, ": prop: ", $(src).prop('checked'), ": dest: ", dest);
+    if ($(src).prop('checked')) {
       elem.show();
     } else {
       elem.hide();

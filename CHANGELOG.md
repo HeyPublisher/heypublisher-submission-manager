@@ -1,5 +1,8 @@
 ## Changelog
 
+### 3.2.1
++ Released: 2021-06-26
++ [[#118](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/118)] : jQuery version getting loaded with WordPress no longer returns value of current state of checkbox, instead returning initial state of checkbox.  Fixed to use `$(src).prop('checked')` instead.
 
 ### 3.2.0
 + Released: 2021-05-31

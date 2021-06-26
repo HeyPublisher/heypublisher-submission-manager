@@ -520,7 +520,7 @@ EOF;
         $mapping .= sprintf("</tr><tr class='%s'>",$class);
       }
       $mapping .= sprintf('
-        <td>%s &nbsp; <input id="cat_%s"type="checkbox" name="heypub_opt[genres][%s]" value="1" %s onclick="HeyPublisher.clickCheck(this,\'chk_%s\');"/></td>
+        <td>%s &nbsp; <input id="cat_%s" type="checkbox" name="heypub_opt[genres][%s]" value="1" %s onclick="HeyPublisher.clickCheck(this,\'chk_%s\');"/></td>
         <td>%s</td>',
           $hash['name'],$hash['id'],$hash['id'],($hash['has']) ? "checked=checked" : null,$hash['id'],
           $this->get_wp_category_dropdown($hash['id'],$hash['has'],$hash['wp_id'])

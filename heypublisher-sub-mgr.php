@@ -5,7 +5,7 @@ Plugin URI: https://github.com/HeyPublisher/heypublisher-submission-manager
 Description: HeyPublisher is a better way of managing submissions for your WordPress-powered publication.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 3.2.0
+Version: 3.2.1
 Requires at least: 4.0
 
 
@@ -87,6 +87,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   3.1.1 => 83
   3.1.2 => 84
   3.2.0 => 88
+  3.2.1 => 89
 
 ---------------------------------------------------------------------------------
 */
@@ -94,10 +95,10 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2021-05-31");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2021-06-26");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "85");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "3.2.0");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "89");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "3.2.1");
 define("HEYPUB_PLUGIN_TESTED", "5.7.2");
 
 # Base domain
