@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
 Requires at least: 4.0
 Tested up to: 5.7.2
-Stable Tag: 3.2.0
+Stable Tag: 3.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,10 @@ This plugin allows you as to accept submissions from writers.  You define catego
 More information about this plugin can be found at: https://github.com/HeyPublisher/heypublisher-submission-manager
 
 == Changelog ==
+
+= 3.2.1 =
++ Released: 2021-06-26
++ #118 jQuery version getting loaded with WordPress no longer returns value of current state of checkbox, instead returning initial state of checkbox.  Fixed to use `$(src).prop('checked')` instead.
 
 = 3.2.0 =
 * Released: 2021-05-31
