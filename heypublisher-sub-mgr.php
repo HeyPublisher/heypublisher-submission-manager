@@ -88,18 +88,18 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   3.1.2 => 84
   3.2.0 => 88
   3.2.1 => 89
-
+  3.3.0 => 90
 ---------------------------------------------------------------------------------
 */
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2021-06-26");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2021-09-01");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "89");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "3.2.1");
-define("HEYPUB_PLUGIN_TESTED", "5.7.2");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "90");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "3.3.0");
+define("HEYPUB_PLUGIN_TESTED", "5.8.0");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
@@ -125,7 +125,6 @@ define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugi
 define('HEYPUB_SVC_URL_AUTHENTICATE','publishers/fetch_or_create');           # initial plugin authentication
 define('HEYPUB_SVC_URL_GET_PUBLISHER','publishers/show');                     # update the options
 define('HEYPUB_SVC_URL_UPDATE_PUBLISHER','publishers/update_publisher');      # update the options
-define('HEYPUB_SVC_URL_GET_GENRES','publishers/fetch_categories');            # fetch categories publisher accepts
 define('HEYPUB_SVC_URL_GET_PUB_TYPES','publishers/fetch_publisher_types');    # fetch publisher types
 define('HEYPUB_SVC_URL_GET_SUBMISSIONS','submissions/fetch_pending_submissions');           # fetch all pending submissions
 define('HEYPUB_SVC_URL_RESPOND_TO_SUBMISSION','submissions/submission_action');             # accept/reject/publish action

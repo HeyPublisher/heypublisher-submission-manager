@@ -19,7 +19,7 @@ class Overview extends \HeyPublisher\Page {
   	parent::__construct();
     $this->pubapi = new \HeyPublisher\API\Publisher;
     $this->slug .= $this->page;
-    $this->log("slug = {$this->slug}");
+    $this->logger->debug("slug = {$this->slug}");
   }
 
   public function __destruct() {
@@ -27,7 +27,7 @@ class Overview extends \HeyPublisher\Page {
   }
 
   protected function deactivate_prompt() {
-    $this->log("deactivate_prompt");
+    $this->logger->debug("deactivate_prompt");
     // only deleting the options and possibly deactivating the plugin
     heypub_uninit();
     // TODO: move this define to central place at some point
@@ -85,7 +85,7 @@ EOF;
       $args = array('role__in' => array('Editor', 'Administrator'), 'orderby' => 'display_name');
       $editors = get_users( $args );
       $history = $this->pubapi->get_editor_history();
-      $this->log(sprintf("EDITORS: %s", print_r($editors,1)));
+      $this->logger->debug(sprintf("EDITORS: %s", print_r($editors,1)));
 
       $html .= <<<EOF
       <h3>Editor Statistics</h3>

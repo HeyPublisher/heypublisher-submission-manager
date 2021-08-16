@@ -3,8 +3,8 @@ Contributors: heypublisher, aguywithanidea, loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
 Requires at least: 4.0
-Tested up to: 5.7.2
-Stable Tag: 3.2.1
+Tested up to: 5.8.0
+Stable Tag: 3.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,10 @@ This plugin allows you as to accept submissions from writers.  You define catego
 More information about this plugin can be found at: https://github.com/HeyPublisher/heypublisher-submission-manager
 
 == Changelog ==
+
+= 3.3.0 =
++ Released:
++  Validated functionality through WordPress Version 5.8.
 
 = 3.2.1 =
 + Released: 2021-06-26

@@ -93,10 +93,8 @@ class Submissions extends \HeyPublisher\Page {
     $html = '';
     // This is a SimpleXML object being returned, with key the sub-id
     $subs = $this->xml->get_recent_submissions();
-    $cats = $this->xml->get_my_categories_as_hash();
     $opts = $this->config->get_config_options();
     $this->logger->debug("Submission#list_submissions");
-    $this->logger->debug(sprintf("\t\$cats = %s",print_r($cats,1)));
     $this->logger->debug(sprintf("\t\$opts = %s",print_r($opts,1)));
     $publication = $opts['name'];
     $html .= <<<EOF
@@ -244,8 +242,8 @@ EOF;
     if ($this->xml->submission_action($id,'read')) {
       $sub = $this->xml->get_submission_by_id($id);
       if ($sub) {
-        $this->log(sprintf("ID  %s\ndisplay_submission \n%s",$sub->id,print_r($sub,1)));
-        $this->log(sprintf("author: %s",print_r($sub->author,1)));
+        $this->logger->debug(sprintf("ID  %s\ndisplay_submission \n%s",$sub->id,print_r($sub,1)));
+        $this->logger->debug(sprintf("author: %s",print_r($sub->author,1)));
         // Build out the side-nav
         // This state should not be possible ??
         if (FALSE == $sub->author->email) {
@@ -459,9 +457,9 @@ EOF;
   // Fetch the votes and register the vote as a class var for later reference.
   // @since  2.7.0
   private function get_votes($id,$editor_id){
-    $this->xml->log("get_votes({$id},{$editor_id})");
+    $this->xml->logger->debug("get_votes({$id},{$editor_id})");
     $votes = $this->subapi->get_submission_votes($id,$editor_id);
-    $this->xml->log(sprintf("votes: %s",print_r($votes,1)));
+    $this->xml->logger->debug(sprintf("votes: %s",print_r($votes,1)));
     if ($votes['meta']['returned'] == 1) {
       $this->has_voted = $votes['votes'][0]['vote'];
     }
@@ -546,9 +544,9 @@ EOF;
   }
 
   private function submission_history_content($sid,$order) {
-    $this->xml->log("submission_history_content() SID: {$sid}");
+    $this->xml->logger->debug("submission_history_content() SID: {$sid}");
     $history = $this->subapi->get_submission_history($sid,$order);
-    $this->xml->log(sprintf(" => history:\n%s",print_r($history,1)));
+    $this->xml->logger->debug(sprintf(" => history:\n%s",print_r($history,1)));
     $rows = '';
     foreach ($history['history'] as $item) {
       $rows .= "\t<li>" . $this->format_submission_history($item) . "</li>\n";
@@ -695,13 +693,13 @@ private function accept_process_submission($req,$uid,$msg=FALSE) {
   check_admin_referer('heypub-bulk-submit');
   $id = $req['post'][0];
   $notes = $req['notes'];
-  $this->xml->log(sprintf("accept_process_submission req = \n%s\n USER_ID: %s\nMSG: %s",print_r($req,1),$uid,$msg));
+  $this->xml->logger->debug(sprintf("accept_process_submission req = \n%s\n USER_ID: %s\nMSG: %s",print_r($req,1),$uid,$msg));
 
   if ($this->xml->submission_action($id,'accepted',$notes)) {
-    $this->xml->log("WE are in the UPDATE/CREATE");
+    $this->xml->logger->debug("WE are in the UPDATE/CREATE");
     $sub = $this->xml->get_submission_by_id($id);
     $post_id = $this->create_or_update_post($uid,'pending',$sub);
-    $this->xml->log(sprintf("POST ID = %s",$post_id));
+    $this->xml->logger->debug(sprintf("POST ID = %s",$post_id));
   }
 
   $message = sprintf("%s successfully accepted.<br/><br/>%s been moved to your Posts and put in a 'Pending' status. .",$this->pluralize_submission_message(1),
@@ -722,10 +720,10 @@ function accept_submission($req) {
   $notes = $req['notes'];
 	// do we have this author in the db?
   $user_id = $hp_base->get_author_id($sub->author);
-  $this->xml->log("accept_submission($req)");
-  $this->xml->log(sprintf("Sub->Author: %s",print_r($sub->author,1)));
-  $this->xml->log(sprintf("USER_ID: '%s'",$user_id));
-  $this->xml->log(sprintf("REQ = \n%s",print_r($req,1)));
+  $this->xml->logger->debug("accept_submission($req)");
+  $this->xml->logger->debug(sprintf("Sub->Author: %s",print_r($sub->author,1)));
+  $this->xml->logger->debug(sprintf("USER_ID: '%s'",$user_id));
+  $this->xml->logger->debug(sprintf("REQ = \n%s",print_r($req,1)));
 
   /*
     LOGIC:
@@ -750,7 +748,7 @@ protected function create_new_account_form($array) {
   global $hp_base;
   $sub = $array[0];
   $notes = $array[1];
-  $this->log(sprintf("receives sub and notes: %s",$notes));
+  $this->logger->debug(sprintf("receives sub and notes: %s",$notes));
   $form_post_url = $hp_base->get_form_post_url_for_page($this->slug);
   $nonce = wp_nonce_field('heypub-bulk-submit');
   $html = <<<EOF

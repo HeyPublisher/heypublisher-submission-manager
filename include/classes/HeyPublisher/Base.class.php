@@ -103,11 +103,6 @@ EOF;
     echo $this->page_footer();
   }
 
-  protected function form_action() {
-    $action = sprintf('admin.php?page=%s',$this->slug);
-    return $action;
-  }
-
   // display sidenav in consistent way
   public function sidenav_block() {
     $url = plugins_url($this->slug);

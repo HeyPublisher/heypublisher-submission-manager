@@ -378,65 +378,6 @@ EOF;
     return false;
   }
 
-  /**
-  * Fetch the hash of 'all' categories, plus the categories this publisher belongs to, and return as a hash
-  * suitable for making checkboxes with.
-  */
-  // Deprecated with 3.0
-  // TODO: Need to remove all calls to this function
-  // Remove prior to 3.0.1
-  function get_my_categories_as_hash() {
-      $return = false;
-      $post = <<<EOF
-<categories>
-    <sort>name</sort>
-    <sort_direction>ASC</sort_direction>
-    <filter>both</filter>
-</categories>
-EOF;
-    $ret = $this->send(HEYPUB_SVC_URL_GET_GENRES,$this->prepare_request_xml($post));
-    if (FALSE == $ret) {
-      $this->print_webservice_errors();
-    }
-    else {
-      $xml = new SimpleXMLElement($ret);
-      // printf( "<pre>XML = %s</pre>",print_r($xml,1));
-      # this is an object, convert to string
-        if ($xml->success->message) {
-          // First get ALL of the possible categories
-          foreach ($xml->all->category as $x) {
-            $id = $this->get_attribute_value_by_name($x,'id');
-            if ($id) {
-              $return["$x"] = array('name' => "$x", 'id' => "$id");
-            }
-          }
-          // We may not yet have submission categories defined remotely (if this is an initial install) - so account for that.
-          if ($xml->mine->category) {
-            foreach ($xml->mine->category as $x) {
-              $id = $this->get_attribute_value_by_name($x,'id');
-              if ($id) {
-                $return["$x"]['has'] = 1;
-              }
-            }
-          }
-        }
-        else {
-          $err = $xml->error->message;
-          if ($err) {
-            $this->error = "$err";
-          } else {
-            $this->error = 'Error getting publisher data from HeyPublisher.com';
-          }
-          $this->print_webservice_errors();
-        }
-      }
-      if (FALSE != $return) {
-        ksort($return);
-      }
-      // printf("<pre>Hash = %s</pre>",print_r($return,1));
-      return $return;
-  }
-
   // Process the submission action with an optional message
   function submission_action($id,$action,$message=false) {
       $return = false;

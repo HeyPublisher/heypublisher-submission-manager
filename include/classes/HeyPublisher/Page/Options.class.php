@@ -46,13 +46,6 @@ class Options extends \HeyPublisher\Page {
     // $this->print_message_if_exists(); // this is being called in content()
     parent::page('Plugin Options', '', array($this,'content'));
   }
-  // TODO: Replace calls to this to get_form_url_for_page()
-  private function form_action() {
-    // $action = $this->get_form_url_for_page();
-    $action = sprintf('admin.php?page=%s',$this->slug);
-    return $action;
-  }
-
   protected function content() {
   	global $wpdb,$wp_roles,$hp_base;
     $html = '';
@@ -68,7 +61,7 @@ class Options extends \HeyPublisher\Page {
       $content = $this->options_capture_form();
       $button = 'Update';
     }
-    $action = $this->form_action();
+    $action = $this->get_form_url_for_page();
     $this->logger->debug(sprintf("in pageprep\n\terrors = %\n\tmessage = %s",$this->pubapi->api->error,$this->message));
     if ($this->pubapi->api->error) {
       $this->xml->error = $this->pubapi->api->error; # TODO: Fix this!!
@@ -362,7 +355,7 @@ EOF;
   private function submission_page($opts){
     $replacer = HEYPUB_SUBMISSION_PAGE_REPLACER;
     // TODO: Replace this will call to $this->get_form_url_for_page('create_form_page')
-    $link_url = sprintf('%s&action=create_form_page',$this->form_action());
+    $link_url = $this->get_form_url_for_page('create_form_page');
     $link = $this->get_edit_url_for_page($opts['sub_page_id']);
     if(function_exists('wp_nonce_url')){
       $link_url = wp_nonce_url($link_url,'create_form');
@@ -501,8 +494,6 @@ EOF;
 
     $this->logger->debug(sprintf("Options::genre_map() \n\tMapped genres = %s",print_r($genres,1)));
 
-    // $cats = $this->xml->get_my_categories_as_hash();
-    // $this->logger->debug(sprintf("Options::genre_map() \$cats = %s",print_r($cats,1)));
     if (empty($genres)) { return ''; }
     $header = '';
     for ($x=0;$x<$cols;$x++) {
@@ -724,6 +715,7 @@ EOF;
         'user_oid'      => $this->xml->user_oid,
         'publisher_oid' => $this->xml->pub_oid
       );
+      $this->logger->debug(" => xml->authenticate");
       // TODO: Clean this up - but for now, need to be explicitly setting all instances of uoid/poid
       $this->config->uoid = $this->xml->user_oid;
       $this->config->poid = $this->xml->pub_oid;
@@ -741,13 +733,12 @@ EOF;
       $pub = $this->pubapi->get_publisher_info();
       $message = 'Account validation succeeded! You can now configure your account.';
       if ($pub) {
-        // TODO: Change this to pull from JSON endpoint
-        $cats = $this->xml->get_my_categories_as_hash();
+        $this->logger->debug(sprintf("\n\t $pub values returned from server: %s",print_r($pub,1)));
         $has_genres = false;
-        foreach ($cats as $id=>$hash) {
-          if ($hash['has']) { $has_genres = true; }
+        if (is_array($pub['genres']['data']) && count($pub['genres']['data'])) {
+          $has_genres = true;
         }
-        // For a re-install, this will be based on the categories returned from HP servers
+        // For a re-install, this will be based on the already-mapped categories returned from HP servers
         $pub['accepting_subs'] = $has_genres;
 
         $message .= "<br/><br/>To help you get started we've pre-populated the form with information we already have.";

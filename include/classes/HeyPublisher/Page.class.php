@@ -1,7 +1,12 @@
 <?php
 namespace HeyPublisher;
 
+if (!class_exists("\HeyPublisher\Base")) {
+  require_once( dirname(__FILE__) . '/Base.class.php');
+}
+
 if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyPublisher: Illegal Page Call!'); }
+
 
 /**
  * HeyPublisher base class for all admin pages
@@ -9,8 +14,7 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
  */
 
 // Load the class files and associated scoped functionality
-load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/Loudlever/Loudlever.class.php');
-class Page extends \Loudlever\Loudlever {
+class Page extends \HeyPublisher\Base {
   var $i18n = 'heypublisher';
   var $logo_block = '';
   var $xml = null;  # the pointer for $hp_xml
@@ -34,9 +38,6 @@ class Page extends \Loudlever\Loudlever {
     $this->config = $hp_config;
     $this->xml = $hp_xml;
     $this->nonce = sprintf('hp_nonce%s',$this->page);
-
-    // TODO: Deprecate this!
-    $this->log_file = HEYPUB_PLUGIN_FULLPATH . '/error.log';
   }
 
   public function __destruct() {

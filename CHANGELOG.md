@@ -1,5 +1,12 @@
 ## Changelog
 
+### 3.3.0
++ Released:
++ Validated functionality through [WordPress Version 5.8](https://wordpress.org/support/wordpress-version/version-5-8/).
++ Removed old Loudlever class and all references to it.  Relevant code was replaced by Base class a while ago.
++ Removed all calls to old XML endpoint `api/v1/publisher/fetch_categories` as it's been replaced by JSON endpoint `api/publishers/:id/genres`
++ Removed `form_action` function and replaced all calls to it to use the the newer `get_form_url_for_page` function as it's more flexible.
+
 ### 3.2.1
 + Released: 2021-06-26
 + [[#118](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/118)] : jQuery version getting loaded with WordPress no longer returns value of current state of checkbox, instead returning initial state of checkbox.  Fixed to use `$(src).prop('checked')` instead.
