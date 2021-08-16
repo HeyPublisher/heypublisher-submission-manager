@@ -457,9 +457,9 @@ EOF;
   // Fetch the votes and register the vote as a class var for later reference.
   // @since  2.7.0
   private function get_votes($id,$editor_id){
-    $this->xml->logger->debug("get_votes({$id},{$editor_id})");
+    $this->logger->debug("get_votes({$id},{$editor_id})");
     $votes = $this->subapi->get_submission_votes($id,$editor_id);
-    $this->xml->logger->debug(sprintf("votes: %s",print_r($votes,1)));
+    $this->logger->debug(sprintf("votes: %s",print_r($votes,1)));
     if ($votes['meta']['returned'] == 1) {
       $this->has_voted = $votes['votes'][0]['vote'];
     }
@@ -544,9 +544,9 @@ EOF;
   }
 
   private function submission_history_content($sid,$order) {
-    $this->xml->logger->debug("submission_history_content() SID: {$sid}");
+    $this->logger->debug("submission_history_content() SID: {$sid}");
     $history = $this->subapi->get_submission_history($sid,$order);
-    $this->xml->logger->debug(sprintf(" => history:\n%s",print_r($history,1)));
+    $this->logger->debug(sprintf(" => history:\n%s",print_r($history,1)));
     $rows = '';
     foreach ($history['history'] as $item) {
       $rows .= "\t<li>" . $this->format_submission_history($item) . "</li>\n";
@@ -693,13 +693,13 @@ private function accept_process_submission($req,$uid,$msg=FALSE) {
   check_admin_referer('heypub-bulk-submit');
   $id = $req['post'][0];
   $notes = $req['notes'];
-  $this->xml->logger->debug(sprintf("accept_process_submission req = \n%s\n USER_ID: %s\nMSG: %s",print_r($req,1),$uid,$msg));
+  $this->logger->debug(sprintf("accept_process_submission req = \n%s\n USER_ID: %s\nMSG: %s",print_r($req,1),$uid,$msg));
 
   if ($this->xml->submission_action($id,'accepted',$notes)) {
-    $this->xml->logger->debug("WE are in the UPDATE/CREATE");
+    $this->logger->debug("WE are in the UPDATE/CREATE");
     $sub = $this->xml->get_submission_by_id($id);
     $post_id = $this->create_or_update_post($uid,'pending',$sub);
-    $this->xml->logger->debug(sprintf("POST ID = %s",$post_id));
+    $this->logger->debug(sprintf("POST ID = %s",$post_id));
   }
 
   $message = sprintf("%s successfully accepted.<br/><br/>%s been moved to your Posts and put in a 'Pending' status. .",$this->pluralize_submission_message(1),
@@ -720,10 +720,10 @@ function accept_submission($req) {
   $notes = $req['notes'];
 	// do we have this author in the db?
   $user_id = $hp_base->get_author_id($sub->author);
-  $this->xml->logger->debug("accept_submission($req)");
-  $this->xml->logger->debug(sprintf("Sub->Author: %s",print_r($sub->author,1)));
-  $this->xml->logger->debug(sprintf("USER_ID: '%s'",$user_id));
-  $this->xml->logger->debug(sprintf("REQ = \n%s",print_r($req,1)));
+  $this->logger->debug("accept_submission($req)");
+  $this->logger->debug(sprintf("Sub->Author: %s",print_r($sub->author,1)));
+  $this->logger->debug(sprintf("USER_ID: '%s'",$user_id));
+  $this->logger->debug(sprintf("REQ = \n%s",print_r($req,1)));
 
   /*
     LOGIC:

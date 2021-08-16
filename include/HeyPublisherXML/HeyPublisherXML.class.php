@@ -1,6 +1,9 @@
 <?php
 /**
-* HeyPublisherXML class for publishing/parsing XML
+* TODO: XML support on the server will be deprecated at end of 2021.
+* Need to move all necessary functionality to JSON-based endpoints.
+*
+* HeyPublisherXML class is the root class from which all XML-based plugin functionality is based
 *
 */
 class HeyPublisherXML {

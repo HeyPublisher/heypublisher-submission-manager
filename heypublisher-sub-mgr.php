@@ -123,9 +123,6 @@ define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugi
 
 // TODO: remove these defines and reference directly from XML code that makes query
 define('HEYPUB_SVC_URL_AUTHENTICATE','publishers/fetch_or_create');           # initial plugin authentication
-define('HEYPUB_SVC_URL_GET_PUBLISHER','publishers/show');                     # update the options
-define('HEYPUB_SVC_URL_UPDATE_PUBLISHER','publishers/update_publisher');      # update the options
-define('HEYPUB_SVC_URL_GET_PUB_TYPES','publishers/fetch_publisher_types');    # fetch publisher types
 define('HEYPUB_SVC_URL_GET_SUBMISSIONS','submissions/fetch_pending_submissions');           # fetch all pending submissions
 define('HEYPUB_SVC_URL_RESPOND_TO_SUBMISSION','submissions/submission_action');             # accept/reject/publish action
 define('HEYPUB_SVC_READ_SUBMISSION','submissions/show');                      # fetch a single submission for reading.  also sets the 'read' status
@@ -161,6 +158,7 @@ define('HEYPUB_POST_META_KEY_SUB_ID','_heypub_post_meta_key_sub_id');
 global $hp_xml, $hp_base, $hp_config;
 global $hp_updater;
 
+// Updater needed to check for plugin updates now that we're hosted on GitHub
 if (!class_exists("\HeyPublisher\Base\Updater")) {
   require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Base/Updater.class.php');
 }

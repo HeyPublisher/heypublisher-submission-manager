@@ -1,6 +1,7 @@
 <?php
 /**
-* HeyPublisher class is the root class from which all plugin functionality is extended
+* TODO: Deprecate this class.  Migrate needed functionality to appropriate class(es) in HeyPublisher folder
+* HeyPublisher class is an old way of doing things and should be deprecated
 *
 */
 class HeyPublisher {
