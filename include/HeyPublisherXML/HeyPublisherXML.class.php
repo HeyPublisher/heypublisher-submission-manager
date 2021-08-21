@@ -260,49 +260,6 @@ EOF;
     }
   }
 
-  function get_recent_submissions() {
-    $post = <<<EOF
-<submissions>
-    <sort>date</sort>
-    <sort_direction>DESC</sort_direction>
-    <filter>unread</filter>
-</submissions>
-EOF;
-
-    $ret = $this->send(HEYPUB_SVC_URL_GET_SUBMISSIONS,$this->prepare_request_xml($post));
-    if (FALSE == $ret) {
-      $this->print_webservice_errors();
-    }
-    else {
-      $this->log(sprintf("RAW XML = \n%s",$ret));
-      $xml = new SimpleXMLElement($ret);
-      // printf( "<pre>XML = %s</pre>",print_r($xml,1));
-      # this is an object, convert to string
-      if ($xml->success->message) {
-        $cnt = $xml->success->records;
-        if ("$cnt" > 0) {
-          $hash = array();
-          foreach ($xml->submission as $x) {
-            $hash["$x->id"] = $x;
-          }
-        }
-        if ($hash != FALSE) {
-          $return = $hash;
-        }
-      }
-      else {
-        $err = $xml->error->message;
-        if ($err) {
-          $this->error = "$err";
-        } else {
-          $this->error = 'Error updating publisher data at HeyPublisher.com';
-        }
-        $this->print_webservice_errors();
-      }
-    }
-    return $return;
-  }
-
   function get_submission_by_id($id) {
     $post = <<<EOF
 <submission>

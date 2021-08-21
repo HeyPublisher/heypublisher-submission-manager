@@ -2,7 +2,7 @@
 Contributors: heypublisher, aguywithanidea, loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
-Requires at least: 4.0
+Requires at least: 5.0
 Tested up to: 5.8.0
 Stable Tag: 3.3.0
 License: GPLv2 or later
@@ -69,5 +69,4 @@ More information about this plugin can be found at: https://github.com/HeyPublis
 * Plugin is now hosted on GitHub at https://github.com/HeyPublisher.
 
 = 1.0.1 =
-
 * Initial Release : 2010-04-29

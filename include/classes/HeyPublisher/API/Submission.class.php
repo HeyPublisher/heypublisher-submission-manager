@@ -55,6 +55,17 @@ class Submission  {
     return $result;
   }
 
+  // Get the open submissions
+  // @since 3.3.0
+  public function get_open_submissions(){
+    $poid = $this->api->poid;
+    $path = sprintf('publishers/%s/submissions',$poid);
+    $opts = array('order'=>'asc');
+    $result = $this->api->get($path,$opts);
+    // $this->logger->debug(sprintf("get_open_submissions():\n\tResults: %s",print_r($result,1)));
+    return $result;
+  }
+
   // Get the authentication token from the base API call
   public function get_authentication_token() {
     $at = $this->api->authentication_token();

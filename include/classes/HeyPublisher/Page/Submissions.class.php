@@ -91,11 +91,16 @@ class Submissions extends \HeyPublisher\Page {
   protected function list_submissions() {
     global $hp_base;
     $html = '';
-    // This is a SimpleXML object being returned, with key the sub-id
-    $subs = $this->xml->get_recent_submissions();
+    // Fetch submissions from the JSON endpoint
+    $subs = $this->subapi->get_open_submissions();
+    if ($this->subapi->api->error) {
+      $this->xml->error = $this->subapi->api->error; # TODO: Fix this!!
+      $this->xml->print_webservice_errors(true);
+    }
+
     $opts = $this->config->get_config_options();
-    $this->logger->debug("Submission#list_submissions");
-    $this->logger->debug(sprintf("\t\$opts = %s",print_r($opts,1)));
+    // $this->logger->debug("Submission#list_submissions");
+    // $this->logger->debug(sprintf("\t\$opts = %s",print_r($opts,1)));
     $publication = $opts['name'];
     $html .= <<<EOF
       <script type='text/javascript'>
@@ -130,28 +135,32 @@ EOF;
     // '
     return $html;
   }
+  // Format the list of returned submissions
+  // Updated with version 3.3.0 to use JSON response instead of XML response
   private function format_submission_list($subs) {
     global $hp_base;
     $accepted = $this->get_accepted_post_ids();
+    // $this->logger->debug(sprintf("format_submission_list=> accepted \n%s",print_r($accepted,1)));
     $html = '';
-    if (!empty($subs)) {
-      foreach($subs as $x => $hash) {
+    if (!empty($subs['data'])) {
+      foreach($subs['data'] as $hash) {
+        $x = $hash['id'];
+        $this->logger->debug(sprintf("=> hash \n%s",print_r($hash,1)));
         $count++;
         $class = null;
         if(($count%2) != 0) { $class = 'alternate'; }
         // overide to highlight submissions where author has provided a rewrite
-        if ($hash->status == 'writer_revision_provided') {
+        if ($hash['status'] == 'writer_revision_provided') {
           $class .= ' revised';
-        } elseif  ($hash->status == 'publisher_revision_requested') {
+        } elseif  ($hash['status'] == 'publisher_revision_requested') {
           $class .= ' requested';
         }
-
-        $url = sprintf('%s/wp-admin/admin.php?page=%s&show=%s',get_bloginfo('wpurl'),$this->slug,"$x");
+        $url = $this->nonced_url(['show' => $x]);
         $repub_url = $url;
         $disabled_url = '';
-        $category = $this->get_display_category($hash->category->id,$hash->category->name);
+        $category = $this->get_display_category($hash['genre']['id'],$hash['genre']['name']);
         $toggle = '';
-        if ($hash->author->bio != '') {
+        if ($hash['author']['bio'] != '') {
           $toggle = <<<EOF
           <a data-sid='{$x}' href="#" title="View details">
             <span class="heypub-icons dashicons dashicons-plus-alt"></span>
@@ -163,40 +172,40 @@ EOF;
           <tr class='{$class}' valign="top">
             <th scope="row">{$toggle}</th>
             <td class="heypub_list_title">
-              <a href="{$url}" title="Review {$hash->title}">{$hp_base->truncate($hash->title,30)}</a>
+              <a href="{$url}" title="Review {$hash['title']}">{$hp_base->truncate($hash['title'],30)}</a>
             </td>
             <td>
               {$category}
             </td>
 EOF;
-        if ($hash->author->bio != '') {
-          $authorName = sprintf("%s", $hash->author->full_name);
+        if ($hash['author']['bio'] != '') {
+          $authorName = sprintf("%s", $hash['author']['full_name']);
           $html .= <<< EOF
             <td class="heypub_list_title">
               {$authorName}
             </td>
 EOF;
         } else {
-          $html .= sprintf("<td>%s</td>", $hash->author->full_name);
+          $html .= sprintf("<td>%s</td>", $hash['author']['full_name']);
         }
         $contact = $hp_base->blank();
-        if (FALSE != $hash->author->email) {
-          $contact = sprintf('<a title="Email the Author"  href="mailto:%s?subject=Your%%20submission%%20to%%20%s">%s</a>',$hash->author->email,get_bloginfo('name'),$hp_base->truncate($hash->author->email));
+        if (FALSE != $hash['author']['email']) {
+          $contact = sprintf('<a title="Email the Author"  href="mailto:%s?subject=Your%%20submission%%20to%%20%s">%s</a>',$hash['author']['email'],get_bloginfo('name'),$hp_base->truncate($hash['author']['email']));
         }
-        $word_count = $this->normalize_word_count($hash);
-        $status = $this->xml->normalize_submission_status($hash->status);
+        $word_count = $hash['words'];
+        $status = $this->xml->normalize_submission_status($hash['status']);
         $link = $status; // default
-        if ($accepted["$x"] || "$hash->status" == 'accepted') {
-          if (!$accepted["$x"]) { // the post was accepted but not imported
+        if ($accepted[$x] || $hash['status'] == 'accepted') {
+          if (!$accepted[$x]) { // the post was accepted but not imported
             $disabled_url = ' onclick="alert(\'An error may have occurred when importing this submission.\n\nTry Re-Accepting it.\'); return false;"';
           }
-          $uri = sprintf('%s/wp-admin/post.php?action=edit&post=%s',get_bloginfo('wpurl'),$accepted["$x"]);
+          $uri = sprintf('%s/wp-admin/post.php?action=edit&post=%s',get_bloginfo('wpurl'),$accepted[$x]);
           $link = sprintf("<a %s href='%s' title='This submission has already been imported.\nClick to view.'>%s <span class='heypub-icons dashicons dashicons-media-document'></span></a>", $disabled_url, $uri, $status);
         }
 
         $html .= <<<EOF
           <td nowrap>
-            {$hash->submission_date}
+            {$hash['dates']['submitted']}
           </td>
           <td class='numeric'>
             {$word_count}
@@ -207,13 +216,13 @@ EOF;
         </tr>
 EOF;
 
-        if ($hash->author->bio != '') {
+        if ($hash['author']['bio'] != '') {
           $html .= <<<EOF
             <tr id='post_bio_{$x}' style='display:none;'>
               <td colspan='8'>
                 <div class='heypub_author_bio_preview'>
                   <b>Author Bio:</b>
-                  {$hash->author->bio}
+                  {$hash['author']['bio']}
                 </div>
               </td>
             </tr>
@@ -371,6 +380,7 @@ EOF;
 EOF;
     if (!in_array($sub->status,$this->disallowed_states)) {
       $actions = $this->submission_actions('heypub-bulk-submit',true,$sub->status,$post_id);
+      // TODO: Replace with $this->nonced_url();
       $form_post_url = $hp_base->get_form_post_url_for_page($this->slug);
       $html .= <<<EOF
         <form id="posts-filter" action="{$form_post_url}" method="post">
@@ -1034,6 +1044,7 @@ EOF;
   }
   // Normalize the word count, dependent on where it comes in from
   private function normalize_word_count($obj) {
+    return 'broken';
     $wc = '?';
     if (FALSE != $obj->s_word_count && $obj->s_word_count > 0) {
       $wc = number_format((float)"$obj->s_word_count");

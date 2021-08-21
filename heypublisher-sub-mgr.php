@@ -5,7 +5,7 @@ Plugin URI: https://github.com/HeyPublisher/heypublisher-submission-manager
 Description: HeyPublisher is a better way of managing submissions for your WordPress-powered publication.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 3.2.1
+Version: 3.3.0
 Requires at least: 4.0
 
 
@@ -123,7 +123,6 @@ define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugi
 
 // TODO: remove these defines and reference directly from XML code that makes query
 define('HEYPUB_SVC_URL_AUTHENTICATE','publishers/fetch_or_create');           # initial plugin authentication
-define('HEYPUB_SVC_URL_GET_SUBMISSIONS','submissions/fetch_pending_submissions');           # fetch all pending submissions
 define('HEYPUB_SVC_URL_RESPOND_TO_SUBMISSION','submissions/submission_action');             # accept/reject/publish action
 define('HEYPUB_SVC_READ_SUBMISSION','submissions/show');                      # fetch a single submission for reading.  also sets the 'read' status
 
