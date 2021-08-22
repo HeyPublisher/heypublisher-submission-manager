@@ -100,6 +100,10 @@ class Submissions extends \HeyPublisher\Page {
     }
 
     $opts = $this->config->get_config_options();
+    $author_header = '';
+    if ($opts['author']['blind_review'] == false){
+      $author_header = "<th style='width:18%;'>Author</th>";
+    }
     // $this->logger->debug("Submission#list_submissions");
     // $this->logger->debug(sprintf("\t\$opts = %s",print_r($opts,1)));
     $publication = $opts['name'];
@@ -120,7 +124,7 @@ class Submissions extends \HeyPublisher\Page {
           	</th>
           	<th style='width:29%;'>Title</th>
           	<th style='width:18%;'>Genre</th>
-          	<th style='width:18%;'>Author</th>
+          	{$author_header}
           	<th style='width:12%;'>Submitted</th>
           	<th style='width:7%;white-space:nowrap;'>Words</th>
           	<th style='width:15%;'>Status</th>
@@ -141,11 +145,18 @@ EOF;
   private function format_submission_list($subs) {
     global $hp_base;
     $accepted = $this->get_accepted_post_ids();
+    $opts = $this->config->get_config_options();
     // $this->logger->debug(sprintf("format_submission_list=> accepted \n%s",print_r($accepted,1)));
     $html = '';
     if (!empty($subs['data'])) {
       foreach($subs['data'] as $hash) {
         $x = $hash['id'];
+
+        // Version 3.3.0 hack - if `blind_review` is enabled, turn nil out the author bio to prevent display of author info
+        if ($opts['author']['blind_review'] == true){
+          $hash['author']['bio'] = '';
+        }
+
         $this->logger->debug(sprintf("=> hash \n%s",print_r($hash,1)));
         $count++;
         $class = null;
@@ -187,7 +198,9 @@ EOF;
             </td>
 EOF;
         } else {
-          $html .= sprintf("<td>%s</td>", $hash['author']['full_name']);
+          if ($opts['author']['blind_review'] == false){
+            $html .= sprintf("<td>%s</td>", $hash['author']['full_name']);
+          }
         }
         $contact = $hp_base->blank();
         if (FALSE != $hash['author']['email']) {
@@ -261,6 +274,7 @@ EOF;
   protected function display_submission($id) {
     global $hp_base, $hp_opt;
     $html = '';
+    $opts = $this->config->get_config_options();
     // Reading a submission marks it as 'read' in HeyPublisher
     if ($this->xml->submission_action($id,'read')) {
       $sub = $this->subapi->get_submission_by_id($id);
@@ -288,6 +302,12 @@ EOF;
         $vote_summary = $this->get_vote_summary_block($votes);
         $notes_block = $this->get_notes($id,$editor_id);
         $category = $this->get_display_category($sub['genre']['id'],$sub['genre']['name']);
+
+        $author_info = '';
+        if ($opts['author']['blind_review'] == false) {
+          $author_info = "by {$sub['author']['full_name']}  <small>({$email})</small>";
+        }
+
         $html .= <<<EOF
           <script type='text/javascript'>
             jQuery(function() {
@@ -296,8 +316,7 @@ EOF;
           </script>
           <h2 class='heypub-sub-title'>
             "{$sub['title']}" :
-            {$category} by {$sub['author']['full_name']}
-            <small>({$email})</small>
+            {$category} {$author_info}
           </h2>
           <!-- Notes and Votes setter -->
           <div class='heypub-voting'>
@@ -637,10 +656,15 @@ EOF;
   }
   // Display the summary block on submission detail page
   private function summary_block($sub) {
+    $opts = $this->config->get_config_options();
+    $author = '';
+    if ($opts['author']['blind_review'] == false){
+      $author = $this->author_bio($sub);
+    }
     $block = <<<EOF
       {$this->submission_summary($sub)}
       {$this->word_count($sub)}
-      {$this->author_bio($sub)}
+      {$author}
 EOF;
     return $this->toggle_block($block);
   }

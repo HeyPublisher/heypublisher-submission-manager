@@ -149,7 +149,7 @@ EOF;
     }
     $ver = HEYPUB_PLUGIN_VERSION;
     $blog = get_bloginfo('name');
-    $verdate = date('F jS, Y',strtotime($this->config->get_install_option('version_current_date')));
+    $verdate = date('F jS, Y',strtotime(HEYPUB_PLUGIN_BUILD_DATE));
     $editors = $this->get_editor_history(); // this can only be launched after 1.6.0 has been live 30 days
     $stats = $this->pubapi->get_publisher_stats();
     // ensure they're saved locally for posterity ... for some reason, though not sure why

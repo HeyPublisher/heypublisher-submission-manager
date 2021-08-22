@@ -193,6 +193,7 @@ class Config {
 
   // Defines all of the allowable option keys
   // and their default settings for new plugin install
+  // When adding new config option keys, add them here or they will not save
   private function config_hash_init() {
     $hash = array(
       'name'  => null,
@@ -211,6 +212,10 @@ class Config {
         'state'   => null,
         'country' => null,
         'zipcode' => null
+      ),
+      'author' => array(          # Added in version 3.3.0
+        'blind_review'  => false, # Hide author info : https://github.com/HeyPublisher/heypublisher-submission-manager/issues/122
+        'sync_bio'      => false  # Enable auto-sync of author bio
       ),
       'urls'  => array (
         'website' => null,

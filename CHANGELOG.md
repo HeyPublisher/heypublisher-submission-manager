@@ -11,7 +11,8 @@
 + Removed all calls to old XML endpoint `api/v1/submissions/fetch_pending_submissions` as it's been replaced by JSON endpoint `api/publishers/:id/submissions`
 + Removed `form_action` function and replaced all calls to it to use the the newer `nonced_url` function as it's more flexible.
 + Plugin now requires at minimum WordPress version 5.0
-+ Server support for plugin versions older than 2.8.0 has been removed.  Users will receive an upgrade notice.
++ Server support for plugin versions older than 2.8.0 has been removed.  Users of versions older than 2.8.0 will receive an upgrade notice and functionality will be limited.
++ Fixed plugin build date display on statistics page.
 
 ### 3.2.1
 + Released: 2021-06-26

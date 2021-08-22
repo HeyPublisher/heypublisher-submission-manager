@@ -405,9 +405,16 @@ function heypub_init(){
       // $hp_config->set_config_option('category_map',$hp_config->get_config_option('categories'));
       $map = $hp_xml->get_category_mapping();
       $hp_xml->log(sprintf("heypub_init() \$map = \n\t%s",print_r($map,1)));
-
     }
-
+    // Upgrade to 3.3.0 options
+    if ($opts['version_current'] < 90) {
+      $hp_config->logger->debug("\tupgrading options to build 90");
+      $author = array(
+        'blind_review'  => false,
+        'sync_bio'      => false
+      );
+      $hp_config->set_config_option('author',$author);
+    }
 
     // finally - ensure that the last version and current version are set
     $data = array(

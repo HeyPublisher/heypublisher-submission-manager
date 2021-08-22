@@ -437,6 +437,25 @@ EOF;
 EOF;
     return $html;
   }
+  // Adds ability for editor to turn off display of author information
+  // @since 3.3.0
+  private function submission_review($data){
+    $rev = @$data['author'];
+
+    $html = <<<EOF
+      <h3>Submission Review</h3>
+      <p>
+        Enabling <b>Blind Review</b> will hide author information from Editors when they are reviewing submissions.
+      </p>
+      <ul>
+        <li>
+          {$this->boolean_select('Blind Review?','blind_review',@$data['author'],'author')}
+        </li>
+      </ul>
+EOF;
+    return $html;
+  }
+
 
   // Marries the list of HP genres to the ones that have been activated in plugin
   // Returns array where key is the HP genre ID and val is the WP category id
@@ -661,6 +680,7 @@ EOF;
         {$this->submission_guidelines($opts,$settings)}
         {$this->submission_page($opts)}
         {$this->submission_criteria($settings)}
+        {$this->submission_review($settings)}
         {$this->writer_notifications($settings)}
         {$this->integrations($settings)}
         {$this->experimental_options($settings)}
@@ -760,23 +780,24 @@ EOF;
   // TODO: Make this use JSON endpoint
   // TODO: ensure we're only saving items that are a MUST for making plugin work -- everything else is remotely accessed
   private function update_options($post) {
-    $this->logger->debug(sprintf("Page::Options#update_options(): \n\t\$post = %s",print_r($post,1)));
+    // $this->logger->debug("Page::Options#update_options():");
+    // $this->logger->debug(sprintf("\t=> POST params: %s",print_r($post,1)));
     $message = null;
     // Processing a form post of Option Updates
     // Get options from the post
     $opts = $post['heypub_opt'];
-    $this->logger->debug(sprintf("\t\$opts = %s",print_r($opts,1)));
     // Need to detect the values in category_map where:
     //  a) value is < 0
     //  b) key is not present in genres array
     $this->clean_genres_category_map($opts);
-    $this->logger->debug(sprintf("\tabout to test accepting_subs = %s\n\tcategories = %s",$opts['accepting_subs'],print_r($opts['category_map'],1)));
+    // $this->logger->debug(sprintf("\tabout to test accepting_subs = %s\n\tcategories = %s",$opts['accepting_subs'],print_r($opts['category_map'],1)));
     $opts['accepting_subs'] = false;
     if (count(array_keys($opts['category_map'])) > 0) {
        $opts['accepting_subs'] = true;
     }
-    $this->logger->debug(sprintf("\taccepting_subs now equals = %s",$opts['accepting_subs']));
+    // $this->logger->debug(sprintf("\taccepting_subs now equals = %s",$opts['accepting_subs']));
     //  Bulk update the form post, saving into local WP db
+    $this->logger->debug(sprintf("\=> OPTS to save to DB : %s",print_r($opts,1)));
     $this->config->set_config_options($opts);
     // This does not update the category map, because we lock down only permitted keys
     $this->config->set_config_option('category_map',$opts['category_map']);
@@ -794,6 +815,7 @@ EOF;
     $opts['urls']['rss'] = get_bloginfo('rss2_url');
     // now attempt to sync with HeyPublisher.com
     unset($opts['category_map']);
+    $this->logger->debug(sprintf("\=> OPTS sent to server : %s",print_r($opts,1)));
     $success = $this->pubapi->update_publisher($opts);
     if ($success) {
       $message = 'Your changes have been saved and syncronized with HeyPublisher.';
