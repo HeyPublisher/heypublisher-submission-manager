@@ -16,12 +16,13 @@ class Base {
   var $help = false;
   var $i18n = 'heypublisher';  // key for internationalization stubs
   var $plugin = array(
-    'url' => 'https://www.heypublisher.com',
-    'home' => 'https://wordpress.org/plugins/',
-    'support' => 'https://wordpress.org/support/',
-    'contact' => 'mailto:wordpress@heypublisher.com',
-    'more' => 'https://profiles.wordpress.org/heypublisher#content-plugins'
+    'url'     => 'https://www.heypublisher.com',
+    'home'    => 'https://github.com/HeyPublisher',
+    'support' => 'https://github.com/HeyPublisher',
+    'contact' => 'mailto:support@heypublisher.com',
+    'more'    => 'https://github.com/HeyPublisher/repositories'
   );
+
   var $slug = '';   // should be defined in constructor of any class that extends this class.
 
   public function __construct() {

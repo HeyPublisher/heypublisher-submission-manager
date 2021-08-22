@@ -357,7 +357,7 @@ td,
 th {
   padding: 0; }
 
-/* HeyPublisher Common Styles */
+/* Loudlever Common Styles */
 /* Page Header */
 #poststuff H3.hndle {
   font-size: 1.6em; }
@@ -393,12 +393,12 @@ TABLE.ll-plugin {
 .ll-inside P {
   padding-left: 12px; }
 
-a.loudlever-button {
+a.heypublisher-button {
   text-decoration: none;
   display: block; }
-  a.loudlever-button span.dashicons {
+  a.heypublisher-button span.dashicons {
     padding-right: 5px; }
-    a.loudlever-button span.dashicons:hover {
+    a.heypublisher-button span.dashicons:hover {
       color: orange; }
 
 /*  Override some of the Wordpress Admin stylesheet settings */

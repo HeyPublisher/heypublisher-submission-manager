@@ -33,7 +33,6 @@ class Page extends \HeyPublisher\Base {
   	parent::__construct();
     $this->plugin['home'] = 'https://github.com/HeyPublisher/heypublisher-submission-manager';
     $this->plugin['support'] = 'https://github.com/HeyPublisher/heypublisher-submission-manager/issues';
-    $this->plugin['contact'] = 'mailto:support@heypublisher.com';
     $this->logger = $hp_config->logger;
     $this->config = $hp_config;
     $this->xml = $hp_xml;
