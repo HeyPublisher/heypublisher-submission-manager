@@ -65,6 +65,15 @@ class Submission  {
     // $this->logger->debug(sprintf("get_open_submissions():\n\tResults: %s",print_r($result,1)));
     return $result;
   }
+  // Get the submission by ID
+  // @since 3.3.0
+  public function get_submission_by_id($id) {
+    $poid = $this->api->poid;
+    $path = sprintf('publishers/%s/submissions/%s',$poid,$id);
+    $result = $this->api->get($path);
+    $this->logger->debug(sprintf("get_submission_by_id():\n\tResults: %s",print_r($result,1)));
+    return $result;
+  }
 
   // Get the authentication token from the base API call
   public function get_authentication_token() {

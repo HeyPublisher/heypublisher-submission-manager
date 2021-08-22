@@ -260,43 +260,6 @@ EOF;
     }
   }
 
-  function get_submission_by_id($id) {
-    $post = <<<EOF
-<submission>
-    <id>$id</id>
-</submission>
-EOF;
-
-    $ret = $this->send(HEYPUB_SVC_READ_SUBMISSION,$this->prepare_request_xml($post));
-    if (FALSE == $ret) {
-      $this->print_webservice_errors();
-    }
-    else {
-      $xml = new SimpleXMLElement($ret);
-      $this->log(sprintf("RAW XML = \n%s",$ret));
-      // printf( "<pre>XML = %s</pre>",print_r($xml,1));
-      # this is an object, convert to string
-      if ($xml->success->message) {
-        $return = $xml->submission;
-      }
-      else {
-        $err = $xml->error->message;
-        if ($err) {
-          if ($err == '403 Forbidden') {
-            $this->error = "The content of this submission is temporarily unavailable (# $id).";
-            // $return = $xml->submission; // don't return content - nothing editor can do with this
-          } else {
-            $this->error = "$err";
-          }
-        } else {
-          $this->error = 'Error retrieving submission for reading from HeyPublisher.com';
-        }
-        $this->print_webservice_errors(true,$id);
-      }
-    }
-    return $return;
-  }
-
   // TODO: consolidate this with Page::print_message()
   function print_webservice_errors($show_contact=true,$id=null) {
     $contact = null;

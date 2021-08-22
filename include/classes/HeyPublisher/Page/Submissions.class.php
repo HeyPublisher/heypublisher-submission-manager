@@ -87,6 +87,7 @@ class Submissions extends \HeyPublisher\Page {
 
   /**
   * List the submissions needing review
+  * @since version 3.3.0 this function uses JSON API endpoint instead of XML endpoint
   */
   protected function list_submissions() {
     global $hp_base;
@@ -136,7 +137,7 @@ EOF;
     return $html;
   }
   // Format the list of returned submissions
-  // Updated with version 3.3.0 to use JSON response instead of XML response
+  // @since version 3.3.0 this function uses JSON API endpoint instead of XML endpoint
   private function format_submission_list($subs) {
     global $hp_base;
     $accepted = $this->get_accepted_post_ids();
@@ -243,23 +244,40 @@ EOF;
   *
   * If the submission body is blank, then we don't allow editors to change state
   *
+  * @since 2.6.1 displays submission history block
+  * @since 2.7.0 displays notes and votes
+  * @since 3.1.0 loads the notes and votes through simplified API call
+  * @since 3.3.0 calls `get_submission_by_id`using JSON API endpoint instead of XML endpoint
+  *
+  * This function makes 5 server calls to render page:
+  *   => /api/v1/submissions/submission_action : marks the submission as `read`
+  *   => /api/publishers/:poid/submissions/:id : fetches the submission object
+  *   => /api/v2/submissions/:id/history?order=desc : fetches the submission status history for the history block
+  *   => /api/v2/submissions/:id/votes?editor_id=:editor_id  : fetches the votes for this submission
+  *   => /api/v2/submissions/:id/notes?order=desc  : fetches the notes for this submission
+  *
+  * TODO: Is there a world in which we'd want to collect the notes/votes/history in the `show` call?
   */
   protected function display_submission($id) {
     global $hp_base, $hp_opt;
     $html = '';
     // Reading a submission marks it as 'read' in HeyPublisher
     if ($this->xml->submission_action($id,'read')) {
-      $sub = $this->xml->get_submission_by_id($id);
+      $sub = $this->subapi->get_submission_by_id($id);
+      if ($this->subapi->api->error) {
+        $this->xml->error = $this->subapi->api->error; # TODO: Fix this!!
+        $this->xml->print_webservice_errors(true);
+      }
       if ($sub) {
-        $this->logger->debug(sprintf("ID  %s\ndisplay_submission \n%s",$sub->id,print_r($sub,1)));
-        $this->logger->debug(sprintf("author: %s",print_r($sub->author,1)));
+        $this->logger->debug(sprintf("ID  %s\ndisplay_submission \n%s",$sub['id'],print_r($sub,1)));
+        $this->logger->debug(sprintf("author: %s",print_r($sub['author'],1)));
         // Build out the side-nav
         // This state should not be possible ??
-        if (FALSE == $sub->author->email) {
+        if (FALSE == $sub['author']['email']) {
           $email = "<i><small>No Email Provided</small></i>";
         }
         else {
-          $email = sprintf('<a href="mailto:%s?subject=Your%%20submission%%20to%%20%s" target="_blank">%s</a>',$sub->author->email,get_bloginfo('name'),$sub->author->email);
+          $email = sprintf('<a href="mailto:%s?subject=Your%%20submission%%20to%%20%s" target="_blank">%s</a>',$sub['author']['email'],get_bloginfo('name'),$sub['author']['email']);
         }
         $hblock = $this->submission_history_block($id);
         $editor_id = get_current_user_id();
@@ -269,7 +287,7 @@ EOF;
         $vote_buttons = $this->vote_buttons_block($votes);
         $vote_summary = $this->get_vote_summary_block($votes);
         $notes_block = $this->get_notes($id,$editor_id);
-
+        $category = $this->get_display_category($sub['genre']['id'],$sub['genre']['name']);
         $html .= <<<EOF
           <script type='text/javascript'>
             jQuery(function() {
@@ -277,8 +295,8 @@ EOF;
             });
           </script>
           <h2 class='heypub-sub-title'>
-            "{$sub->title}" :
-            {$sub->category} by {$sub->author->first_name} {$sub->author->last_name}
+            "{$sub['title']}" :
+            {$category} by {$sub['author']['full_name']}
             <small>({$email})</small>
           </h2>
           <!-- Notes and Votes setter -->
@@ -334,7 +352,7 @@ EOF;
         $this->additional_side_nav = $this->submission_side_nav($sub);
       } else {
         $html = <<<EOF
-          <h2 class='error'>Please try again.</h2>
+          <h2 class='error'>We are unable to display this submission at this time.</h2>
 EOF;
       }  // end if $sub
     } // end submission_action
@@ -353,17 +371,18 @@ EOF;
     }
     return $html;
   }
-
+  // Generates the side-bar that allows action on the submission
+  //  @since 3.0.0 operates on the JSON version of the submission object
   private function submission_side_nav($sub) {
     global $hp_base;
-    $id = $sub->id;
+    $id = $sub['id'];
     $post_id = $this->get_post_id_by_submission_id($id);
-    $days_pending = ($sub->days_pending >= 60) ? 'late': (($sub->days_pending >= 30) ? 'warn' : 'ok');
+    $days_pending = ($sub['dates']['pending'] >= 60) ? 'late': (($sub['dates']['pending'] >= 30) ? 'warn' : 'ok');
 
     /*
     // Future functionality - downloads of original docs are coming....
     if ($this->config->get_config_option('display_download_link')) {
-    <a class='heypub_smart_button' href='<?php echo $sub->document->url; ?>' title="Download '<?php echo $sub->title; ?>'">Download Original Document</a>
+    <a class='heypub_smart_button' href='<?php echo $sub['document']['url']; ?>' title="Download '<?php echo $sub['title']; ?>'">Download Original Document</a>
     */
 
     $html = <<<EOF
@@ -371,17 +390,17 @@ EOF;
       <dl class='heypub-sub-status'>
         {$this->imported_date_side_nav($post_id)}
         <dt>Submitted on</dt>
-          <dd>{$sub->submission_date}</dd>
-        <dt>{$this->xml->normalize_submission_status($sub->status)}</dt>
-          <dd>{$sub->status_date}</dd>
+          <dd>{$sub['dates']['submitted']}</dd>
+        <dt>{$this->xml->normalize_submission_status($sub['status'])}</dt>
+          <dd>{$sub['dates']['status']}</dd>
         <dt class='days_pending_{$days_pending}'>Days pending</dt>
-          <dd>{$sub->days_pending}</dd>
+          <dd>{$sub['dates']['pending']}</dd>
       </dl>
 EOF;
-    if (!in_array($sub->status,$this->disallowed_states)) {
-      $actions = $this->submission_actions('heypub-bulk-submit',true,$sub->status,$post_id);
+    if (!in_array($sub['status'],$this->disallowed_states)) {
+      $actions = $this->submission_actions('heypub-bulk-submit',true,$sub['status'],$post_id);
       // TODO: Replace with $this->nonced_url();
-      $form_post_url = $hp_base->get_form_post_url_for_page($this->slug);
+      $form_post_url = $this->nonced_url();
       $html .= <<<EOF
         <form id="posts-filter" action="{$form_post_url}" method="post">
           {$this->sub_class->editor_note_text_area($id)}
@@ -392,11 +411,11 @@ EOF;
     }
 /*
     // Introduce info about other publishrs later
-    if ($sub->manageable_count > 1) {
+    if ($sub['manageable_count'] > 1) {
     ?>
-      <h4>Currently with <?php echo ($sub->manageable_count - 1); ?> other <?php echo (($sub->manageable_count - 1) == 1) ? 'publisher' : 'publishers'; ?>:</h4>
+      <h4>Currently with <?php echo ($sub['manageable_count'] - 1); ?> other <?php echo (($sub['manageable_count'] - 1) == 1) ? 'publisher' : 'publishers'; ?>:</h4>
     <?php
-      echo $hp_base->other_publisher_link($sub->manageable->publisher, $sub);
+      echo $hp_base->other_publisher_link($sub['manageable']['publisher'], $sub);
     ?>
       <p>You can disallow simultaneous submissions in <a href='<?php
        printf('%s/wp-admin/admin.php?page=%s#simu_subs',get_bloginfo('wpurl'),$hp_opt->slug); ?>'>Plugin Options</a></>
@@ -404,11 +423,11 @@ EOF;
         }
     ?>
     <?php
-        if ($sub->published_count > 0) {
+        if ($sub['published_count'] > 0) {
     ?>
-        <h4>This work has been previously published by <?php echo ($sub->published_count); ?> other <?php echo (($sub->published_count) == 1) ? 'publisher' : 'publishers'; ?>:</h4>
+        <h4>This work has been previously published by <?php echo ($sub['published_count']); ?> other <?php echo (($sub['published_count']) == 1) ? 'publisher' : 'publishers'; ?>:</h4>
     <?php
-        echo $hp_base->other_publisher_link($sub->published->publisher,$sub);
+        echo $hp_base->other_publisher_link($sub['published']['publisher'],$sub);
         }
     ?>
 
@@ -524,27 +543,30 @@ EOF;
 EOF;
     return $html;
   }
-
+  // Display the author bio as part of the summary block
+  // @since 3.0.0 uses JSON format
   private function author_bio($sub) {
-    if (FALSE != $sub->author->bio) {
-      $bio = $sub->author->bio;
+    if (FALSE != $sub['author']['bio']) {
+      $bio = $sub['author']['bio'];
     } else {
       $bio = '<i>None provided</i>';
     }
     $html = sprintf('<dt>Author Bio:</dt><dd>%s &nbsp;</dd>',$bio);
     return $html;
   }
+  // Display the description of the submission
+  // @since 3.0.0 uses JSON format
   private function submission_summary($sub) {
     $html = null;
-    if ($sub->description != '') {
-      $html = sprintf('<dt>Summary:</dt><dd>%s</dd>',$sub->description);
+    if ($sub['description'] != '') {
+      $html = sprintf('<dt>Summary:</dt><dd>%s</dd>',$sub['description']);
     }
     return $html;
   }
+  // Display the word count of the submission
+  // @since 3.0.0 uses JSON format
   private function word_count($sub) {
-    $wc = $this->normalize_word_count($sub);
-    // getting weird errors about the type of val for word_count, so explicitly cast here
-    $html = sprintf('<dt>Word Count:</dt><dd>%s words</dd>',$wc);
+    $html = sprintf('<dt>Word Count:</dt><dd>%s words</dd>',$sub['words']);
     return $html;
   }
   // Take in a submission id and return a formatted submission block as string
@@ -613,6 +635,7 @@ EOF;
      );
      return $data;
   }
+  // Display the summary block on submission detail page
   private function summary_block($sub) {
     $block = <<<EOF
       {$this->submission_summary($sub)}
@@ -631,12 +654,14 @@ EOF;
     return $html;
   }
 
+  // Displays the submission on the submission detail page
+  // @since 3.0.0 operates on JSON version of object
   private function submission_block($sub) {
     // Is this a valid state??
-    if (in_array($sub->status,$this->disallowed_states)) {
-      $body = sprintf('<h4 class="error">%s</h4>',$sub->body);
+    if (in_array($sub['status'],$this->disallowed_states)) {
+      $body = sprintf('<h4 class="error">%s</h4>',$sub['html']);
     } else {
-      $body = $sub->body;
+      $body = $sub['html'];
     }
     $html = <<<EOF
       <div id='heypub_submission_body'>
@@ -698,6 +723,7 @@ EOF;
 // ---------------------------------------------------------------------------
 
 // Accept Processing Handler - these posts may or may not be in the db already
+// @since 3.0.0 uses JSON submission object
 private function accept_process_submission($req,$uid,$msg=FALSE) {
   global $hp_base;
   check_admin_referer('heypub-bulk-submit');
@@ -707,7 +733,7 @@ private function accept_process_submission($req,$uid,$msg=FALSE) {
 
   if ($this->xml->submission_action($id,'accepted',$notes)) {
     $this->logger->debug("WE are in the UPDATE/CREATE");
-    $sub = $this->xml->get_submission_by_id($id);
+    $sub = $this->subapi->get_submission_by_id($id);
     $post_id = $this->create_or_update_post($uid,'pending',$sub);
     $this->logger->debug(sprintf("POST ID = %s",$post_id));
   }
@@ -722,16 +748,17 @@ private function accept_process_submission($req,$uid,$msg=FALSE) {
 }
 
 // Pre-Accept Handler - Prompt the Admin to create a new user or use an existing user account.
+// @since 3.3.0 operates on JSON submission object
 function accept_submission($req) {
   global $hp_base;
   check_admin_referer('heypub-bulk-submit');
   $id = $req['post'][0];
-  $sub = $this->xml->get_submission_by_id($id);
+  $sub = $this->subapi->get_submission_by_id($id);
   $notes = $req['notes'];
 	// do we have this author in the db?
-  $user_id = $hp_base->get_author_id($sub->author);
+  $user_id = $hp_base->get_author_id($sub['author']);
   $this->logger->debug("accept_submission($req)");
-  $this->logger->debug(sprintf("Sub->Author: %s",print_r($sub->author,1)));
+  $this->logger->debug(sprintf("Sub->Author: %s",print_r($sub['author'],1)));
   $this->logger->debug(sprintf("USER_ID: '%s'",$user_id));
   $this->logger->debug(sprintf("REQ = \n%s",print_r($req,1)));
 
@@ -745,7 +772,7 @@ function accept_submission($req) {
 
   if (FALSE != $user_id) {
     $url = $hp_base->get_author_edit_url($user_id);
-    $msg = sprintf("<br/><br/>The author <b><a href='$url'>%s</a></b> already exists in your database.  Please ensure their information is correct prior to publication.", $sub->author->full_name);
+    $msg = sprintf("<br/><br/>The author <b><a href='$url'>%s</a></b> already exists in your database.  Please ensure their information is correct prior to publication.", $sub['author']['full_name']);
     $message = $this->accept_process_submission($req,$user_id,$msg);
     return $message;
   }
@@ -764,11 +791,11 @@ protected function create_new_account_form($array) {
   $html = <<<EOF
 		<p>The author
       <b>
-        {$sub->author->first_name} {$sub->author->last_name}
+        {$sub['author']['full_name']}
       </b> has not been published by you before.
     </p>
 		<p>
-      Before you can accept "{$sub->title}" for publication, you need to
+      Before you can accept "{$sub['title']}" for publication, you need to
       create a user account for this author.
     </p>
     <p>
@@ -784,11 +811,11 @@ protected function create_new_account_form($array) {
 	  <form id="posts-filter" action="{$form_post_url}" method="post">
       <ul>
         <li>
-          <input type='hidden' name="post[]" value="{$sub->id}" />
+          <input type='hidden' name="post[]" value="{$sub['id']}" />
     			<input type='hidden' name="notes" value="{$notes}" />
     			<input type='hidden' name="action" value="create_user" />
     			<label class='heypub' for='username'>Username:</label>
-    			<input type='text' name="username" id='username' class='heypub' value="{$sub->author->username}" />
+    			<input type='text' name="username" id='username' class='heypub' value="{$sub['author']['username']}" />
         </li>
       </ul>
       {$nonce}
@@ -812,19 +839,18 @@ EOF;
     $message = sprintf('%s successfully saved for later editorial review',$this->pluralize_submission_message($cnt));
     return $message;
   }
+  // Creates or updates the POST associated with this submission
+  // @since 3.3.0 uses the JSON submission object
   private function create_or_update_post($user_id,$status,$sub) {
-    $post_id = $this->get_post_id_by_title("$sub->title",$user_id) ;
+    $post_id = $this->get_post_id_by_title($sub['title'],$user_id) ;
     $category = 1;  // the 'uncategorized' category
-    $map = $this->xml->get_category_mapping();
-    // printf("<pre>Sub object looks like : %s</pre>",print_r($sub,1));
-    $cat = sprintf("%s",$sub->category->id);
-    if ($map["$cat"]) {
-      $category = $map["$cat"]; // local id
+    if ($sub['genre']['wp_id']) {
+      $category = $sub['genre']['wp_id']; // local id
     }
     // this piece does not exist - create it
     $post = array();
-    $post['post_title'] = $sub->title;
-    $post['post_content'] = $sub->body;
+    $post['post_title'] = $sub['title'];
+    $post['post_content'] = $sub['html'];
     $post['post_status'] = $status;
     $post['post_author'] = $user_id;
     $post['post_category'] = array($category);  # this should always be an array.
@@ -835,7 +861,7 @@ EOF;
     }
     $post_id = wp_insert_post( $post );
     // ensure meta data is updated - this is invisible to the editor, but allows us to find post later
-    update_post_meta($post_id, HEYPUB_POST_META_KEY_SUB_ID, "$sub->id");
+    update_post_meta($post_id, HEYPUB_POST_META_KEY_SUB_ID, $sub['id']);
     return $post_id;
   }
   /**
@@ -852,13 +878,13 @@ EOF;
      return FALSE;
     }
     $id = $req['post'][0];
-    $sub = $this->xml->get_submission_by_id($id);
+    $sub = $this->subapi->get_submission_by_id($id);
     $notes = $req['notes'];
     // do we have this author in the db?
-    $user_id = $hp_base->create_author($req['username'],$sub->author);
+    $user_id = $hp_base->create_author($req['username'],$sub['author']);
     if (!is_wp_error($user_id)) {
       $url = $hp_base->get_author_edit_url($user_id);
-      $msg = sprintf("<br/><br/>The author <b><a href='$url'>%s</a></b> was created in your database.  Please ensure their information is correct prior to publication.", $sub->author->full_name);
+      $msg = sprintf("<br/><br/>The author <b><a href='$url'>%s</a></b> was created in your database.  Please ensure their information is correct prior to publication.", $sub['author']['full_name']);
       $message = $this->accept_process_submission($req,$user_id,$msg);
       return $message;
     }
@@ -1042,18 +1068,5 @@ EOF;
     wp_list_post_revisions( $post );
 
   }
-  // Normalize the word count, dependent on where it comes in from
-  private function normalize_word_count($obj) {
-    return 'broken';
-    $wc = '?';
-    if (FALSE != $obj->s_word_count && $obj->s_word_count > 0) {
-      $wc = number_format((float)"$obj->s_word_count");
-    }
-    elseif (FALSE != $obj->word_count && $obj->word_count > 0) {
-      $wc = number_format((float)"$obj->word_count");
-    }
-    return $wc;
-  }
-
 }
 ?>
