@@ -160,48 +160,6 @@ class HeyPublisherXML {
     return $return;
   }
 
-  function update_publisher_mailchimp($post) {
-    $xml = null;
-    $active =   htmlentities(stripslashes($post['mailchimp_active']));
-    $api_key =  htmlentities(stripslashes($post['mailchimp_api_key']));
-    $list_id =  htmlentities(stripslashes($post['mailchimp_list_id']));
-    // if ($post[mailchimp_active]) {
-    $xml =<<< EOF
-    <mailchimp>
-      <active>{$active}</active>
-      <api_key>{$api_key}</api_key>
-      <list_id>{$list_id}</list_id>
-    </mailchimp>
-EOF;
-    // }
-    return $xml;
-  }
-
-  function update_publisher_categories($post) {
-    $ret = null;
-    if ($post['accepting_subs'] && $post['genres_list']) {
-      $cat_array = array();
-      foreach ($post['genres_list'] as $name => $id) {
-        $cat_array[] = sprintf('<category>%s</category>', $id);
-      }
-      if (FALSE != $cat_array) {
-        $ret = sprintf('<categories>%s</categories>',join('',$cat_array));
-      }
-    }
-    return $ret;
-  }
-
-  function update_publisher_reading_period($post) {
-    $bool = $this->boolean($post['reading_period']);
-    if ($post['reading_period']) {
-      $start = $post['start_date'];
-      $end = $post['end_date'];
-      $ret = "<reading_period><reading_start_date>$start</reading_start_date><reading_end_date>$end</reading_end_date></reading_period>";
-    } else {
-      $ret = "<reading_period>$bool</reading_period>";
-    }
-    return $ret;
-  }
   /**
   * convert boolean vals into strings reading 'true' or 'false'
   */
@@ -212,17 +170,6 @@ EOF;
       return 'false';
     }
   }
-  function update_publisher_paying_market($post) {
-    $bool = $this->boolean($post['paying_market']);
-    if ($post['paying_market']) {
-      $val = htmlentities(stripslashes($post['paying_market_range']));
-      $ret = "<paying_market><paying_market_amount>$val</paying_market_amount></paying_market>";
-    } else {
-      $ret = "<paying_market>$bool</paying_market>";
-    }
-    return $ret;
-  }
-
   function prepare_request_xml($post,$suppress_publisher=false) {
     $account = $this->get_account_request_header();
     if (FALSE == $suppress_publisher) {

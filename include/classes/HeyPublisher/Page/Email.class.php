@@ -81,7 +81,7 @@ class Email extends \HeyPublisher\Page {
 
   }
   public function help_submission_states() {
-    $img = sprintf('<img src="%s/images/submission_states.gif">',HEY_BASE_URL);
+    $img = sprintf('<img src="%s/images/submission_states.png" style="width:70%%;">',HEY_BASE_URL);
     $html = <<<EOF
     <h2>
       The Submission States
