@@ -565,6 +565,7 @@ EOF;
   private function writer_notifications($data) {
     $sub_states = sprintf('%s/about/submission_states',$this->domain);
     $notes = @$data['notifications'];
+    $url = $this->nonced_url(['page'=>'heypublisher_email']);
     $html = <<<EOF
       <h3>Writer Notifications</h3>
       <p>
@@ -575,7 +576,7 @@ EOF;
         You can disable sending email by setting the value to <code>No</code> below.</p>
       <p>
         Customize the content of the emails you want sent through the
-        <a href='admin.php?page=heypublisher_email' target=_top>Email Templates</a>
+        <a href='{$url}' target=_top>Email Templates</a>
         screen.
       </p>
       <input type='hidden' name='notify_submitted' value='1'>

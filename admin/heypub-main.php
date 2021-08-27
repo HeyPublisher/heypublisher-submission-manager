@@ -51,26 +51,4 @@ function heypub_display_page_logo() {
 
 }
 
-// TODO: I think this is a duplicate of other logic.  Research
-function heypub_not_authenticated($page) {
-?>
-  <div class="wrap">
-    <?php heypub_display_page_title('Not Authenticated!'); ?>
-    <div id="hey-content">
-      It appears you are not yet authenticated.  Please <a href='<?php heypub_get_authentication_url($page);?>'>CLICK HERE</a> to authenticate.</p>
-    </div>
-  </div>
-<?php
-}
-// TODO: Move logic to Overview class
-function heypub_get_authentication_url($page=false) {
-  global $hp_opt;
-  if ($page == FALSE) {
-    $page = $hp_opt->slug;
-  }
-  $url = sprintf('%s/%s?page=%s',get_bloginfo('wpurl'),'wp-admin/admin.php',$page);
-  return $url;
-}
-
-
 ?>

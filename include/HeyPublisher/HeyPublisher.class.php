@@ -18,12 +18,6 @@ class HeyPublisher {
   public function page_title($title) {
     return "<h2>$title</h2>";
   }
-  // TODO: Why should this create an absolute URL - why not a relative url?
-  // TODO: Replace this with function `nonced_url()` from Page class
-  public function get_form_post_url_for_page($page) {
-    $url = sprintf('%s/wp-admin/admin.php?page=%s',get_bloginfo('wpurl'),$page);
-    return $url;
-  }
 
   // This is a non-printing function.  Output will be returned as a string
   // Two input params :
@@ -68,7 +62,8 @@ class HeyPublisher {
 
   public function submission_summary_link($text='See All Submissions') {
     global $hp_subs;
-    $str = sprintf("<a href='admin.php?page=%s'>%s</a>",$hp_subs->slug,$text);
+    $url = $hp_subs->nonced_url(['page'=>$hp_subs->slug]);
+    $str = sprintf("<a href='%s'>%s</a>",$url,$text);
     return $str;
   }
 

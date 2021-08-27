@@ -41,7 +41,7 @@ class Submissions extends \HeyPublisher\Page {
     // TODO: clean up this logic
     if (!$this->config->is_validated) {
       // parent::page('Submissions', 'Submissions', 'heypub_list_submissions' );
-      heypub_not_authenticated();
+      echo $this->not_authenticated_link();
       return;
     }
     if (isset($_REQUEST['show'])) {
@@ -417,8 +417,7 @@ EOF;
       </dl>
 EOF;
     if (!in_array($sub['status'],$this->disallowed_states)) {
-      $actions = $this->submission_actions('heypub-bulk-submit',true,$sub['status'],$post_id);
-      // TODO: Replace with $this->nonced_url();
+      $actions = $this->acceptable_submission_states('heypub-bulk-submit',true,$sub['status'],$post_id);
       $form_post_url = $this->nonced_url();
       $html .= <<<EOF
         <form id="posts-filter" action="{$form_post_url}" method="post">
@@ -428,38 +427,6 @@ EOF;
         </form>
 EOF;
     }
-/*
-    // Introduce info about other publishrs later
-    if ($sub['manageable_count'] > 1) {
-    ?>
-      <h4>Currently with <?php echo ($sub['manageable_count'] - 1); ?> other <?php echo (($sub['manageable_count'] - 1) == 1) ? 'publisher' : 'publishers'; ?>:</h4>
-    <?php
-      echo $hp_base->other_publisher_link($sub['manageable']['publisher'], $sub);
-    ?>
-      <p>You can disallow simultaneous submissions in <a href='<?php
-       printf('%s/wp-admin/admin.php?page=%s#simu_subs',get_bloginfo('wpurl'),$hp_opt->slug); ?>'>Plugin Options</a></>
-    <?php
-        }
-    ?>
-    <?php
-        if ($sub['published_count'] > 0) {
-    ?>
-        <h4>This work has been previously published by <?php echo ($sub['published_count']); ?> other <?php echo (($sub['published_count']) == 1) ? 'publisher' : 'publishers'; ?>:</h4>
-    <?php
-        echo $hp_base->other_publisher_link($sub['published']['publisher'],$sub);
-        }
-    ?>
-
-    <?php  }  // end of conditional testing whether submission is in allowed state or not
-     ?>
-
-          </td>
-          </tr>
-        </table>
-
-
-    <?php
-*/
     return $html;
 
   }
@@ -700,8 +667,9 @@ EOF;
   *
   * @param string $nounce The Nounce for the form
   * @param bool $detail If TRUE will display the 'request author revision' and 'accepted' values.  FALSE by default.
+  * @since 3.3.0 changed the name to `acceptable_submission_states` to prevent confusion with similarly named function in XML class.
   */
-  function submission_actions($nounce,$detail=false,$sel='',$published=false) {
+  function acceptable_submission_states($nounce,$detail=false,$sel='',$published=false) {
     global $hp_base;
     $html = <<<EOF
     <div class="actions">
@@ -810,7 +778,7 @@ protected function create_new_account_form($array) {
   $sub = $array[0];
   $notes = $array[1];
   $this->logger->debug(sprintf("receives sub and notes: %s",$notes));
-  $form_post_url = $hp_base->get_form_post_url_for_page($this->slug);
+  $form_post_url = $this->nonced_url();
   $nonce = wp_nonce_field('heypub-bulk-submit');
   $html = <<<EOF
 		<p>The author

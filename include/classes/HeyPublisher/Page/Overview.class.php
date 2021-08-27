@@ -143,7 +143,8 @@ EOF;
   protected function content() {
     global $hp_base;
     if (!$this->config->is_validated) {
-      $val = "<a href='". heypub_get_authentication_url() . "'>CLICK HERE to VALIDATE</a>";
+      $u = $this->nonced_url(['page'=>'heypublisher_options']);  #override the page attribute
+      $val = "<a href='{$u}'>CLICK HERE to VALIDATE</a>";
     } else {
       $val = date('F jS, Y',strtotime($this->config->is_validated));
     }

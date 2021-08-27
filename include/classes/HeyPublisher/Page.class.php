@@ -168,9 +168,30 @@ EOF;
     print($e);
   }
 
-  protected function nonced_url($action=[],$nonce=null) {
-    $url = sprintf('%s/wp-admin/admin.php?page=%s',get_bloginfo('wpurl'),$this->slug);
+  // Display link to authenticate if user has not yet authenticated
+  // TODO: I think this is a duplicate of other logic.  Research
+  function not_authenticated_link() {
+    $title = heypub_display_page_title('Not Authenticated!');
+    $url = $this->nonced_url();
+    $html = <<<EOF
+      <div class="wrap">
+        {$title}
+        <div id="hey-content">
+          It appears you are not yet authenticated.  Please <a href='{$url}'>CLICK HERE</a> to authenticate.</p>
+        </div>
+      </div>
+EOF;
+    return $html;
+  }
+
+  public function nonced_url($action=[],$nonce=null) {
+    // If a page override passed in, pop it off
+    if (!array_key_exists('page',$action)) {
+      $action['page'] = $this->slug;
+    }
+    $url = sprintf('%s/wp-admin/admin.php',get_bloginfo('wpurl'));
     if (is_array($action) && !empty($action)) {
+      $url .= "?";
       foreach($action as $key => $val) {
         $url .= sprintf('&%s=%s',$key,$val);
       }
