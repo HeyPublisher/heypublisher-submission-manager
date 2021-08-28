@@ -50,16 +50,6 @@ class HeyPublisher {
     return $string;
   }
 
-  public function make_donation_link($text_only=false) {
-    $format = "<a href='".HEYPUB_DONATE_URL."' target='_blank' title='Thank You for Donating to HeyPublisher'>%s</a>";
-    if ($text_only) {
-      $str = sprintf($format,'Make a Donation');
-    } else {
-      $str = sprintf($format,"<img id='heypub_donate' style='vertical-align:middle;' src='".HEY_BASE_URL."/images/donate.jpg' border='0'>");
-    }
-    return $str;
-  }
-
   public function submission_summary_link($text='See All Submissions') {
     global $hp_subs;
     $url = $hp_subs->nonced_url(['page'=>$hp_subs->slug]);

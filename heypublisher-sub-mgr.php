@@ -109,9 +109,6 @@ if ($debug) {
 }
 define('HEYPUB_PLUGIN_ERROR_CONTACT','support@heypublisher.com');
 
-// TODO: This has been deprecated - but needs to be traced through code to remove references
-define('HEYPUB_DONATE_URL','https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6');
-
 define('HEYPUB_PLUGIN_FULLPATH', dirname(__FILE__));
 // How to connect to the service
 define('HEYPUB_FEEDBACK_EMAIL_VALUE','support@heypublisher.com?subject=HeyPublisher%20Wordpress%20Plugin');
