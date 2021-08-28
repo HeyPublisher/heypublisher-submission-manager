@@ -182,10 +182,8 @@ require_once(HEYPUB_PLUGIN_FULLPATH.'/include/heypub-template-functions.php');
 
 // Load the classes
 // Main page
-// TODO: Convert this over to the normal way of doing things
-require_once(HEYPUB_PLUGIN_FULLPATH . '/admin/heypub-main.php');
-// load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Overview.class.php');
-// $hp_main = new \HeyPublisher\Page\Overview;
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Overview.class.php');
+$hp_main = new \HeyPublisher\Page\Overview;
 
 // Plugin configuration options
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Options.class.php');

@@ -168,21 +168,6 @@ EOF;
     print($e);
   }
 
-  // Display link to authenticate if user has not yet authenticated
-  // TODO: I think this is a duplicate of other logic.  Research
-  function not_authenticated_link() {
-    $title = heypub_display_page_title('Not Authenticated!');
-    $url = $this->nonced_url();
-    $html = <<<EOF
-      <div class="wrap">
-        {$title}
-        <div id="hey-content">
-          It appears you are not yet authenticated.  Please <a href='{$url}'>CLICK HERE</a> to authenticate.</p>
-        </div>
-      </div>
-EOF;
-    return $html;
-  }
   // Common method of creating all URLs to different page within the plugin
   //
   // @updated 3.3.0
@@ -190,7 +175,7 @@ EOF;
   // @param $action : Array:  where key is the query string param key and value is the query string value
   // ie: ['action'=>'foobar'] - will create URL `admin.php?action=foobar`
   // @param $nonce : String : the nonce to use as validation for destructive actions.
-  // 
+  //
   public function nonced_url($action=[],$nonce=null) {
     // If a page override passed in, pop it off
     if (!array_key_exists('page',$action)) {
