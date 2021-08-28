@@ -183,7 +183,14 @@ EOF;
 EOF;
     return $html;
   }
-
+  // Common method of creating all URLs to different page within the plugin
+  //
+  // @updated 3.3.0
+  // This is now the sole way of creating links within the plugin
+  // @param $action : Array:  where key is the query string param key and value is the query string value
+  // ie: ['action'=>'foobar'] - will create URL `admin.php?action=foobar`
+  // @param $nonce : String : the nonce to use as validation for destructive actions.
+  // 
   public function nonced_url($action=[],$nonce=null) {
     // If a page override passed in, pop it off
     if (!array_key_exists('page',$action)) {
@@ -214,16 +221,19 @@ EOF;
   // @since 2.8.0
   // Get the form action url as a relative url
   // Replaces function of same name in HeyPublisher class
+  // @deprecated  3.3.0
+  // Change all calls to this function to use `nonced_url`
   protected function get_form_url_for_page($action=null,$delete=null) {
-    $additional = '';
+    $arr = [];
     if ($action) {
-      $additional = sprintf('&action=%s',$action);
+      $arr['action'] = $action;
+      $non = null;
     }
-    $url = sprintf('admin.php?page=%s%s',$this->slug,$additional);
     if ($delete) {
-      $url = sprintf('%s&delete=%s',$url,$delete);
-      $url = wp_nonce_url($url,$this->nonce);
+      $arr['delete'] = $action;
+      $non = $this->nonce;
     }
+    $url = $this->nonced_url($arr,$non);
     return $url;
   }
   // Get the page edit url as a relative url

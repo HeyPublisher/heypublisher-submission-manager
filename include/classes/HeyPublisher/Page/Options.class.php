@@ -61,7 +61,7 @@ class Options extends \HeyPublisher\Page {
       $content = $this->options_capture_form();
       $button = 'Update';
     }
-    $action = $this->get_form_url_for_page();
+    $action = $this->nonced_url();
     $this->logger->debug(sprintf("in pageprep\n\terrors = %\n\tmessage = %s",$this->pubapi->api->error,$this->message));
     if ($this->pubapi->api->error) {
       $this->xml->error = $this->pubapi->api->error; # TODO: Fix this!!
@@ -309,53 +309,12 @@ EOF;
     </ul>
 EOF;
     return $html;
-
-
-  //   private function integrations($data) {
-  //     $mailchimp = @$data['integrations']['mailchimp'];
-  //     $html = <<<EOF
-  //       <!-- MailChimp -->
-  //       <h3>MailChimp Mailing List Subscriptions</h3>
-  //       <p>
-  //         If you use <a href='https://mailchimp.com/' target='_blank'>MailChimp</a> to manage your mailing list, setting to <code>Yes</code> will prompt new writers to subscribe to your mailing list when they submit their work.
-  //       </p>
-  //       <ul>
-  //         <li>
-  //           <label class='heypub' for='hp_mailchimp_active'>Prompt to Subscribe?</label>
-  //           <select name="heypub_opt[mailchimp_active]" id="hp_mailchimp_active" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
-  //             {$this->boolean_options('active',$mailchimp)}
-  //           </select>
-  //         </li>
-  //       </ul>
-  //       <div id='heypub_show_mailchimp_list' {$hidden}>
-  //         <!-- Content Specific for the MailChimp Config -->
-  //         <p>Read more on how to <a href='https://kb.mailchimp.com/integrations/api-integrations/about-api-keys' target='_blank'>Find or Generate Your API Key</a> and how to <a href='https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id' target="_blank">Find Your List ID</a> before continuing.
-  //         </p>
-  //         <ul>
-  //           <li>
-  //             <label class='heypub' for='hp_mailchimp_apikey'>API Key</label>
-  //             <input type="text" name="heypub_opt[mailchimp_api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip(@$mailchimp['api_key'])}" />
-  //           </li>
-  //           <li>
-  //             <label class='heypub' for='hp_mailchimp_listid'>List ID</label>
-  //             <input type="text" name="heypub_opt[mailchimp_list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip(@$mailchimp['list_id'])}" />
-  //           </li>
-  //         </ul>
-  //       </div>
-  // EOF;
-  //     return $html;
-  //   }
-
-
-
-
   }
 
 
   private function submission_page($opts){
     $replacer = HEYPUB_SUBMISSION_PAGE_REPLACER;
-    // TODO: Replace this will call to $this->get_form_url_for_page('create_form_page')
-    $link_url = $this->get_form_url_for_page('create_form_page');
+    $link_url = $this->nonced_url(['action'=>'create_form_page']);
     $link = $this->get_edit_url_for_page($opts['sub_page_id']);
     if(function_exists('wp_nonce_url')){
       $link_url = wp_nonce_url($link_url,'create_form');
