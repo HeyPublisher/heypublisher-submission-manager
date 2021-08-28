@@ -203,24 +203,6 @@ EOF;
     check_admin_referer($this->nonce);
   }
 
-  // @since 2.8.0
-  // Get the form action url as a relative url
-  // Replaces function of same name in HeyPublisher class
-  // @deprecated  3.3.0
-  // Change all calls to this function to use `nonced_url`
-  protected function get_form_url_for_page($action=null,$delete=null) {
-    $arr = [];
-    if ($action) {
-      $arr['action'] = $action;
-      $non = null;
-    }
-    if ($delete) {
-      $arr['delete'] = $action;
-      $non = $this->nonce;
-    }
-    $url = $this->nonced_url($arr,$non);
-    return $url;
-  }
   // Get the page edit url as a relative url
   protected function get_edit_url_for_page($id){
     $url = '';
