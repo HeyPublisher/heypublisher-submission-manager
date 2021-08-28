@@ -4,15 +4,21 @@
 
 
 ### 3.3.0
-+ Released:
-+ Validated functionality through [WordPress Version 5.8](https://wordpress.org/support/wordpress-version/version-5-8/).
-+ Removed old Loudlever class and all references to it.  Relevant code was replaced by Base class a while ago.
-+ Removed all calls to old XML endpoint `api/v1/publisher/fetch_categories` as it's been replaced by JSON endpoint `api/publishers/:id/genres`
-+ Removed all calls to old XML endpoint `api/v1/submissions/fetch_pending_submissions` as it's been replaced by JSON endpoint `api/publishers/:id/submissions`
-+ Removed `form_action` function and replaced all calls to it to use the the newer `nonced_url` function as it's more flexible.
-+ Plugin now requires at minimum WordPress version 5.0
-+ Server support for plugin versions older than 2.8.0 has been removed.  Users of versions older than 2.8.0 will receive an upgrade notice and functionality will be limited.
-+ Fixed plugin build date display on statistics page.
++ Released: 2021-09-01
++ [[#35](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/35)] : Normalize all calls to make a URL into one function, including:
+  + Removed `form_action` function and replaced all calls to it to use the the newer `nonced_url` function as it's more flexible.
++ [[#63](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/63)] : Update Submission State diagram.
++ [[#64](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/64)] : Remove unnecessary code.
++ [[#97](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/97)] : Include category on submission detail screen.
++ [[#121](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/121)] : Error page when trying to access submission with unusual file extension.
++ [[#122](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/122)] : Add option to suppress Author Info when reviewing submissions.
++ [[#124](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/124)] : Validate against [WordPress Version 5.8](https://wordpress.org/support/wordpress-version/version-5-8/).
++ [[#125](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/125)] : Submission List and Details should use JSON API endpoint, including:
+  + Removed all calls to old XML endpoint `api/v1/publisher/fetch_categories` as it's been replaced by JSON endpoint `api/publishers/:id/genres`
+  + Removed all calls to old XML endpoint `api/v1/submissions/fetch_pending_submissions` as it's been replaced by JSON endpoint `api/publishers/:id/submissions`
++ Removed old `Loudlever` class and all references to it.  Relevant code was replaced by `Base` class a while ago.
++ Plugin build date display on statistics page was using the date of upgrade, not date of plugin build, so fixed this.
++ **NOTE:** Server support for plugin versions older than 2.8.0 has been removed.  Users of versions older than 2.8.0 will receive an upgrade notice and functionality will be limited.
 
 ### 3.2.1
 + Released: 2021-06-26
