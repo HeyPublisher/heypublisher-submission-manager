@@ -88,7 +88,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   3.1.2 => 84
   3.2.0 => 88
   3.2.1 => 89
-  3.3.0 => 90
+  3.3.0 => 90 => min server req: 4.0.2
 ---------------------------------------------------------------------------------
 */
 
@@ -120,7 +120,6 @@ define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugi
 
 // TODO: remove these defines and reference directly from XML code that makes query
 define('HEYPUB_SVC_URL_AUTHENTICATE','publishers/fetch_or_create');           # initial plugin authentication
-define('HEYPUB_SVC_URL_RESPOND_TO_SUBMISSION','submissions/submission_action');             # accept/reject/publish action
 
 # if this changes, plugin will not work.  You have been warned
 // TODO: tie token value to version / host

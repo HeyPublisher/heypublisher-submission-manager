@@ -74,6 +74,26 @@ class Submission  {
     $this->logger->debug(sprintf("get_submission_by_id():\n\tResults: %s",print_r($result,1)));
     return $result;
   }
+  // Upddate the submission state
+  // @since 3.3.0
+  public function update_submission($id,$action,$message=null) {
+    $this->logger->debug("API::Submission#update_submission()");
+    $poid = $this->api->poid;
+    // all updates capture the Editor ID
+    $editor_id = get_current_user_id();
+    $data = array('action'=>$action, 'editor_id'=>$editor_id);
+    // If notes were present, include them
+    if ($message) {
+      $data['note'] = $message;
+    }
+    $submission = array('submission' => $data);
+    $path = sprintf('publishers/%s/submissions/%s',$poid,$id);
+    $result = $this->api->put($path,$submission);
+    if ($result == 'updated') {
+      return $result;
+    }
+    return;
+  }
 
   // Get the authentication token from the base API call
   public function get_authentication_token() {

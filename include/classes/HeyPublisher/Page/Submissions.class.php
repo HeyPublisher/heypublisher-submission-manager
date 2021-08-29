@@ -256,11 +256,11 @@ EOF;
   * @since 3.3.0 calls `get_submission_by_id`using JSON API endpoint instead of XML endpoint
   *
   * This function makes 5 server calls to render page:
-  *   => /api/v1/submissions/submission_action : marks the submission as `read`
-  *   => /api/publishers/:poid/submissions/:id : fetches the submission object
-  *   => /api/v2/submissions/:id/history?order=desc : fetches the submission status history for the history block
-  *   => /api/v2/submissions/:id/votes?editor_id=:editor_id  : fetches the votes for this submission
-  *   => /api/v2/submissions/:id/notes?order=desc  : fetches the notes for this submission
+  *   => PUT /api/publishers/:poid/submissions/:id : marks the submission as `read`
+  *   => GET /api/publishers/:poid/submissions/:id : fetches the submission object
+  *   => GET /api/v2/submissions/:id/history?order=desc : fetches the submission status history for the history block
+  *   => GET /api/v2/submissions/:id/votes?editor_id=:editor_id  : fetches the votes for this submission
+  *   => GET /api/v2/submissions/:id/notes?order=desc  : fetches the notes for this submission
   *
   * TODO: Is there a world in which we'd want to collect the notes/votes/history in the `show` call?
   */
@@ -269,7 +269,7 @@ EOF;
     $html = '';
     $opts = $this->config->get_config_options();
     // Reading a submission marks it as 'read' in HeyPublisher
-    if ($this->xml->submission_action($id,'read')) {
+    if ($this->subapi->update_submission($id,'read')) {
       $sub = $this->subapi->get_submission_by_id($id);
       if ($this->subapi->api->error) {
         $this->xml->error = $this->subapi->api->error; # TODO: Fix this!!
@@ -367,7 +367,7 @@ EOF;
           <h2 class='error'>We are unable to display this submission at this time.</h2>
 EOF;
       }  // end if $sub
-    } // end submission_action
+    } // end subapi->update_submission
     return $html;
   } // end function
 
@@ -716,7 +716,7 @@ private function accept_process_submission($req,$uid,$msg=FALSE) {
   $notes = $req['notes'];
   $this->logger->debug(sprintf("accept_process_submission req = \n%s\n USER_ID: %s\nMSG: %s",print_r($req,1),$uid,$msg));
 
-  if ($this->xml->submission_action($id,'accepted',$notes)) {
+  if ($this->subapi->update_submission($id,'accepted',$notes)) {
     $this->logger->debug("WE are in the UPDATE/CREATE");
     $sub = $this->subapi->get_submission_by_id($id);
     $post_id = $this->create_or_update_post($uid,'pending',$sub);
@@ -811,13 +811,14 @@ EOF;
 }
 
   // Save For Later Handler - Marks these records for later review.
+  // @since 3.3.0 uses the JSON update_submission endpoint
   private function consider_submission($req) {
     check_admin_referer('heypub-bulk-submit');
     $post = $req['post'];
     $notes = $req['notes'];
     $cnt = 0;
     foreach ($post as $key) {
-      if ($this->xml->submission_action($key,'under_consideration',$notes)) {
+      if ($this->subapi->update_submission($key,'under_consideration',$notes)) {
         $cnt++;
       }
     }
@@ -958,9 +959,10 @@ EOF;
   }
   // This function is called by the post-processor hook that detects when accepted works are 'trashed' or 'deleted'
   // Mark as withdrawn by writer as that is less 'rejecty'
+  // TODO: Want to revisit this as without context writer may think there was a mistake.  No current change needed at this time.
   public function delete_post_cleanup($post_id) {
     if ($hp_id = $this->get_submission_id_by_post_id($post_id)) {
-      $this->xml->submission_action($hp_id,'publisher_withdrew');
+      $this->subapi->update_submission($hp_id,'publisher_withdrew');
     }
     return true;
   }
@@ -972,7 +974,7 @@ EOF;
     $notes = $req['notes'];
     $cnt = 0;
     foreach ($post as $key) {
-      if ($this->xml->submission_action($key,'rejected',$notes)) {
+      if ($this->subapi->update_submission($key,'rejected',$notes)) {
         $cnt++;
         // need to see if this post has been previously 'accepted'
         if ($post_id = $this->get_post_id_by_submission_id($key)) {
@@ -992,7 +994,7 @@ EOF;
     $notes = $req['notes'];
     $cnt = 0;
     foreach ($post as $key) {
-      if ($this->xml->submission_action($key,'publisher_withdrew',$notes)) {
+      if ($this->subapi->update_submission($key,'publisher_withdrew',$notes)) {
         $cnt++;
         // need to see if this post has been previously 'accepted'
         if ($post_id = $this->get_post_id_by_submission_id($key)) {
@@ -1010,7 +1012,7 @@ EOF;
     check_admin_referer('heypub-bulk-submit');
     $post = $req['post'][0];
     $notes = $req['notes'];
-    if ($this->xml->submission_action($post,'publisher_revision_requested',$notes)) {
+    if ($this->subapi->update_submission($post,'publisher_revision_requested',$notes)) {
       $message = "An email has been sent to the author requesting they submit a new revision of their work.";
     } else {
       $message = "Unable to send the revision request!";
@@ -1029,7 +1031,7 @@ EOF;
   // This function is called by the post-processor hook that detects when accepted works are 'published'
   public function publish_post($post_id) {
     if ($hp_id = $this->get_submission_id_by_post_id($post_id)) {
-      $this->xml->submission_action($hp_id,'published');
+      $this->subapi->update_submission($hp_id,'published');
     }
     return true;
   }

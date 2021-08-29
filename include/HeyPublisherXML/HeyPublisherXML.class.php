@@ -248,56 +248,6 @@ EOF;
     return false;
   }
 
-  // Process the submission action with an optional message
-  function submission_action($id,$action,$message=false) {
-      $return = false;
-      if (!$this->submission_status["$action"]) {
-        $this->error = sprintf('%s is an invalid action',$action);
-        // $this->print_webservice_errors();
-        return $return;
-      }
-      if ($message) {
-        $notify = sprintf('<notify_author><message><![CDATA[%s]]></message></notify_author>', htmlentities(stripslashes($message)));
-      } else {
-        $notify = '<notify_author>false</notify_author>';
-      }
-      $editor_id = get_current_user_id();
-      $post = <<<EOF
-<submission>
-    <id>$id</id>
-    <action>$action</action>
-    $notify
-    <editor_id>{$editor_id}</editor_id>
-</submission>
-EOF;
-
-    // printf("<pre>XML request to webservice = %s</pre>",htmlentities($post));
-    $ret = $this->send(HEYPUB_SVC_URL_RESPOND_TO_SUBMISSION,$this->prepare_request_xml($post));
-    if (FALSE == $ret) {
-      $this->print_webservice_errors();
-    }
-    else {
-      $xml = new SimpleXMLElement($ret);
-      // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
-      // printf( "<pre>XML = %s</pre>",print_r($xml,1));
-      # this is an object, convert to string
-        if ($xml->success->message) {
-          $ret = $xml->success->message;
-          $return = "$ret";
-        }
-        else {
-          $err = $xml->error->message;
-          if ($err) {
-            $this->error = "$err";
-          } else {
-            $this->error = 'Error updating submission status at HeyPublisher.com';
-          }
-          $this->print_webservice_errors();
-        }
-      }
-      return $return;
-  }
-
   // Get a publisher name into the format expected by HeyPub search
   public function searchable($string) {
     $string = preg_replace('/[^0-9a-zA-Z\s]+/','',html_entity_decode($string,ENT_QUOTES));
