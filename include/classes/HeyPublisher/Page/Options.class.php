@@ -737,7 +737,6 @@ EOF;
 
   // After form POST - sync all options into local WP database as well as push
   // to the remote server.  This keeps the two databases in sync
-  // TODO: Make this use JSON endpoint
   // TODO: ensure we're only saving items that are a MUST for making plugin work -- everything else is remotely accessed
   private function update_options($post) {
     // $this->logger->debug("Page::Options#update_options():");
@@ -751,17 +750,20 @@ EOF;
     //  b) key is not present in genres array
     $this->clean_genres_category_map($opts);
     // $this->logger->debug(sprintf("\tabout to test accepting_subs = %s\n\tcategories = %s",$opts['accepting_subs'],print_r($opts['category_map'],1)));
-    $opts['accepting_subs'] = false;
-    if (count(array_keys($opts['category_map'])) > 0) {
-       $opts['accepting_subs'] = true;
-    }
+
+    // TODO: This prevents turning off submissions - unable to find situation in which this breaks
+    // $opts['accepting_subs'] = false;
+    // if (count(array_keys($opts['category_map'])) > 0) {
+    //    $opts['accepting_subs'] = true;
+    // }
     // $this->logger->debug(sprintf("\taccepting_subs now equals = %s",$opts['accepting_subs']));
-    //  Bulk update the form post, saving into local WP db
     $this->logger->debug(sprintf("\=> OPTS to save to DB : %s",print_r($opts,1)));
+    //  Bulk update the form post, saving into local WP db
     $this->config->set_config_options($opts);
     // This does not update the category map, because we lock down only permitted keys
     $this->config->set_config_option('category_map',$opts['category_map']);
-    // TODO: Are these still necessary?
+
+    // TODO: Why is this still here an necessary?
     // $this->config->set_config_option('categories',$cats);
     // if (!$opts['paying_market']) {
     //   $this->config->set_config_option('paying_market_range',null);

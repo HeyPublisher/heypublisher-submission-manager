@@ -6,7 +6,7 @@ Description: HeyPublisher is a better way of managing submissions for your WordP
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
 Version: 3.3.0
-Requires at least: 4.0
+Requires at least: 5.0
 
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
@@ -88,7 +88,7 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   3.1.2 => 84
   3.2.0 => 88
   3.2.1 => 89
-  3.3.0 => 90 => min server req: 4.0.2
+  3.3.0 => 90 => min server req: 4.0.3
 ---------------------------------------------------------------------------------
 */
 

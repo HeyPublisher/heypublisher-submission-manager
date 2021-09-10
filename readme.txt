@@ -3,7 +3,7 @@ Contributors: heypublisher, aguywithanidea, loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
 Requires at least: 5.0
-Tested up to: 5.8.0
+Tested up to: 5.8.1
 Stable Tag: 3.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -19,7 +19,7 @@ More information about this plugin can be found at: https://github.com/HeyPublis
 == Changelog ==
 
 = 3.3.0 =
-+ Released: 2021-09-01
++ Released: 2021-09-10
 + #35 : Normalize all calls to make a URL into one function, including:
   + Removed `form_action` function and replaced all calls to it to use the the newer `nonced_url` function as it's more flexible.
 + #63 : Update Submission State diagram.
@@ -33,7 +33,7 @@ More information about this plugin can be found at: https://github.com/HeyPublis
   + Removed all calls to old XML endpoint `api/v1/submissions/fetch_pending_submissions` as it's been replaced by JSON endpoint `api/publishers/:id/submissions`
 + Removed old `Loudlever` class and all references to it.  Relevant code was replaced by `Base` class a while ago.
 + Plugin build date display on statistics page was using the date of upgrade, not date of plugin build, so fixed this.
-+ **NOTE:** Server support for plugin versions older than 2.8.0 has been removed.  Users of versions older than 2.8.0 will receive an upgrade notice and functionality will be limited.
++ **NOTE:** HeyPublisher support for plugin versions older than 2.8.0 has been removed.  Users of versions older than 2.8.0 will receive an upgrade notice and functionality will be limited.
 
 = 3.2.1 =
 + Released: 2021-06-26
