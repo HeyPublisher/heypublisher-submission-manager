@@ -31,7 +31,7 @@ You define the type of writing you want to receive.  You control the flow of con
 
   *Using cURL, you can do all of the above with one command:*
 
-  `curl -Lo heypub.zip https://github.com/HeyPublisher/heypublisher-submission-manager/archive/master.zip && unzip heypub.zip && mv heypublisher-submission-manager-master heypublisher-submission-manager`
+<!--  `curl -Lo heypub.zip https://github.com/HeyPublisher/heypublisher-submission-manager/archive/master.zip && unzip heypub.zip && mv heypublisher-submission-manager-master heypublisher-submission-manager` -->
 
 * Active the plugin via the WordPress plugin menu.
 
