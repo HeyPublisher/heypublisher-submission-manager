@@ -1,7 +1,12 @@
 <?php
 namespace HeyPublisher;
 
+if (!class_exists("\HeyPublisher\Base")) {
+  require_once( dirname(__FILE__) . '/Base.class.php');
+}
+
 if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyPublisher: Illegal Page Call!'); }
+
 
 /**
  * HeyPublisher base class for all admin pages
@@ -9,8 +14,7 @@ if(preg_match('#' . basename(__FILE__) . '#', $_SERVER['PHP_SELF'])) { die('HeyP
  */
 
 // Load the class files and associated scoped functionality
-load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/Loudlever/Loudlever.class.php');
-class Page extends \Loudlever\Loudlever {
+class Page extends \HeyPublisher\Base {
   var $i18n = 'heypublisher';
   var $logo_block = '';
   var $xml = null;  # the pointer for $hp_xml
@@ -29,14 +33,10 @@ class Page extends \Loudlever\Loudlever {
   	parent::__construct();
     $this->plugin['home'] = 'https://github.com/HeyPublisher/heypublisher-submission-manager';
     $this->plugin['support'] = 'https://github.com/HeyPublisher/heypublisher-submission-manager/issues';
-    $this->plugin['contact'] = 'mailto:support@heypublisher.com';
     $this->logger = $hp_config->logger;
     $this->config = $hp_config;
     $this->xml = $hp_xml;
     $this->nonce = sprintf('hp_nonce%s',$this->page);
-
-    // TODO: Deprecate this!
-    $this->log_file = HEYPUB_PLUGIN_FULLPATH . '/error.log';
   }
 
   public function __destruct() {
@@ -168,9 +168,22 @@ EOF;
     print($e);
   }
 
-  protected function nonced_url($action=[],$nonce=null) {
-    $url = sprintf('%s/wp-admin/admin.php?page=%s',get_bloginfo('wpurl'),$this->slug);
+  // Common method of creating all URLs to different page within the plugin
+  //
+  // @updated 3.3.0
+  // This is now the sole way of creating links within the plugin
+  // @param $action : Array:  where key is the query string param key and value is the query string value
+  // ie: ['action'=>'foobar'] - will create URL `admin.php?action=foobar`
+  // @param $nonce : String : the nonce to use as validation for destructive actions.
+  //
+  public function nonced_url($action=[],$nonce=null) {
+    // If a page override passed in, pop it off
+    if (!array_key_exists('page',$action)) {
+      $action['page'] = $this->slug;
+    }
+    $url = sprintf('%s/wp-admin/admin.php',get_bloginfo('wpurl'));
     if (is_array($action) && !empty($action)) {
+      $url .= "?";
       foreach($action as $key => $val) {
         $url .= sprintf('&%s=%s',$key,$val);
       }
@@ -190,21 +203,6 @@ EOF;
     check_admin_referer($this->nonce);
   }
 
-  // @since 2.8.0
-  // Get the form action url as a relative url
-  // Replaces function of same name in HeyPublisher class
-  protected function get_form_url_for_page($action=null,$delete=null) {
-    $additional = '';
-    if ($action) {
-      $additional = sprintf('&action=%s',$action);
-    }
-    $url = sprintf('admin.php?page=%s%s',$this->slug,$additional);
-    if ($delete) {
-      $url = sprintf('%s&delete=%s',$url,$delete);
-      $url = wp_nonce_url($url,$this->nonce);
-    }
-    return $url;
-  }
   // Get the page edit url as a relative url
   protected function get_edit_url_for_page($id){
     $url = '';

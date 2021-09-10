@@ -19,7 +19,7 @@ class Overview extends \HeyPublisher\Page {
   	parent::__construct();
     $this->pubapi = new \HeyPublisher\API\Publisher;
     $this->slug .= $this->page;
-    $this->log("slug = {$this->slug}");
+    $this->logger->debug("slug = {$this->slug}");
   }
 
   public function __destruct() {
@@ -27,7 +27,7 @@ class Overview extends \HeyPublisher\Page {
   }
 
   protected function deactivate_prompt() {
-    $this->log("deactivate_prompt");
+    $this->logger->debug("deactivate_prompt");
     // only deleting the options and possibly deactivating the plugin
     heypub_uninit();
     // TODO: move this define to central place at some point
@@ -85,7 +85,7 @@ EOF;
       $args = array('role__in' => array('Editor', 'Administrator'), 'orderby' => 'display_name');
       $editors = get_users( $args );
       $history = $this->pubapi->get_editor_history();
-      $this->log(sprintf("EDITORS: %s", print_r($editors,1)));
+      $this->logger->debug(sprintf("EDITORS: %s", print_r($editors,1)));
 
       $html .= <<<EOF
       <h3>Editor Statistics</h3>
@@ -143,13 +143,14 @@ EOF;
   protected function content() {
     global $hp_base;
     if (!$this->config->is_validated) {
-      $val = "<a href='". heypub_get_authentication_url() . "'>CLICK HERE to VALIDATE</a>";
+      $u = $this->nonced_url(['page'=>'heypublisher_options']);  #override the page attribute
+      $val = "<a href='{$u}'>CLICK HERE to VALIDATE</a>";
     } else {
       $val = date('F jS, Y',strtotime($this->config->is_validated));
     }
     $ver = HEYPUB_PLUGIN_VERSION;
     $blog = get_bloginfo('name');
-    $verdate = date('F jS, Y',strtotime($this->config->get_install_option('version_current_date')));
+    $verdate = date('F jS, Y',strtotime(HEYPUB_PLUGIN_BUILD_DATE));
     $editors = $this->get_editor_history(); // this can only be launched after 1.6.0 has been live 30 days
     $stats = $this->pubapi->get_publisher_stats();
     // ensure they're saved locally for posterity ... for some reason, though not sure why

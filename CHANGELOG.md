@@ -1,4 +1,24 @@
 ## Changelog
++ Minimum plugin version supported by HeyPublisher service: 2.8.0
++ Always use the latest version of the plugin.
+
+
+### 3.3.0
++ Released: 2021-09-10
++ [[#35](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/35)] : Normalize all calls to make a URL into one function, including:
+  + Removed `form_action` function and replaced all calls to it to use the the newer `nonced_url` function as it's more flexible.
++ [[#63](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/63)] : Update Submission State diagram.
++ [[#64](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/64)] : Remove unnecessary code.
++ [[#97](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/97)] : Include category on submission detail screen.
++ [[#121](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/121)] : Error page when trying to access submission with unusual file extension.
++ [[#122](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/122)] : Add option to suppress Author Info when reviewing submissions.
++ [[#124](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/124)] : Validate against [WordPress Version 5.8](https://wordpress.org/support/wordpress-version/version-5-8/).
++ [[#125](https://github.com/HeyPublisher/heypublisher-submission-manager/issues/125)] : Submission List and Details should now use JSON API endpoints, including:
+  + Removed all calls to old XML endpoint `api/v1/publisher/fetch_categories` as it's been replaced by JSON endpoint `api/publishers/:id/genres`
+  + Removed all calls to old XML endpoint `api/v1/submissions/fetch_pending_submissions` as it's been replaced by JSON endpoint `api/publishers/:id/submissions`
++ Removed old `Loudlever` class and all references to it.  Relevant code was replaced by `Base` class a while ago.
++ Plugin build date display on statistics page was using the date of upgrade, not date of plugin build, so fixed this.
++ **NOTE:** HeyPublisher support for plugin versions older than 2.8.0 has been removed.  Users of versions older than 2.8.0 will receive an upgrade notice and functionality will be limited.
 
 ### 3.2.1
 + Released: 2021-06-26
@@ -145,42 +165,34 @@
 
 ### 1.4.2
 + Released : 2011-09-27
-
 + Adds user creation feature request.
 
 ### 1.4.1
 + Released : 2011-06-25
-
 + Fixes minor typos.
 
 ### 1.4.0
 + Released : 2011-06-24
-
 + Primarily fixes UI components and HTML conversion formatting issues.  Upgrade strongly suggested.
 
 ### 1.3.2
 + Released : 2011-03-02
-
 + Fixes error when publisher name has special characters in it.
 
 ### 1.3.1
 + Released : 2011-01-04
-
 + Fixes error thrown when deactivating plugin - please upgrade.
 
 ### 1.3.0
 + Released : 2011-01-03
-
 + Fixes issues with state transitions when submissions are moved to trash, or scheduled for future publication.  See Changelog for details.
 
 ### 1.2.4
 + Released : 2010-11-01
-
 + Fixes Tagging issue. Please ugrade
 
 ### 1.2.3
 + Released : 2010-10-30
-
 + Fixes Dashboard wrapping issue.  Please upgrade.
 
 ### 1.2.2
@@ -188,17 +200,14 @@
 
 ### 1.2.1
 + See Changelog for added functionality.  No bug fixes.
-
 + Released : 2010-10-27
 
 ### 1.2.0
 + See Changelog for added functionality.  No bug fixes.
-
 + Released : 2010-10-23
 
 ### 1.1.0
 + Upgrade to fix possible conflicts with javascript you may experience if your Admin Theme also uses javascript.
-
 + Released : 2010-07-22
 
 ### 1.0.1

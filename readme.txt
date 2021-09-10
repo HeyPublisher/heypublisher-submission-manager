@@ -2,9 +2,9 @@
 Contributors: heypublisher, aguywithanidea, loudlever
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6
 Tags: accept submissions, anonymous, contributor, custom post interface, guest blog posts, online applications, slushpile, submission form, submission manager, submission, unregistered user, heypublisher
-Requires at least: 4.0
-Tested up to: 5.7.2
-Stable Tag: 3.2.1
+Requires at least: 5.0
+Tested up to: 5.8.1
+Stable Tag: 3.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,23 @@ This plugin allows you as to accept submissions from writers.  You define catego
 More information about this plugin can be found at: https://github.com/HeyPublisher/heypublisher-submission-manager
 
 == Changelog ==
+
+= 3.3.0 =
++ Released: 2021-09-10
++ #35 : Normalize all calls to make a URL into one function, including:
+  + Removed `form_action` function and replaced all calls to it to use the the newer `nonced_url` function as it's more flexible.
++ #63 : Update Submission State diagram.
++ #64 : Remove unnecessary code.
++ #97 : Include category on submission detail screen.
++ #121 : Error page when trying to access submission with unusual file extension.
++ #122 : Add option to suppress Author Info when reviewing submissions.
++ #124 : Validate against WordPress Version 5.8.
++ #125 : Submission List and Details should use JSON API endpoint, including:
+  + Removed all calls to old XML endpoint `api/v1/publisher/fetch_categories` as it's been replaced by JSON endpoint `api/publishers/:id/genres`
+  + Removed all calls to old XML endpoint `api/v1/submissions/fetch_pending_submissions` as it's been replaced by JSON endpoint `api/publishers/:id/submissions`
++ Removed old `Loudlever` class and all references to it.  Relevant code was replaced by `Base` class a while ago.
++ Plugin build date display on statistics page was using the date of upgrade, not date of plugin build, so fixed this.
++ **NOTE:** HeyPublisher support for plugin versions older than 2.8.0 has been removed.  Users of versions older than 2.8.0 will receive an upgrade notice and functionality will be limited.
 
 = 3.2.1 =
 + Released: 2021-06-26
@@ -65,5 +82,4 @@ More information about this plugin can be found at: https://github.com/HeyPublis
 * Plugin is now hosted on GitHub at https://github.com/HeyPublisher.
 
 = 1.0.1 =
-
 * Initial Release : 2010-04-29

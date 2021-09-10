@@ -5,8 +5,8 @@ Plugin URI: https://github.com/HeyPublisher/heypublisher-submission-manager
 Description: HeyPublisher is a better way of managing submissions for your WordPress-powered publication.
 Author: HeyPublisher
 Author URI: https://www.heypublisher.com
-Version: 3.2.1
-Requires at least: 4.0
+Version: 3.3.0
+Requires at least: 5.0
 
 
   Copyright 2010-2014 Loudlever, Inc. (wordpress@loudlever.com)
@@ -88,18 +88,18 @@ define('HEY_DIR', dirname(plugin_basename(__FILE__)));
   3.1.2 => 84
   3.2.0 => 88
   3.2.1 => 89
-
+  3.3.0 => 90 => min server req: 4.0.3
 ---------------------------------------------------------------------------------
 */
 
 // Configs specific to the plugin
 // Build Number (must be a integer)
 define('HEY_BASE_URL', get_option('siteurl').'/wp-content/plugins/'.HEY_DIR.'/');
-define("HEYPUB_PLUGIN_BUILD_DATE", "2021-06-26");
+define("HEYPUB_PLUGIN_BUILD_DATE", "2021-09-01");
 // Version Number (can be text)
-define("HEYPUB_PLUGIN_BUILD_NUMBER", "89");  // This controls whether or not we get upgrade prompt
-define("HEYPUB_PLUGIN_VERSION", "3.2.1");
-define("HEYPUB_PLUGIN_TESTED", "5.7.2");
+define("HEYPUB_PLUGIN_BUILD_NUMBER", "90");  // This controls whether or not we get upgrade prompt
+define("HEYPUB_PLUGIN_VERSION", "3.3.0");
+define("HEYPUB_PLUGIN_TESTED", "5.8.0");
 
 # Base domain
 $domain = 'https://www.heypublisher.com';
@@ -108,9 +108,6 @@ if ($debug) {
   $domain = 'http://127.0.0.1:3000';
 }
 define('HEYPUB_PLUGIN_ERROR_CONTACT','support@heypublisher.com');
-
-// TODO: This has been deprecated - but needs to be traced through code to remove references
-define('HEYPUB_DONATE_URL','https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6XSRBYF4B3RH6');
 
 define('HEYPUB_PLUGIN_FULLPATH', dirname(__FILE__));
 // How to connect to the service
@@ -123,13 +120,6 @@ define('HEYPUB_SVC_STYLESHEET_URL',HEYPUB_DOMAIN . '/stylesheets/wordpress/plugi
 
 // TODO: remove these defines and reference directly from XML code that makes query
 define('HEYPUB_SVC_URL_AUTHENTICATE','publishers/fetch_or_create');           # initial plugin authentication
-define('HEYPUB_SVC_URL_GET_PUBLISHER','publishers/show');                     # update the options
-define('HEYPUB_SVC_URL_UPDATE_PUBLISHER','publishers/update_publisher');      # update the options
-define('HEYPUB_SVC_URL_GET_GENRES','publishers/fetch_categories');            # fetch categories publisher accepts
-define('HEYPUB_SVC_URL_GET_PUB_TYPES','publishers/fetch_publisher_types');    # fetch publisher types
-define('HEYPUB_SVC_URL_GET_SUBMISSIONS','submissions/fetch_pending_submissions');           # fetch all pending submissions
-define('HEYPUB_SVC_URL_RESPOND_TO_SUBMISSION','submissions/submission_action');             # accept/reject/publish action
-define('HEYPUB_SVC_READ_SUBMISSION','submissions/show');                      # fetch a single submission for reading.  also sets the 'read' status
 
 # if this changes, plugin will not work.  You have been warned
 // TODO: tie token value to version / host
@@ -162,6 +152,7 @@ define('HEYPUB_POST_META_KEY_SUB_ID','_heypub_post_meta_key_sub_id');
 global $hp_xml, $hp_base, $hp_config;
 global $hp_updater;
 
+// Updater needed to check for plugin updates now that we're hosted on GitHub
 if (!class_exists("\HeyPublisher\Base\Updater")) {
   require_once(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Base/Updater.class.php');
 }
@@ -187,10 +178,8 @@ require_once(HEYPUB_PLUGIN_FULLPATH.'/include/heypub-template-functions.php');
 
 // Load the classes
 // Main page
-// TODO: Convert this over to the normal way of doing things
-require_once(HEYPUB_PLUGIN_FULLPATH . '/admin/heypub-main.php');
-// load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Overview.class.php');
-// $hp_main = new \HeyPublisher\Page\Overview;
+load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Overview.class.php');
+$hp_main = new \HeyPublisher\Page\Overview;
 
 // Plugin configuration options
 load_template(HEYPUB_PLUGIN_FULLPATH . '/include/classes/HeyPublisher/Page/Options.class.php');
@@ -409,9 +398,16 @@ function heypub_init(){
       // $hp_config->set_config_option('category_map',$hp_config->get_config_option('categories'));
       $map = $hp_xml->get_category_mapping();
       $hp_xml->log(sprintf("heypub_init() \$map = \n\t%s",print_r($map,1)));
-
     }
-
+    // Upgrade to 3.3.0 options
+    if ($opts['version_current'] < 90) {
+      $hp_config->logger->debug("\tupgrading options to build 90");
+      $author = array(
+        'blind_review'  => false,
+        'sync_bio'      => false
+      );
+      $hp_config->set_config_option('author',$author);
+    }
 
     // finally - ensure that the last version and current version are set
     $data = array(

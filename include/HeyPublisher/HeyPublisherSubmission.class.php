@@ -1,6 +1,6 @@
 <?php
 /**
-* HeyPublisher class is the root class from which all plugin functionality is extended
+* HeyPublisherSubmissions class is a collection of helper functions
 *
 */
 require_once('HeyPublisher.class.php');

@@ -46,13 +46,6 @@ class Options extends \HeyPublisher\Page {
     // $this->print_message_if_exists(); // this is being called in content()
     parent::page('Plugin Options', '', array($this,'content'));
   }
-  // TODO: Replace calls to this to get_form_url_for_page()
-  private function form_action() {
-    // $action = $this->get_form_url_for_page();
-    $action = sprintf('admin.php?page=%s',$this->slug);
-    return $action;
-  }
-
   protected function content() {
   	global $wpdb,$wp_roles,$hp_base;
     $html = '';
@@ -68,7 +61,7 @@ class Options extends \HeyPublisher\Page {
       $content = $this->options_capture_form();
       $button = 'Update';
     }
-    $action = $this->form_action();
+    $action = $this->nonced_url();
     $this->logger->debug(sprintf("in pageprep\n\terrors = %\n\tmessage = %s",$this->pubapi->api->error,$this->message));
     if ($this->pubapi->api->error) {
       $this->xml->error = $this->pubapi->api->error; # TODO: Fix this!!
@@ -316,53 +309,12 @@ EOF;
     </ul>
 EOF;
     return $html;
-
-
-  //   private function integrations($data) {
-  //     $mailchimp = @$data['integrations']['mailchimp'];
-  //     $html = <<<EOF
-  //       <!-- MailChimp -->
-  //       <h3>MailChimp Mailing List Subscriptions</h3>
-  //       <p>
-  //         If you use <a href='https://mailchimp.com/' target='_blank'>MailChimp</a> to manage your mailing list, setting to <code>Yes</code> will prompt new writers to subscribe to your mailing list when they submit their work.
-  //       </p>
-  //       <ul>
-  //         <li>
-  //           <label class='heypub' for='hp_mailchimp_active'>Prompt to Subscribe?</label>
-  //           <select name="heypub_opt[mailchimp_active]" id="hp_mailchimp_active" onchange="HeyPublisher.selectToggle(this,'#heypub_show_mailchimp_list');">
-  //             {$this->boolean_options('active',$mailchimp)}
-  //           </select>
-  //         </li>
-  //       </ul>
-  //       <div id='heypub_show_mailchimp_list' {$hidden}>
-  //         <!-- Content Specific for the MailChimp Config -->
-  //         <p>Read more on how to <a href='https://kb.mailchimp.com/integrations/api-integrations/about-api-keys' target='_blank'>Find or Generate Your API Key</a> and how to <a href='https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id' target="_blank">Find Your List ID</a> before continuing.
-  //         </p>
-  //         <ul>
-  //           <li>
-  //             <label class='heypub' for='hp_mailchimp_apikey'>API Key</label>
-  //             <input type="text" name="heypub_opt[mailchimp_api_key]" id="hp_mailchimp_apikey" class='heypub' value="{$this->strip(@$mailchimp['api_key'])}" />
-  //           </li>
-  //           <li>
-  //             <label class='heypub' for='hp_mailchimp_listid'>List ID</label>
-  //             <input type="text" name="heypub_opt[mailchimp_list_id]" id="hp_mailchimp_listid" class='heypub' value="{$this->strip(@$mailchimp['list_id'])}" />
-  //           </li>
-  //         </ul>
-  //       </div>
-  // EOF;
-  //     return $html;
-  //   }
-
-
-
-
   }
 
 
   private function submission_page($opts){
     $replacer = HEYPUB_SUBMISSION_PAGE_REPLACER;
-    // TODO: Replace this will call to $this->get_form_url_for_page('create_form_page')
-    $link_url = sprintf('%s&action=create_form_page',$this->form_action());
+    $link_url = $this->nonced_url(['action'=>'create_form_page']);
     $link = $this->get_edit_url_for_page($opts['sub_page_id']);
     if(function_exists('wp_nonce_url')){
       $link_url = wp_nonce_url($link_url,'create_form');
@@ -444,6 +396,25 @@ EOF;
 EOF;
     return $html;
   }
+  // Adds ability for editor to turn off display of author information
+  // @since 3.3.0
+  private function submission_review($data){
+    $rev = @$data['author'];
+
+    $html = <<<EOF
+      <h3>Submission Review</h3>
+      <p>
+        Enabling <b>Blind Review</b> will hide author information from Editors when they are reviewing submissions.
+      </p>
+      <ul>
+        <li>
+          {$this->boolean_select('Blind Review?','blind_review',@$data['author'],'author')}
+        </li>
+      </ul>
+EOF;
+    return $html;
+  }
+
 
   // Marries the list of HP genres to the ones that have been activated in plugin
   // Returns array where key is the HP genre ID and val is the WP category id
@@ -501,8 +472,6 @@ EOF;
 
     $this->logger->debug(sprintf("Options::genre_map() \n\tMapped genres = %s",print_r($genres,1)));
 
-    // $cats = $this->xml->get_my_categories_as_hash();
-    // $this->logger->debug(sprintf("Options::genre_map() \$cats = %s",print_r($cats,1)));
     if (empty($genres)) { return ''; }
     $header = '';
     for ($x=0;$x<$cols;$x++) {
@@ -555,6 +524,7 @@ EOF;
   private function writer_notifications($data) {
     $sub_states = sprintf('%s/about/submission_states',$this->domain);
     $notes = @$data['notifications'];
+    $url = $this->nonced_url(['page'=>'heypublisher_email']);
     $html = <<<EOF
       <h3>Writer Notifications</h3>
       <p>
@@ -565,7 +535,7 @@ EOF;
         You can disable sending email by setting the value to <code>No</code> below.</p>
       <p>
         Customize the content of the emails you want sent through the
-        <a href='admin.php?page=heypublisher_email' target=_top>Email Templates</a>
+        <a href='{$url}' target=_top>Email Templates</a>
         screen.
       </p>
       <input type='hidden' name='notify_submitted' value='1'>
@@ -670,6 +640,7 @@ EOF;
         {$this->submission_guidelines($opts,$settings)}
         {$this->submission_page($opts)}
         {$this->submission_criteria($settings)}
+        {$this->submission_review($settings)}
         {$this->writer_notifications($settings)}
         {$this->integrations($settings)}
         {$this->experimental_options($settings)}
@@ -724,6 +695,7 @@ EOF;
         'user_oid'      => $this->xml->user_oid,
         'publisher_oid' => $this->xml->pub_oid
       );
+      $this->logger->debug(" => xml->authenticate");
       // TODO: Clean this up - but for now, need to be explicitly setting all instances of uoid/poid
       $this->config->uoid = $this->xml->user_oid;
       $this->config->poid = $this->xml->pub_oid;
@@ -741,13 +713,12 @@ EOF;
       $pub = $this->pubapi->get_publisher_info();
       $message = 'Account validation succeeded! You can now configure your account.';
       if ($pub) {
-        // TODO: Change this to pull from JSON endpoint
-        $cats = $this->xml->get_my_categories_as_hash();
+        $this->logger->debug(sprintf("\n\t $pub values returned from server: %s",print_r($pub,1)));
         $has_genres = false;
-        foreach ($cats as $id=>$hash) {
-          if ($hash['has']) { $has_genres = true; }
+        if (is_array($pub['genres']['data']) && count($pub['genres']['data'])) {
+          $has_genres = true;
         }
-        // For a re-install, this will be based on the categories returned from HP servers
+        // For a re-install, this will be based on the already-mapped categories returned from HP servers
         $pub['accepting_subs'] = $has_genres;
 
         $message .= "<br/><br/>To help you get started we've pre-populated the form with information we already have.";
@@ -766,30 +737,33 @@ EOF;
 
   // After form POST - sync all options into local WP database as well as push
   // to the remote server.  This keeps the two databases in sync
-  // TODO: Make this use JSON endpoint
   // TODO: ensure we're only saving items that are a MUST for making plugin work -- everything else is remotely accessed
   private function update_options($post) {
-    $this->logger->debug(sprintf("Page::Options#update_options(): \n\t\$post = %s",print_r($post,1)));
+    // $this->logger->debug("Page::Options#update_options():");
+    // $this->logger->debug(sprintf("\t=> POST params: %s",print_r($post,1)));
     $message = null;
     // Processing a form post of Option Updates
     // Get options from the post
     $opts = $post['heypub_opt'];
-    $this->logger->debug(sprintf("\t\$opts = %s",print_r($opts,1)));
     // Need to detect the values in category_map where:
     //  a) value is < 0
     //  b) key is not present in genres array
     $this->clean_genres_category_map($opts);
-    $this->logger->debug(sprintf("\tabout to test accepting_subs = %s\n\tcategories = %s",$opts['accepting_subs'],print_r($opts['category_map'],1)));
-    $opts['accepting_subs'] = false;
-    if (count(array_keys($opts['category_map'])) > 0) {
-       $opts['accepting_subs'] = true;
-    }
-    $this->logger->debug(sprintf("\taccepting_subs now equals = %s",$opts['accepting_subs']));
+    // $this->logger->debug(sprintf("\tabout to test accepting_subs = %s\n\tcategories = %s",$opts['accepting_subs'],print_r($opts['category_map'],1)));
+
+    // TODO: This prevents turning off submissions - unable to find situation in which this breaks
+    // $opts['accepting_subs'] = false;
+    // if (count(array_keys($opts['category_map'])) > 0) {
+    //    $opts['accepting_subs'] = true;
+    // }
+    // $this->logger->debug(sprintf("\taccepting_subs now equals = %s",$opts['accepting_subs']));
+    $this->logger->debug(sprintf("\=> OPTS to save to DB : %s",print_r($opts,1)));
     //  Bulk update the form post, saving into local WP db
     $this->config->set_config_options($opts);
     // This does not update the category map, because we lock down only permitted keys
     $this->config->set_config_option('category_map',$opts['category_map']);
-    // TODO: Are these still necessary?
+
+    // TODO: Why is this still here an necessary?
     // $this->config->set_config_option('categories',$cats);
     // if (!$opts['paying_market']) {
     //   $this->config->set_config_option('paying_market_range',null);
@@ -803,6 +777,7 @@ EOF;
     $opts['urls']['rss'] = get_bloginfo('rss2_url');
     // now attempt to sync with HeyPublisher.com
     unset($opts['category_map']);
+    $this->logger->debug(sprintf("\=> OPTS sent to server : %s",print_r($opts,1)));
     $success = $this->pubapi->update_publisher($opts);
     if ($success) {
       $message = 'Your changes have been saved and syncronized with HeyPublisher.';

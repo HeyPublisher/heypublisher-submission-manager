@@ -81,7 +81,7 @@ class Email extends \HeyPublisher\Page {
 
   }
   public function help_submission_states() {
-    $img = sprintf('<img src="%s/images/submission_states.gif">',HEY_BASE_URL);
+    $img = sprintf('<img src="%s/images/submission_states.png" style="width:70%%;">',HEY_BASE_URL);
     $html = <<<EOF
     <h2>
       The Submission States
@@ -207,7 +207,7 @@ EOF;
   }
 
   protected function edit_email_form($id) {
-    $cancel = $this->get_form_url_for_page();
+    $cancel = $this->nonced_url();
     $state = ucwords($id);
     if ($id == 'new') {
       $title = 'Create New Email Template';
@@ -254,7 +254,7 @@ EOF;
     }
 
     $nonce = $this->get_nonced_field();
-    $action = $this->get_form_url_for_page($button);
+    $action = $this->nonced_url(['action'=>$button]);
     $html = <<<EOF
     <h3 class='first'>{$title}</h3>
     {$block1}
@@ -292,7 +292,7 @@ EOF;
     }
     $emails = $res['email_templates'];
     $nonce = $this->get_nonced_field();
-    $action = $this->get_form_url_for_page('new');
+    $action = $this->nonced_url(['action'=>'new']);
     if ($res['meta']['total'] > $res['meta']['returned']) {
       $button = <<<EOF
         <input type="submit" class="heypub-button button-primary" name="create_button" id="create_button" value="Add New &raquo;" />
@@ -339,8 +339,8 @@ EOF;
       foreach($emails as $x => $hash) {
         $s = implode(' ',explode('_',$hash['submission_state']));
         $state = ucwords($s);
-        $edit = $this->get_form_url_for_page($hash['submission_state']);
-        $delete = $this->get_form_url_for_page('delete',$hash['submission_state']);
+        $edit = $this->nonced_url(['action'=>$hash['submission_state']]);
+        $delete = $this->nonced_url(['action'=>'delete', 'delete'=>$hash['submission_state']],$this->nonce);
         $html .= <<<EOF
           <tr>
             <td>{$state}</td>

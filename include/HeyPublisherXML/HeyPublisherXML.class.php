@@ -1,6 +1,9 @@
 <?php
 /**
-* HeyPublisherXML class for publishing/parsing XML
+* TODO: XML support on the server will be deprecated at end of 2021.
+* Need to move all necessary functionality to JSON-based endpoints.
+*
+* HeyPublisherXML class is the root class from which all XML-based plugin functionality is based
 *
 */
 class HeyPublisherXML {
@@ -157,48 +160,6 @@ class HeyPublisherXML {
     return $return;
   }
 
-  function update_publisher_mailchimp($post) {
-    $xml = null;
-    $active =   htmlentities(stripslashes($post['mailchimp_active']));
-    $api_key =  htmlentities(stripslashes($post['mailchimp_api_key']));
-    $list_id =  htmlentities(stripslashes($post['mailchimp_list_id']));
-    // if ($post[mailchimp_active]) {
-    $xml =<<< EOF
-    <mailchimp>
-      <active>{$active}</active>
-      <api_key>{$api_key}</api_key>
-      <list_id>{$list_id}</list_id>
-    </mailchimp>
-EOF;
-    // }
-    return $xml;
-  }
-
-  function update_publisher_categories($post) {
-    $ret = null;
-    if ($post['accepting_subs'] && $post['genres_list']) {
-      $cat_array = array();
-      foreach ($post['genres_list'] as $name => $id) {
-        $cat_array[] = sprintf('<category>%s</category>', $id);
-      }
-      if (FALSE != $cat_array) {
-        $ret = sprintf('<categories>%s</categories>',join('',$cat_array));
-      }
-    }
-    return $ret;
-  }
-
-  function update_publisher_reading_period($post) {
-    $bool = $this->boolean($post['reading_period']);
-    if ($post['reading_period']) {
-      $start = $post['start_date'];
-      $end = $post['end_date'];
-      $ret = "<reading_period><reading_start_date>$start</reading_start_date><reading_end_date>$end</reading_end_date></reading_period>";
-    } else {
-      $ret = "<reading_period>$bool</reading_period>";
-    }
-    return $ret;
-  }
   /**
   * convert boolean vals into strings reading 'true' or 'false'
   */
@@ -209,17 +170,6 @@ EOF;
       return 'false';
     }
   }
-  function update_publisher_paying_market($post) {
-    $bool = $this->boolean($post['paying_market']);
-    if ($post['paying_market']) {
-      $val = htmlentities(stripslashes($post['paying_market_range']));
-      $ret = "<paying_market><paying_market_amount>$val</paying_market_amount></paying_market>";
-    } else {
-      $ret = "<paying_market>$bool</paying_market>";
-    }
-    return $ret;
-  }
-
   function prepare_request_xml($post,$suppress_publisher=false) {
     $account = $this->get_account_request_header();
     if (FALSE == $suppress_publisher) {
@@ -255,86 +205,6 @@ EOF;
     } else {
       return 'Unknown';
     }
-  }
-
-  function get_recent_submissions() {
-    $post = <<<EOF
-<submissions>
-    <sort>date</sort>
-    <sort_direction>DESC</sort_direction>
-    <filter>unread</filter>
-</submissions>
-EOF;
-
-    $ret = $this->send(HEYPUB_SVC_URL_GET_SUBMISSIONS,$this->prepare_request_xml($post));
-    if (FALSE == $ret) {
-      $this->print_webservice_errors();
-    }
-    else {
-      $this->log(sprintf("RAW XML = \n%s",$ret));
-      $xml = new SimpleXMLElement($ret);
-      // printf( "<pre>XML = %s</pre>",print_r($xml,1));
-      # this is an object, convert to string
-      if ($xml->success->message) {
-        $cnt = $xml->success->records;
-        if ("$cnt" > 0) {
-          $hash = array();
-          foreach ($xml->submission as $x) {
-            $hash["$x->id"] = $x;
-          }
-        }
-        if ($hash != FALSE) {
-          $return = $hash;
-        }
-      }
-      else {
-        $err = $xml->error->message;
-        if ($err) {
-          $this->error = "$err";
-        } else {
-          $this->error = 'Error updating publisher data at HeyPublisher.com';
-        }
-        $this->print_webservice_errors();
-      }
-    }
-    return $return;
-  }
-
-  function get_submission_by_id($id) {
-    $post = <<<EOF
-<submission>
-    <id>$id</id>
-</submission>
-EOF;
-
-    $ret = $this->send(HEYPUB_SVC_READ_SUBMISSION,$this->prepare_request_xml($post));
-    if (FALSE == $ret) {
-      $this->print_webservice_errors();
-    }
-    else {
-      $xml = new SimpleXMLElement($ret);
-      $this->log(sprintf("RAW XML = \n%s",$ret));
-      // printf( "<pre>XML = %s</pre>",print_r($xml,1));
-      # this is an object, convert to string
-      if ($xml->success->message) {
-        $return = $xml->submission;
-      }
-      else {
-        $err = $xml->error->message;
-        if ($err) {
-          if ($err == '403 Forbidden') {
-            $this->error = "The content of this submission is temporarily unavailable (# $id).";
-            // $return = $xml->submission; // don't return content - nothing editor can do with this
-          } else {
-            $this->error = "$err";
-          }
-        } else {
-          $this->error = 'Error retrieving submission for reading from HeyPublisher.com';
-        }
-        $this->print_webservice_errors(true,$id);
-      }
-    }
-    return $return;
   }
 
   // TODO: consolidate this with Page::print_message()
@@ -376,115 +246,6 @@ EOF;
       }
     }
     return false;
-  }
-
-  /**
-  * Fetch the hash of 'all' categories, plus the categories this publisher belongs to, and return as a hash
-  * suitable for making checkboxes with.
-  */
-  // Deprecated with 3.0
-  // TODO: Need to remove all calls to this function
-  // Remove prior to 3.0.1
-  function get_my_categories_as_hash() {
-      $return = false;
-      $post = <<<EOF
-<categories>
-    <sort>name</sort>
-    <sort_direction>ASC</sort_direction>
-    <filter>both</filter>
-</categories>
-EOF;
-    $ret = $this->send(HEYPUB_SVC_URL_GET_GENRES,$this->prepare_request_xml($post));
-    if (FALSE == $ret) {
-      $this->print_webservice_errors();
-    }
-    else {
-      $xml = new SimpleXMLElement($ret);
-      // printf( "<pre>XML = %s</pre>",print_r($xml,1));
-      # this is an object, convert to string
-        if ($xml->success->message) {
-          // First get ALL of the possible categories
-          foreach ($xml->all->category as $x) {
-            $id = $this->get_attribute_value_by_name($x,'id');
-            if ($id) {
-              $return["$x"] = array('name' => "$x", 'id' => "$id");
-            }
-          }
-          // We may not yet have submission categories defined remotely (if this is an initial install) - so account for that.
-          if ($xml->mine->category) {
-            foreach ($xml->mine->category as $x) {
-              $id = $this->get_attribute_value_by_name($x,'id');
-              if ($id) {
-                $return["$x"]['has'] = 1;
-              }
-            }
-          }
-        }
-        else {
-          $err = $xml->error->message;
-          if ($err) {
-            $this->error = "$err";
-          } else {
-            $this->error = 'Error getting publisher data from HeyPublisher.com';
-          }
-          $this->print_webservice_errors();
-        }
-      }
-      if (FALSE != $return) {
-        ksort($return);
-      }
-      // printf("<pre>Hash = %s</pre>",print_r($return,1));
-      return $return;
-  }
-
-  // Process the submission action with an optional message
-  function submission_action($id,$action,$message=false) {
-      $return = false;
-      if (!$this->submission_status["$action"]) {
-        $this->error = sprintf('%s is an invalid action',$action);
-        // $this->print_webservice_errors();
-        return $return;
-      }
-      if ($message) {
-        $notify = sprintf('<notify_author><message><![CDATA[%s]]></message></notify_author>', htmlentities(stripslashes($message)));
-      } else {
-        $notify = '<notify_author>false</notify_author>';
-      }
-      $editor_id = get_current_user_id();
-      $post = <<<EOF
-<submission>
-    <id>$id</id>
-    <action>$action</action>
-    $notify
-    <editor_id>{$editor_id}</editor_id>
-</submission>
-EOF;
-
-    // printf("<pre>XML request to webservice = %s</pre>",htmlentities($post));
-    $ret = $this->send(HEYPUB_SVC_URL_RESPOND_TO_SUBMISSION,$this->prepare_request_xml($post));
-    if (FALSE == $ret) {
-      $this->print_webservice_errors();
-    }
-    else {
-      $xml = new SimpleXMLElement($ret);
-      // printf("<pre>RAW XML = %s</pre>",htmlentities($ret));
-      // printf( "<pre>XML = %s</pre>",print_r($xml,1));
-      # this is an object, convert to string
-        if ($xml->success->message) {
-          $ret = $xml->success->message;
-          $return = "$ret";
-        }
-        else {
-          $err = $xml->error->message;
-          if ($err) {
-            $this->error = "$err";
-          } else {
-            $this->error = 'Error updating submission status at HeyPublisher.com';
-          }
-          $this->print_webservice_errors();
-        }
-      }
-      return $return;
   }
 
   // Get a publisher name into the format expected by HeyPub search
