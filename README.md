@@ -1,3 +1,5 @@
+# IMPORTANT
+HeyPublisher is shutting down in December, 2023.  I have enjoyed helping independent publishers manage their submissions via this project, but I no longer have time to maintain it.  Take care, and thank you for all your support!
 
 ## HeyPublisher Submisson Manager
 
